@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,jquery.lazyload.js,tab_style.js'}
+<style>
+.top_nav li { margin-right:0; width:16%; text-align: center; }
+.top_nav li.on span {line-height:36px; display: inline-block;border-bottom: #FF4339 2px solid;}
+</style>
+</head>
+<body id="mall">
+<div class="container">
+    <div class="top_search">
+        <form id="searchForm" name="searchForm" method="get" action="search.php" onSubmit="return checkSearchForm()">
+            <input name="keywords" id="keyword" type="text" class="text" value="{$search_keywords|escape}" placeholder="商品搜索">
+            <input type="submit" value="搜索" class="submit" />
+            <input type="hidden" name="search_type" value="is_mall">
+        </form>
+        <a href="javascript:;" id="menu-tab" onclick="tabStyle(this);"></a>
+    </div>
+    <div class="top_nav">
+		<ul id="top_nav">
+			<li{if $type eq ''} class="on"{/if}><a href="catlog.php"><span>全部</span></a></li>
+			<li{if $type eq 'mall'} class="on"{/if}><a href="catlog.php?type=mall"><span>商城</span></a></li>
+			<li{if $type eq 'team'} class="on"{/if}><a href="catlog.php?type=team"><span>拼团</span></a></li>
+			<li{if $type eq 'luck'} class="on"{/if}><a href="catlog.php?type=luck"><span>抽奖</span></a></li>
+			<li{if $type eq 'miao'} class="on"{/if}><a href="catlog.php?type=miao"><span>秒杀</span></a></li>
+			<li{if $type eq 'zero'} class="on"{/if}><a href="catlog.php?type=zero"><span>0元购</span></a></li>
+		</ul>
+    </div>
+	<!--div class="top_nav">
+		<ul>
+			{foreach from=$categories item=cat}
+			<li{if $cat_id==$cat.id} class="cur"{/if}><a href="catlog.php?type={$type}&cid={$cat.id}&sort={$sort}&uid={$uid}">{$cat.name}</span></a></li>
+			{/foreach}
+		</ul>
+    </div-->
+    <div class="blank"></div>
+    <div class="good_list">
+        <ul class="list_B">
+            {foreach from=$goods_list item=goods}
+            <li>
+                <a href="{if $goods.goods_number gt 0}{$goods.url}&uid={$uid}{else}javascript:void(0);{/if}" class="mall-tab-a"><img goods_id="{$goods.goods_id}" data-original="{$goods.goods_thumb}" src="images/loading.gif" class="lazy"></a>
+                <div class="mall-tab-tit">
+                    <p class="tit"><i>{if $goods.is_mall}商城{elseif $goods.is_team}拼团{elseif $goods.is_luck}抽奖{elseif $goods.is_miao}秒杀{elseif $goods.is_zero}零元购{/if}</i><a href="{$goods.url}&uid={$uid}">{$goods.goods_name}</a></p>
+                    <p>
+                        <font class="price">¥<b>{$goods.shop_price}</b></font>
+                    </p>
+                </div>
+            </li>
+			{foreachelse}
+			<div class="nothing">
+            <i class="iconfont icon-shangpin"></i>
+		    <p>此分类下暂无商品</p>
+            </div>
+            {/foreach}
+        </ul>
+    </div>
+    <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+</div>
+<div class="blank"></div>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+<script>
+window.onload=function(){
+	$("img.lazy").lazyload({
+			effect: "fadeIn",
+			threshold : 200
+	});
+	$("img.lazy:eq(0)").attr('src',$("img.lazy:eq(0)").attr('data-original'));
+}
+</script>
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script> 
+<script language="javascript" type="text/javascript">
+    wx.config({
+
+        debug: false,//这里是开启测试，如果设置为true，则打开每个步骤，都会有提示，是否成功或者失败
+
+        appId: '{$appid}',
+
+        timestamp: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+
+        nonceStr: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+
+        signature: '{$signature}',
+
+        jsApiList: [
+
+          // 所有要调用的 API 都要加到这个列表中
+
+            'onMenuShareTimeline',
+
+            'onMenuShareAppMessage',
+
+            'onMenuShareQQ',
+
+            'onMenuShareWeibo',
+
+            'checkJsApi',
+
+            'openLocation',
+
+            'getLocation'
+
+        ]
+
+    });
+
+    
+
+    var title="{$title}";
+
+    var link= "{$link}";
+
+    var imgUrl="{$imgUrl}";
+
+    var desc= "{$desc}";
+
+    wx.ready(function () {
+
+        wx.onMenuShareTimeline({//朋友圈
+
+            title: title, // 分享标题
+
+            link: link, // 分享链接
+
+            imgUrl: imgUrl, // 分享图标
+
+            success: function () { 
+
+                // 用户确认分享后执行的回调函数
+
+                statis(2,1);
+
+            },
+
+            cancel: function () { 
+
+                // 用户取消分享后执行的回调函数
+
+                statis(2,2);
+
+            }
+
+        });
+
+        wx.onMenuShareAppMessage({//好友
+
+            title: title, // 分享标题
+
+            desc: desc, // 
+
+            link: link, // 分享链接
+
+            imgUrl: imgUrl, // 分享图标
+
+            type: '', // 分享类型,music、video或link，不填默认为link
+
+            dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+
+            success: function () { 
+
+                // 用户确认分享后执行的回调函数
+
+                statis(1,1);    
+
+            },
+
+            cancel: function () { 
+
+                // 用户取消分享后执行的回调函数
+
+                statis(1,2);
+
+            }
+
+        });
+
+      
+
+        wx.onMenuShareQQ({
+
+            title: title, // 分享标题
+
+            desc: desc, // 分享描述
+
+            link: link, // 分享链接
+
+            imgUrl: imgUrl, // 分享图标
+
+            success: function () { 
+
+               // 用户确认分享后执行的回调函数
+
+                statis(4,1);
+
+            },
+
+            cancel: function () { 
+
+               // 用户取消分享后执行的回调函数
+
+                statis(4,2);
+
+            }
+
+        });
+
+        wx.onMenuShareWeibo({
+
+            title: title, // 分享标题
+
+            desc: desc, // 分享描述
+
+            link: link, // 分享链接
+
+            imgUrl: imgUrl, // 分享图标
+
+            success: function () { 
+
+               // 用户确认分享后执行的回调函数
+
+                statis(3,1);
+
+            },
+
+            cancel: function () { 
+
+                // 用户取消分享后执行的回调函数
+
+                statis(3,2);
+
+            }
+
+        });      
+
+    });
+
+    function statis(share_type,share_status){
+
+        $.ajax({
+
+            type:"post",//请求类型
+
+            url:"share.php",//服务器页面地址
+
+            data:"act=link&share_status="+share_status+"&share_type="+share_type+"&link_url={$link2}",
+
+            dataType:"json",//服务器返回结果类型(可有可无)
+
+            error:function(){//错误处理函数(可有可无)
+
+                //alert("ajax出错啦");
+
+            },
+            success:function(data){
+           }
+
+        });
+    }
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>全部品牌</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,jquery.lazyload.js'}
+<script type="text/javascript">
+    var process_request = "{$lang.process_request}";
+    function checkSearchForm()
+    {
+        if(document.getElementById('keyword').value)
+        {
+            return true;
+        }
+        else
+        {
+            alert("{$lang.no_keywords}");
+            return false;
+        }
+    }
+</script>
+</head>
+<body>
+<div class="container">
+    <div class="brand_info">
+        <dl>
+            {if $brand.brand_logo}
+            <dt><img src="data/brandlogo/{$brand.brand_logo}" /></dt>
+            {/if}
+            <dd>
+                <h3>{$brand.brand_name}</h3>
+                <p>{$brand.brand_desc|nl2br}</p>
+            </dd>
+        </dl>
+    </div>
+	{if $goods_list}
+    <div class="good_list">
+        <ul class="list_B">
+            {foreach from=$goods_list item=goods}
+            <li>
+                <a href="{if $goods.goods_number gt 0}{$goods.url}&uid={$uid}{else}javascript:void(0);{/if}"><img goods_id="{$goods.goods_id}" data-original="{$goods.goods_thumb}" src="images/loading.gif" class="lazy"></a>
+                <p class="tit"><a href="{$goods.url}&uid={$uid}">{$goods.goods_name}</a></p>
+                <p class="brief">{$goods.goods_brief}</p>
+                <p><del>¥{$goods.market_price}</del><font class="price">¥<b>{$goods.shop_price}</b></font></p>
+            </li>
+            {/foreach}
+        </ul>
+    </div>
+	{else}
+			<div class="nothing">
+            <i class="iconfont icon-shangpin"></i>
+		    <p>此品牌下暂无商品</p>
+            </div>
+	{/if}
+    <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+</div>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+<script>
+	window.onload=function(){
+		$("img.lazy").lazyload({
+                effect: "fadeIn",
+                threshold : 200
+        });
+        $("img.lazy:eq(0)").attr('src',$("img.lazy:eq(0)").attr('data-original'));
+	}
+</script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,utils.js'}
+</head>
+<body>
+<div class="container">
+    <div class="top_search">
+        <form id="searchForm" name="searchForm" method="get" action="search.php" onSubmit="return checkSearchForm()">
+            <input name="keywords" id="keyword" type="text" class="text" value="{$search_keywords|escape}" placeholder="商品搜索">
+            <input type="submit" value="搜索" class="submit" />
+        </form>
+    </div>
+    <div class="blank"></div>
+    <div class="good_list">
+        {if $goods_list}
+        <h3>有关<b>{$search_keywords|escape}</b>的商品有<b>{$count}</b>种</h3>
+        <ul class="list_B">
+            <!--{foreach from=$goods_list item=goods}-->
+         
+                {if $goods.is_team eq 1}
+				<li>
+                    <a href="{if $goods.goods_number gt 0}{$goods.url}{else}javascript:void(0);{/if}"><img src="{$goods.goods_thumb}"></a>
+					{if $goods.goods_number lt 1}
+					<span class="sell_f"></span>
+					{/if}
+                    <p class="tit"><a href="{if $goods.goods_number gt 0}{$goods.url}{else}javascript:void(0);{/if}">{$goods.goods_name}</a></p>
+                    <p class="brief">{$goods.goods_brief}</p>
+                    <p><del>¥{$goods.market_price}</del><font class="price">¥<b>{$goods.shop_price}</b></font></p>
+				</li>
+                {/if}
+                {if $goods.is_mall eq 1 or $goods.is_zero eq 1}
+				<li>
+                    <a href="{if $goods.goods_number gt 0}{$goods.url}{else}javascript:void(0);{/if}"><img goods_id="{$goods.goods_id}" src="{$goods.goods_thumb}"></a>
+                    <p class="tit"><a href="{if $goods.goods_number gt 0}{$goods.url}{else}javascript:void(0);{/if}">{$goods.goods_name}</a></p>
+                    <p class="brief">{$goods.goods_brief}</p>
+                    <p><del>¥{$goods.market_price}</del><font class="price">¥<b>{$goods.shop_price}</b></font></p>
+				</li>
+                {/if}
+            
+            <!--{/foreach}-->
+        </ul>
+        {else}
+		
+		<div class="nothing" style="position:static; margin:50px auto ;">
+            <i class="iconfont icon-shangpin"></i>
+		    <p>没有找到<b>{$search_keywords|escape}</b>相关的商品</p>
+        </div>
+
+        <div class="recommend_grid_wrap" >
+            <div id="recommend" class="grid">
+                <div class="recommend_head">你可能还喜欢</div>
+                <div class="bd">
+                    <ul>
+                        {foreach from=$rands_goods item = goods}
+                        <li>
+                            <div class="recommend_img"><a href="goods.php?id={$goods.goods_id}"><img  src="{if $goods.goods_img}{$goods.goods_img}{else}images/no_picture.gif{/if}"></a></div>
+                            <div class="recommend_title"><a href="goods.php?id={$goods.goods_id}">{$goods.goods_name}</a></div>
+                            <div class="recommend_price">￥<span>{$goods.goods_price}</span></div>
+                            <!-- {if $goods.rec_id gt 0} -->
+                            <div class="like_click" data-id="{$goods.goods_id}"><img src="images/is_liked2.png" data-isLiked="1"></div>
+                            <!-- {else} -->
+                            <div class="like_click" data-id="{$goods.goods_id}"> <img src="images/no_liked2.png" data-isLiked="0"></div>
+                            <!-- {/if} -->
+                        </li>
+                        {/foreach}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {/if}
+    </div>
+</div>
+<a href="flows.php?step=cart" class="gw-cart-p" id="cat"><i class="iconfont-cart"></i>
+    <span id="HHS_CARTINFO" class="gw-cart">{insert name='cart_num'}</span>
+</a>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+<script type="text/javascript">
+function getElementLeft(element){
+　　　　var actualLeft = element.offsetLeft;
+　　　　var current = element.offsetParent;
+        
+　　　　while ( current !== null ){
+　　　　　　actualLeft += current.offsetLeft;
+　　　　　　current = current.offsetParent;
+
+　　　　}
+
+　　　　return actualLeft;
+　　}
+
+function getElementTop(element){
+　　　　var actualTop = element.offsetTop;
+　　　　var current = element.offsetParent;
+
+　　　　while (current !== null){
+　　　　　　actualTop += current.offsetTop;
+　　　　　　current = current.offsetParent;
+　　　　}
+
+　　　　return actualTop;
+　　}　　
+
+    var Cart = {
+      id: 'cat',
+      addProduct: function(cpid, num, t ) {
+        //添加商品
+        var cat =document.getElementById('cat');  
+        var catLeft=getElementLeft(cat);
+        var catTop=getElementTop(cat);
+        var sTop=document.body.scrollTop+document.documentElement.scrollTop;
+
+        var op = $("[id=iproduct_"+cpid+"]").parents("li").find("img");
+        var goods_id = $(op).attr("goods_id");
+
+        if(op.length>0) {
+            var np = op.clone().css({"position":"absolute", "top": op.offset().top, "left": op.offset().left, width: 50, height:50, "z-index": 999999999}).show();
+            np.appendTo("body").animate({top:  catTop + sTop , left: $("#cat").offset().left +30 , width: 20, height:20}, {duration: 1000,
+                    callback:function(){}, complete: function(){np.remove();addToCart(goods_id,0,1 ,0,0,1 );} });
+        }
+       }
+    }
+
+    $(function() {
+        $('[id^=iproduct_]').click(function() {
+            var id = $(this).attr("id");
+            var tmp = id.split('_');
+            var goods_id = tmp[1];
+
+            //var cpid = this.id.replace('iproduct_'+goods_id,goods_id);
+
+             Cart.addProduct(goods_id, 1, 0  );
+
+            return false;
+        });
+
+
+
+        var user_id = {$uid};
+        $(".like_click").on("click", function(e) {
+            e.preventDefault();
+            var goodsId = $(this).attr("data-id");
+            var img = $(this).find("img");
+            if (img.attr("data-isLiked") == 1) {
+                $.get('user.php', {
+                    act: "del_collection",
+                    collection_id: goodsId,
+                    user_id: user_id
+                }).done(function(e) {
+                    img.attr("src", "themes/haohainew/images/no_liked2.png");
+                    img.attr("data-isLiked", 0)
+                });
+            } else {
+                $.get('user.php', {
+                    act: "collect",
+                    id: goodsId,
+                    user_id: user_id
+                }).done(function(e) {
+                    img.attr("src", "themes/haohainew/images/is_liked2.png");
+                    img.attr("data-isLiked", 1)
+                });
+
+            }
+        });   
+     });
+</script>
+</html>
+

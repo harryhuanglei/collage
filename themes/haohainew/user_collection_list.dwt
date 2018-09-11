@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,user.js'}
+</head>
+<body>
+<div class="container">
+  {insert_scripts files='utils.js'}
+  <!--{if $action eq 'collection_list'} -->
+    <div class="nav_fixed rank_nav">
+        <a href="user.php?act=collection_list" {if $action eq 'collection_list' }class="cur"{/if}><span>商品收藏</span></a>
+        <a href="user.php?act=collect_store_list" {if $action eq 'collect_store_list' }class="cur"{/if}><span>店铺收藏</span></a>
+    </div>
+    <div class="collection">
+        <ul>
+            {foreach from=$goods_list item=goods}
+            <li>
+                <a href="{$goods.url}"><img src="{$goods.goods_thumb}"></a>
+                <div class="info">
+                    <h3><a href="{$goods.url}">{$goods.goods_name|escape:html}</a></h3>
+                    <p>¥{if $goods.promote_price neq ""}{$goods.promote_price}{else}{$goods.shop_price}{/if}</p>
+                </div>
+                <a href="javascript:location.href='user.php?act=delete_collection&collection_id={$goods.rec_id}'" class="del"></a>
+            </li>
+			{foreachelse}
+        <div class="nothing">
+            <i class="iconfont icon-shoucang"></i>
+            <p>您还没有收藏商品哦</p>
+        </div>
+            {/foreach}
+        </ul>
+    </div>
+	<!--{/if} -->
+	
+	<!--{if $action eq 'collect_store_list'} -->
+	<div class="nav_fixed rank_nav">
+        <a href="user.php?act=collection_list" {if $action eq 'collection_list' }class="cur"{/if}><span>商品收藏</span></a>
+        <a href="user.php?act=collect_store_list" {if $action eq 'collect_store_list' }class="cur"{/if}><span>店铺收藏</span></a>
+    </div>
+	<div class="collection_store">
+        <ul>
+            {foreach from=$store_list item=store}
+            <li>
+                <a href="store.php?id={$store.suppliers_id}"><img src="{$store.logo}"></a>
+                <div class="info">
+                    <a href="store.php?id={$store.suppliers_id}">{$store.suppliers_name|escape:html}</a>
+                </div>
+                <a href="javascript:location.href='user.php?act=del_collect_store&id={$store.suppliers_id}'" class="del"></a>
+            </li>
+			{foreachelse}
+        <div class="nothing">
+            <i class="iconfont icon-shoucang"></i>
+            <p>您还没有收藏店铺哦</p>
+        </div>
+            {/foreach}
+        </ul>
+	</div>	
+	<!--{/if} -->
+	
+    <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+</div>
+<div class="blank"></div>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+</html>
+

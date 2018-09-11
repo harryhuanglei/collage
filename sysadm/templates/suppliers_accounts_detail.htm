@@ -1,0 +1,482 @@
+<!-- $Id: agency_list.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+
+{if $full_page}
+
+
+
+{include file="pageheader.htm"}
+
+
+
+{insert_scripts files="../js/utils.js,listtable.js,../js/region.js"}
+
+<script language="javascript" type="text/javascript" src="../js/DatePicker/WdatePicker.js"></script>
+
+<div class="form-div">
+
+  <form action="javascript:search_supp()" name="searchForm">
+
+    <img src="images/icon_search.gif" width="26" height="22" border="0" alt="SEARCH" />
+
+   
+
+    订单号： <input type="text" name="order_sn" size="15" />  
+
+    订单起止日期：<input class="Wdate" type="text" name="start_time" readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-M-d HH:mm'})"/>
+
+      ~      
+
+      <input class="Wdate" type="text" name="end_time" readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-M-d HH:mm'})"/>  
+
+    <input type="submit" value="{$lang.button_search}" class="button" />
+
+  </form>
+
+</div>
+
+<form method="post" action="" name="listForm" onsubmit="return confirm(batch_drop_confirm);">
+
+<div class="list-div" id="listDiv">
+
+{/if}
+
+  <table cellpadding="3" cellspacing="1">
+
+    <tr>
+
+      <th><!--  <input onclick='listTable.selectAll(this, "checkboxes")' type="checkbox" /> -->
+
+          <a href="javascript:listTable.sort('id'); ">{$lang.record_id}</a>{$sort_id} </th>
+
+      <th>订单号</th>
+
+      <th>商品名称</th>
+
+      <th>付款时间</th>
+
+      <th>订单金额</th>
+
+      <th>佣金金额</th>
+
+      <th>分销金额</th>
+
+      <th>实际结算</th>
+
+    </tr>
+
+
+
+    {foreach from=$suppliers_accounts_detail item=item}
+
+    <tr>
+
+      <td align="center"><!--  <input type="checkbox" name="checkboxes[]" value="{$item.id}" />-->
+
+        {$item.id}</td>
+
+      <td align="center">{$item.order_sn}</td>  
+
+      <td align="center">{$item.goods.goods_list.0.goods_name}</td>  
+
+      <td align="center">{$item.order_time}</td> 
+
+      <td align="center">{$item.amount}</td> 
+
+      <td align="center">{$item.commission}</td>
+
+      <td align="center">{$item.fenxiao_money}</td>  
+
+      <td align="center">{$item.money}</td>  
+
+      <!-- <td align="center">{if $settlement_status lt 5 }<a href="javascript:confirm_redirect('您确定此项操作吗？', 'suppliers.php?act=settlement_return&id={$item.id}')">下次结算</a>{/if}</td>   -->
+
+    </tr>
+
+
+
+    {foreachelse}
+
+
+
+    <tr><td class="no-records" colspan="8">{$lang.no_records}</td></tr>
+
+
+
+    {/foreach}
+
+ 	<tr>
+
+      <td align="center" colspan="3"></td>
+
+      <td align="center">当前页合计</td>  
+
+      <td align="center">{$total.total_amount}</td> 
+
+      <td align="center">{$total.total_commission}</td> 
+
+      <td align="center">{$total.total_fenxiao}</td>
+
+      <td align="center">{$total.total_money}</td>
+
+      <td align="center" ></td>
+
+    </tr>
+	<tr>
+
+      <td align="center" colspan="3"></td>
+
+      <td align="center">总合计</td>
+
+      <td align="center">{$total_order_amount.total_amount}</td> 
+
+      <td align="center">&nbsp;</td>
+	  
+	  <td align="center">&nbsp;</td>
+
+      <td align="center">{$total_order_amount.total_money}</td>
+
+      <td align="center" ></td>
+
+    </tr>
+
+  </table>
+
+
+
+<table id="page-table" cellspacing="0">
+
+
+
+  <tr>
+
+
+
+    <td>
+
+<!-- 
+
+      <input name="remove" type="submit" id="btnSubmit" value="{$lang.drop}" class="button" disabled="true" />
+
+
+
+      <input name="act" type="hidden" value="batch" />
+
+ -->
+
+    </td>
+
+
+
+    <td align="right" nowrap="true">
+
+
+
+   {include file="page.htm"}  
+
+
+
+    </td>
+
+
+
+  </tr>
+
+
+
+</table>
+
+
+
+{if $full_page}
+
+
+
+
+
+<table cellspacing="1" cellpadding="3">
+
+<tbody>
+
+<tr>
+
+	<td>
+
+		<div align="right">
+
+		<strong>操作备注：</strong>
+
+		</div>
+
+	</td>
+
+	<td colspan="5">
+
+		<textarea rows="3" cols="80" name="action_note"></textarea>
+
+	</td>
+
+</tr>
+
+<tr>
+
+	<td>
+
+		
+
+		<div align="right">
+
+		<strong>当前可执行操作：</strong>
+
+		</div>
+
+	</td>
+
+	<td colspan="5">
+
+		<input type="hidden" name="id" value="{$suppliers_accounts_id}">
+
+		<input type="hidden" name="act" value="operate_post">
+
+		{if $settlement_status eq 2 ||  $settlement_status eq 1}
+
+			<input class="button" type="submit" value="审核通过" name="checkok">
+
+			<input class="button" type="submit" value="审核不通过" name="checkno">
+
+		{/if}
+
+		{if $settlement_status eq 3}
+
+			<input class="button" type="submit" value="请商家确认账户信息" name="request_check_account">
+
+			&nbsp;&nbsp;&nbsp;&nbsp;
+
+			商家开户行：{$supp_row.bank_name} &nbsp;&nbsp;
+
+			户名：{$supp_row.bank_p_name} &nbsp;&nbsp;
+
+			账号：{$supp_row.bank_account} &nbsp;&nbsp;
+
+		{/if}
+
+		{if $settlement_status eq 5}
+
+			<input class="button" type="submit" value="付款" name="pay">
+
+		{/if}
+
+    {if $settlement_status eq 11}
+
+      <input class="button" type="submit" value="协商付款" name="pay">
+
+    {/if}
+
+	</td>
+
+</tr>
+
+<tr>
+
+	<th>身份：</th>
+
+	<th>操作时间</th>
+
+	<th>结算单状态</th>
+
+	<th>备注</th>
+
+</tr>
+
+{foreach from=$action_list item=item}
+
+<tr>
+
+	<td><div align="center">{$item.action_user}</div></td>
+
+	<td><div align="center">{$item.action_time}</div></td>
+
+	<td><div align="center">{$item.status_name}</div></td>
+
+	<td><div align="center">{$item.action_note}</div></td>
+
+	
+
+</tr>
+
+{/foreach}
+
+</tbody>
+
+</table>
+
+
+
+</div>
+
+
+
+</form>
+
+
+
+<script language="JavaScript">
+
+
+
+    function search_supp()
+
+    {
+
+        listTable.filter['order_sn'] = Utils.trim(document.forms['searchForm'].elements['order_sn'].value);
+
+		listTable.filter['page'] = 1;
+
+		listTable.filter['start_time'] = Utils.trim(document.forms['searchForm'].elements['start_time'].value);
+
+		listTable.filter['end_time'] = Utils.trim(document.forms['searchForm'].elements['end_time'].value);
+
+			
+
+        listTable.loadList();
+
+		getDownUrl();
+
+    }
+
+    function getDownUrl()
+
+    {
+
+      var aTags = document.getElementsByTagName('A');
+
+      for (var i = 0; i < aTags.length; i++)
+
+      { 
+
+        if (aTags[i].href.indexOf('download') >= 0)
+
+        {		
+
+	       	order_sn= document.forms['searchForm'].elements['order_sn'].value;
+
+	       	start_time = document.forms['searchForm'].elements['start_time'].value;
+
+	       	end_time = document.forms['searchForm'].elements['end_time'].value;
+
+
+
+	       	page = 1;
+
+            str="order_sn="+order_sn+"&suppliers_accounts_id={$suppliers_accounts_id}"+
+
+            "&start_time="+start_time+"&end_time="+end_time+"&page="+page;
+
+            aTags[i].href = "suppliers.php?act=account_detail_download&"+str;
+
+        }
+
+        if (aTags[i].href.indexOf('print') >= 0)
+
+        {		
+
+        	order_sn= document.forms['searchForm'].elements['order_sn'].value;
+
+	       	start_time = document.forms['searchForm'].elements['start_time'].value;
+
+	       	end_time = document.forms['searchForm'].elements['end_time'].value;
+
+            page = 1;
+
+            str="order_sn="+order_sn+"&suppliers_accounts_id={$suppliers_accounts_id}"+
+
+            "&start_time="+start_time+"&end_time="+end_time+"&page="+page;
+
+            aTags[i].href = "suppliers.php?act=account_detail_print&"+str;
+
+            aTags[i].target="_blank";
+
+        }
+
+      }
+
+    }
+
+</script>
+
+
+
+<script type="text/javascript" language="javascript">
+
+
+
+region.isAdmin = true;
+
+
+
+  <!--
+
+
+
+  listTable.recordCount = {$record_count};
+
+
+
+  listTable.pageCount = {$page_count};
+
+
+
+  listTable.query = 'accounts_detail_query';
+
+  {foreach from=$filter item=item key=key}
+
+
+
+  listTable.filter.{$key} = '{$item}';
+
+
+
+  {/foreach}
+
+
+
+  {literal}
+
+
+
+  onload = function()
+
+
+
+  {
+
+
+
+      // 开始检查订单
+
+
+
+      startCheckOrder();
+
+      getDownUrl();
+
+  }
+
+
+
+  {/literal}
+
+
+
+  //-->
+
+
+
+</script>
+
+
+
+{include file="pagefooter.htm"}
+
+
+
+{/if}

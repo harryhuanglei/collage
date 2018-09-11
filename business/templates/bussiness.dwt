@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>商家管理平台</title>
+<link href="templates/css/layout.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../../js/jquery.js"></script>
+<script type="text/javascript" src="../../js/haohaios.js"></script>
+<script type="text/javascript" src="../../js/user.js"></script>
+<script type="text/javascript" src="../../js/region.js"></script>
+<script type="text/javascript" src="../../js/utils.js"></script>
+
+<script type="text/javascript" src="templates/js/main.js"></script>
+<script type="text/javascript" src="templates/js/supp.js"></script>
+<script type="text/javascript" src="../../{$admin_path}/js/listtable.js"></script>
+<script language="javascript" type="text/javascript" src="../../js/DatePicker/WdatePicker.js"></script>
+
+
+<script>
+var process_request = "{$lang.process_request}";
+</script>
+</head>
+<body onload="pageheight()">
+
+  <!--{if $action eq 'default' || $action eq 'waitcheck'}-->
+  <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_goods.png" /><span>未结算订单</span>
+		</div>
+        <div class="maincon">
+			<div class="contitlelist">
+            	<span>未结算订单列表</span>
+              <div class="searchdiv">
+          <form id="" name="form_order" method="get" action="bussiness.php">
+            <div>起止时间：</div>
+            <input class="Wdate" value="" type="text" size="17" onfocus="WdatePicker({dateFmt:'yyyy-M-d'})" readonly="readonly" name="start_time" style="padding:0;">
+            <div>~</div>
+            <input class="Wdate" value="" type="text" size="17" onfocus="WdatePicker({dateFmt:'yyyy-M-d'})" readonly="readonly" name="end_time" style="padding:0;">
+            <input name="act" type="hidden" value="default">
+            <input type="submit" class="btn" name="" value="搜索">
+          </form>
+        </div>
+                 <div class="titleright"><a href="suppliers.php?act=my_order">往期结算</a><a href="?act=apply">申请结算</a></div>
+            </div>
+		  <div class="conbox">
+<table cellspacing="0" cellpadding="0" class="listtable">
+  <tr>
+    <th align="left">订单编号</th>
+    <th align="left">订单时间</th>
+    <th align="left">支付金额</th>
+    <th align="left">结算ID</th>
+  </tr>  
+  {foreach from=$goods_list item=goods}
+  <tr>
+    <td align="left"><a href="suppliers.php?act=order_info&order_id={$goods.order_id}">{$goods.order_sn}</a></td>
+    <td align="left">{$goods.add_time}</td>
+    <td align="left">{$goods.amount}</td>
+    <td align="left">
+    {if $goods.settlement_sn}
+    <a href="?act=checked&sn={$goods.settlement_sn}">{$goods.settlement_sn}</a>
+    {else}
+    -
+    {/if}
+    </td>
+  </tr>
+  {foreachelse}
+  <tr><td class="no-records" colspan="14">{$lang.no_records}</td></tr>
+  {/foreach}
+</table>
+<!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+        </div>
+       </div>
+        </div>
+ <!--{/if}-->
+   <!--{if $action eq 'view'}-->
+  <div class="main" id="main">
+    <div class="maintop">
+      <img src="templates/images/title_goods.png" /><span>结算订单详情</span>
+    </div>
+        <div class="maincon">
+      <div class="contitlelist">
+              <span>未结算订单列表</span>
+                 <div class="titleright">
+                 <!-- {if $settlement_status eq 1} -->
+                 <a href="javascript:;">审核中</a>
+                 <!-- {elseif $settlement_status eq 2} -->
+                 <a href="javascript:;">已审核</a>
+                 <!-- {elseif $settlement_status eq 3} -->
+                 <a href="?act=checkout&id={$id}">确认收款</a>
+                 <!-- {elseif $settlement_status eq 4} -->
+                 <a href="javascript:;">已完成</a>
+                 <!-- {else} -->
+                 <a href="javascript:;">有疑问</a>
+                 <!-- {/if} -->
+                 <a href="suppliers.php?act=my_order">往期结算</a>
+                 </div>
+            </div>
+      <div class="conbox">
+<table cellspacing="0" cellpadding="0" class="listtable">
+  <tr>
+    <th align="left">编号</th>
+    <th align="left">订单号</th>
+    <th align="left">订单时间</th>
+    <th align="left">订单金额</th>
+    <!-- <th align="left">佣金</th> -->
+    <th align="left">结算金额</th>
+  </tr>  
+  {foreach from=$goods_list item=goods}
+  <tr>
+    <td align="left">{$goods.id}</td>
+    <td align="left"><a href="suppliers.php?act=order_info&order_id={$goods.order_id}">{$goods.order_sn}</a></td>
+    <td align="left">{$goods.order_time}</td>
+    <td align="left">{$goods.amount}</td>
+    <!-- <td align="left">{$goods.commission}</td> -->
+    <td align="left">{$goods.money}</td>
+  </tr>
+  {foreachelse}
+  <tr><td class="no-records" colspan="14">{$lang.no_records}</td></tr>
+  {/foreach}
+</table>
+<!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+
+<table cellspacing="0" cellpadding="0" class="listtable">
+<!-- {if $settlement_status eq 5} -->
+<tr>
+    <td align="center" colspan="3">该结算单存在分歧</td>
+</tr>
+<tr>
+  <td colspan="3">
+    <form action="?act=apply5" method="post">
+      <textarea name="msg" cols="30" rows="3"></textarea>
+      <input type="hidden" name="id" value="{$id}" />
+      <input type="submit" value="确定" />
+    </form>
+    申诉内容250字以内
+  </td>
+</tr>
+<!-- {/if} -->
+<tr>
+  <td>操作者</td>
+  <td>操作时间</td>
+  <td>内容</td>
+</tr>
+<!-- {foreach from=$logs item=log} -->
+<tr>
+  <td>{if $log.is_supplier eq 1}商家{else}管理{/if}</td>
+  <td>{$log.created_at}</td>
+  <td>{$log.msg}</td>
+</tr>
+<!-- {/foreach} -->
+</table>
+
+        </div>
+       </div>
+        </div>
+ <!--{/if}-->
+</body>
+</html>

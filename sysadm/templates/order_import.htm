@@ -1,0 +1,38 @@
+<!-- $Id: goods_info.htm 17126 2010-04-23 10:30:26Z liuhui $ -->
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,selectzone_bd.js,colorselector.js"}
+<script language="javascript" type="text/javascript" src="../js/DatePicker/WdatePicker.js"></script>
+{if $warning}
+<ul style="padding:0; margin: 0; list-style-type:none; color: #CC0000;">
+  <li style="border: 1px solid #CC0000; background: #FFFFCC; padding: 10px; margin-bottom: 5px;" >{$warning}</li>
+</ul>
+{/if}
+<!-- start goods form -->
+<div class="con_box">
+<div class="main-div">
+    <!-- tab body -->
+    <div id="tabbody-div">
+      <form enctype="multipart/form-data" action="order.php?act=import" method="post" name="theForm" >
+        <table width="1000" id="general-table" align="center"style="margin:10px auto;background:#fff;border:1px solid #ccc;border-collapse:collapse;">       
+          <tr>
+            <td class="label">上传文件：</td>
+            <td>
+              <input type="file" name="file" size="35" />   
+            </td>
+          </tr>         
+        <tr>
+            <td></td>
+            <td>
+          <input type="submit" name="submit" value="{$lang.button_submit}" class="button" style="padding:2px 50px"/>
+        <!-- <a href="../Area/order_temp.csv">模板下载</a></td> -->
+        </table>
+      </form>
+    </div>
+</div>
+</div>
+<!-- end goods form -->
+
+<script language="JavaScript">
+  //var elements = document.forms['theForm'].elements;
+</script>
+{include file="pagefooter.htm"}

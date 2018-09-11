@@ -1,0 +1,106 @@
+<!-- $Id: ads_list.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+<div class="form-div">
+  <form action="javascript:search_ad()" name="searchForm">
+    <img src="images/icon_search.gif" width="26" height="22" border="0" alt="SEARCH" />
+    位置 <select name="position_id">
+    <option value="">请选择</option>
+     <!-- {foreach from=$ad_position_list item=position} -->
+      <option value="{$position.position_id}">{$position.position_name}</option>
+      <!-- {/foreach}-->
+    </select>
+    &nbsp;&nbsp;站点&nbsp;&nbsp;
+   <select name="city_id" id="selCities" >
+          <option value=''>请选择</option>
+            {foreach from=$cities item=region}
+              <option value="{$region.region_id}" {if $region.region_id eq $ads.city_id}selected="selected"{/if}>{$region.region_name}</option>
+            {/foreach}
+
+        </select>
+  
+    <input type="submit" value="{$lang.button_search}" class="button" />
+  </form>
+</div>
+<form method="post" action="" name="listForm">
+<!-- start ads list -->
+<div class="list-div" id="listDiv">
+{/if}
+
+<table cellpadding="3" cellspacing="1">
+  <tr>
+    <th><a href="javascript:listTable.sort('ad_name'); ">{$lang.ad_name}</a>{$sort_ad_name}</th>
+    <th>广告 </th>
+    <th><a href="javascript:listTable.sort('position_id'); ">{$lang.position_id}</a>{$sort_position_id}</th>
+    <th>排序</th>
+   <!-- <th><a href="javascript:listTable.sort('media_type'); ">{$lang.media_type}</a>{$sort_media_type}</th>
+    <th><a href="javascript:listTable.sort('start_date'); ">{$lang.start_date}</a>{$sort_start_date}</th>
+    <th><a href="javascript:listTable.sort('end_date'); ">{$lang.end_date}</a>{$sort_end_date}</th>
+    <th><a href="javascript:listTable.sort('click_count'); ">{$lang.click_count}</a>{$sort_click_count}</th>-->
+    <th>{$lang.handler}</th>
+  </tr>
+  {foreach from=$ads_list item=list}
+  <tr>
+    <td align="center" class="first-cell">
+    <span onclick="javascript:listTable.edit(this, 'edit_ad_name', {$list.ad_id})">{$list.ad_name|escape:html}</span>
+    </td>
+    <td align="center" class="first-cell"><img src="../data/afficheimg/{$list.ad_code}" width="200"  height="50"></td>
+    <td align="center"><span>{if $list.position_id eq 0}{$lang.outside_posit}{else}{$list.position_name}{/if}</span>
+    </td>
+    <td align="center"><span onclick="listTable.edit(this, 'edit_sort_order', {$list.ad_id})">{$list.order_sort}</span></td>
+   <!-- <td valign="middle"><span>
+<div style="float:left;margin-right:10px;line-height:40px;">{$list.type}</div>
+{if ($list.type == '图片')}
+<div style="float:left;height:40px;max-width:200px;*width:200px;overflow:hidden;">
+<img {if strpos($list.ad_code,'www') }src="{$list.ad_code}"{else}src="../data/afficheimg/{$list.ad_code}" {/if} height="40px" />
+</div>
+{/if}
+</span></td>
+    <td align="center"><span>{$list.start_date}</span></td>
+    <td align="center"><span>{$list.end_date}</span></td>
+    <td align="right"><span>{$list.click_count}</span></td>
+    <td align="right"><span>{$list.ad_stats}</span></td>-->
+    <td align="center" class="bnt_a"><span>
+      <a href="ads.php?act=edit&id={$list.ad_id}" title="{$lang.edit}">{$lang.edit}</a>
+      <a href="javascript:;" onclick="listTable.remove({$list.ad_id}, '{$lang.drop_confirm}')" title="{$lang.remove}">{$lang.remove}</a></span>
+    </td>
+  </tr>
+  {foreachelse}
+    <tr><td colspan="6" align="center" class="no-records">{$lang.no_ads}</td></tr>
+  {/foreach}
+  <tr>
+    <td align="right" nowrap="true" colspan="6">{include file="page.htm"}</td>
+  </tr>
+</table>
+
+{if $full_page}
+</div>
+<!-- end ad_position list -->
+</form>
+<script language="JavaScript">
+    function search_ad()
+    {
+        listTable.filter['position_id'] = Utils.trim(document.forms['searchForm'].elements['position_id'].value);
+		listTable.filter['city_id'] = Utils.trim(document.forms['searchForm'].elements['city_id'].value);
+        listTable.filter['page'] = 1;
+        listTable.loadList();
+    }
+</script>
+<script type="text/javascript" language="JavaScript">
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+  {literal}
+  onload = function()
+  {
+    // 开始检查订单
+    startCheckOrder();
+  }
+  {/literal}
+</script>
+{include file="pagefooter.htm"}
+{/if}

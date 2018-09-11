@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/tab_pic.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/square_new.css" rel="stylesheet" />
+</head>
+有问题啦：<br>
+	<p>{$message}</p>
+	
+	发帖规则：<br>
+	1：图片格式为jpg,png。<br>
+	2：建议图片大小尽量不要超过5M,以免影响显示效果。<br>
+	
+	
+	如果您还不明白可以拨打<a href="tel:{$phone}">{$phone}</a>联系客服。<br>
+	<a href="square_new.php">明白了，重新去发帖</a>	
+	
+</html>

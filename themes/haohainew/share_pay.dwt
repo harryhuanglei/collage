@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>找人代付 - 分享</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/base.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/trade.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,user.js'}
+</head>
+<body>
+<div class="container">
+    <div class="content peerpay-gift">
+        <div class="app app-order">
+            <div class="app-inner inner-order">
+                <div class="message-container center" style="background-color:#a0bf54;">
+                    <div class="avatar avatar-peerpay center"> <img class="circular" src="{$user_info.headimgurl}">
+                        <p class="js-counter-msg"> <span class="txt-status" style="color:#ffffff;">{$user_info.user_name}</span> </p>
+                    </div>
+                    <p>{$order_info.wxdesc}</p>
+                    <div class="bottom-arrow"></div>
+                </div>
+                <div class="action-container" id="peerpay-share-btn" style="margin-top:30px;">
+                    <button type="button" class="js-open-share btn btn-block btn-green" onclick="document.getElementById('share_img').style.display='';">找小伙伴帮忙付款</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="share_img" style="position:fixed;top:0;left:0;z-index:999;display:none; background:#000;opacity:0.8;filter:alpha(opacity=80);  width:100%;height:100%; text-align:right; " onclick="document.getElementById('share_img').style.display='none';"><img class="arrow" src="themes/haohainew/images/share-it.png" ></div>
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script> 
+<script language="javascript" type="text/javascript">
+	wx.config({
+	    debug: false,//这里是开启测试，如果设置为true，则打开每个步骤，都会有提示，是否成功或者失败
+	    appId: '{$appid}',
+	    timestamp: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+	    nonceStr: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+	    signature: '{$signature}',
+	    jsApiList: [
+	      // 所有要调用的 API 都要加到这个列表中
+	        'onMenuShareTimeline',
+	        'onMenuShareAppMessage',
+	        'onMenuShareQQ',
+	        'onMenuShareWeibo'
+	    ]
+	});
+	
+	var title="{$title}";
+	var link= "{$link}";
+	var imgUrl="{$imgUrl}";
+	var desc= "{$desc}";
+	wx.ready(function () {
+	    wx.onMenuShareTimeline({//朋友圈
+	        title: title, // 分享标题
+	        link: link, // 分享链接
+	        imgUrl: imgUrl, // 分享图标
+	        success: function () { 
+	            // 用户确认分享后执行的回调函数
+	        	statis(2,1);
+	        },
+	        cancel: function () { 
+	            // 用户取消分享后执行的回调函数
+	        	statis(2,2);
+	        }
+	    });
+	    wx.onMenuShareAppMessage({//好友
+	        title: title, // 分享标题
+	        desc: desc, // 
+	        link: link, // 分享链接
+	        imgUrl: imgUrl, // 分享图标
+	        type: '', // 分享类型,music、video或link，不填默认为link
+	        dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+	        success: function () { 
+	        	// 用户确认分享后执行的回调函数
+	            statis(1,1);    
+	        },
+	        cancel: function () { 
+	            // 用户取消分享后执行的回调函数
+	        	statis(1,2);
+	        }
+	    });
+	  
+	    wx.onMenuShareQQ({
+	        title: title, // 分享标题
+	        desc: desc, // 分享描述
+	        link: link, // 分享链接
+	        imgUrl: imgUrl, // 分享图标
+	        success: function () { 
+	           // 用户确认分享后执行的回调函数
+	        	statis(4,1);
+	        },
+	        cancel: function () { 
+	           // 用户取消分享后执行的回调函数
+	        	statis(4,2);
+	        }
+	    });
+	    wx.onMenuShareWeibo({
+	        title: title, // 分享标题
+	        desc: desc, // 分享描述
+	        link: link, // 分享链接
+	        imgUrl: imgUrl, // 分享图标
+	        success: function () { 
+	           // 用户确认分享后执行的回调函数
+	        	statis(3,1);
+	        },
+	        cancel: function () { 
+	            // 用户取消分享后执行的回调函数
+	        	statis(3,2);
+	        }
+	    });
+	});
+	
+	function statis(share_type,share_status){
+		$.ajax({
+            type:"post",//请求类型
+            url:"share.php",//服务器页面地址
+            data:"act=link&share_status="+share_status+"&share_type="+share_type+"&link_url={$link2}",
+            dataType:"json",//服务器返回结果类型(可有可无)
+            error:function(){//错误处理函数(可有可无)
+                //alert("ajax出错啦");
+            },
+            success:function(data){
+                
+            }
+        });
+	}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>{$info.suppliers_name}商家管理平台</title>
+<link href="templates/css/layout.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="templates/js/haohaios.js"></script>
+<script type="text/javascript" src="../../js/jquery.js"></script>
+<script type="text/javascript" src="../../js/user.js"></script>
+<script type="text/javascript" src="../../js/region.js"></script>
+<script type="text/javascript" src="../../js/utils.js"></script>
+<script type="text/javascript" src="templates/js/main.js"></script>
+<script type="text/javascript" src="templates/js/supp.js"></script>
+<script type="text/javascript" src="templates/js/public_tab.js"></script>
+<script type="text/javascript" src="../../{$admin_path}/js/listtable.js"></script>
+<script type="text/javascript" src="../../js/DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="templates/js/public_tab.js"></script>
+<script type="text/javascript" src="../../js/qrcode.js"></script>
+<script>
+var process_request = "{$lang.process_request}";
+</script>
+<style type="text/css">
+.show_tips{
+	width:100%;
+	height:100%;	
+	position:fixed;
+	top:0;
+	margin:0 auto;
+	background-color: rgba(0,0,0,.6);
+	z-index:99999;
+}
+.tips_box{
+	width: 220px;
+	height: 220px;
+	padding:10px;
+	margin: 20% auto 0;
+	color:#666;
+	font-size:14px;
+	line-height:22px;
+	z-index:100001;
+	position:relative;
+}
+.show_tips #qrcode{
+	width: 220px;
+	height: 220px;
+	margin: 0 auto;
+	background-image: url(templates/images/qrcode.png);
+	background-size: 100% 100%;
+	position: relative;
+	background-position: 0 0;
+	background-repeat: no-repeat; 
+	padding: 10px;
+}
+.show_tips #qrcode img{
+	width: 74%;
+    display: block;
+    margin: 0 auto;
+    position: absolute;
+    top: 43px;
+    left: 6px;
+    right: 1px;
+}
+.show_tips p{
+	width: 100%;
+	line-height: 20px;
+	color: #fff;
+	font-size: 14px;
+	text-align: center;
+	margin-top: 5px;
+}
+</style>
+</head>
+<body >
+
+
+<!--{if $action eq 'default'}-->
+<!-- #BeginLibraryItem "/library/lift_menu.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/show_tips.lbi" --><!-- #EndLibraryItem -->
+	 <div class="main" id="main">
+		<div class="maincon" style="border-radius: 20px;">
+			<div class="maintop">
+				<img src="templates/images/title-home.png" style="width:38px;height:38px;"/><span>{$info.suppliers_name}</span>
+			</div>
+			<div class="contitle">
+				<img src="templates/images/ico01.png" /><span>统计信息</span>
+			</div>
+			<div class="condiv">
+            <!--{if $smarty.session.role_id eq ''}-->
+				<a href="index.php?op=goods&act=my_goods">
+					<span>本店商品数量&nbsp;&nbsp;<b>{$goodsnum}</b></span>
+					<img src="templates/images/ico12.png"/>
+				</a>
+				<a href="index.php?op=goods&act=my_goods">
+					<span>停售商品数量&nbsp;&nbsp;<b>{$nogoodsnum}</b></span>
+					<img src="templates/images/ico12.png"/>
+				</a>
+				{if 0}
+				<a href="suppliers.php?act=article_list">
+					<span>技术文章数量&nbsp;&nbsp;<b>{$articlenum}</b></span>
+					<img src="templates/images/ico12.png"/>
+				</a>
+				{/if}
+                <!--{/if}--> 
+				<a href="index.php?op=order&act=shipping_delivery_list">
+					<span>待发货订单数量&nbsp;&nbsp;<b>{$delivery_count}</b></span>
+					<img src="templates/images/ico12.png"/>
+				</a>
+                 <!--{if $smarty.session.role_id eq ''}-->
+               <a href="index.php?op=account&act=my_order&settlement_status=3">
+					<span>已完成结算订单&nbsp;&nbsp;<b>{$receive_count}</b></span>
+					<img src="templates/images/ico12.png"/>
+				</a>
+				<a href="index.php?op=account&act=my_order&settlement_status=1">
+					<span>待商家审核结算&nbsp;&nbsp;<b>{$unpay_count}</b></span>
+					<img src="templates/images/ico12.png"/>
+				</a>
+    <!--{/if}-->
+<!--
+                <a href="suppliers.php?act=order_code_list">
+
+					<span>待验证订单&nbsp;&nbsp;<b>{$tuan_buy_count}</b></span>
+
+					<img src="templates/images/ico12.png"/>
+
+				</a>-->
+
+			</div>
+			<div class="contitle">
+				<img src="templates/images/ico01.png" /><span>今日发货订单信息</span>
+			</div>
+			<div class="condiv">
+				<a href="#"><!--index.php?act=goods_order&op=order&composite_status=102-->
+					<span>交易完成订单总金额&nbsp;&nbsp;<b>{$payOrderAmount}</b></span>
+					<img src="templates/images/ico12.png"/>
+				</a>
+				<a href="#"><!--index.php?act=goods_order&op=order&composite_status=3-->
+					<span>退款订单总金额&nbsp;&nbsp;<b>{$refundOrderAmount}</b></span>
+					<img src="templates/images/ico12.png"/>
+				</a>
+			</div>
+			<div class="contitle">
+				<img src="templates/images/ico01.png" /><span>今日自提订单信息</span>
+			</div>
+			<div class="condiv">
+				<a href="#"><!--index.php?act=goods_order&op=order&composite_status=102-->
+					<span>交易完成订单总金额&nbsp;&nbsp;<b>{$payOrderAmountPoint}</b></span>
+					<img src="templates/images/ico12.png"/>
+				</a>
+				<a href="#"><!--index.php?act=goods_order&op=order&composite_status=3-->
+					<span>退款订单总金额&nbsp;&nbsp;<b>{$refundOrderAmountPoint}</b></span>
+					<img src="templates/images/ico12.png"/>
+				</a>
+			</div>
+
+		</div>
+
+	</div>
+
+	<!--{/if}-->
+<div class="back-top"></div>
+</body>
+</html>

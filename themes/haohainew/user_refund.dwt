@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/order.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+</head>
+<body>
+<div class="container">
+    <div class="order">
+        <div class="order_bd">
+            <div class="order_glist">
+                <div class="order_goods">
+                    <div class="order_goods_img">
+                        <img alt="{$refund_goods.goods_name}" src="{$refund_goods.goods_thumb}">
+                    </div>
+                    <div class="order_goods_info">
+                        <div class="order_goods_name">{$refund_goods.goods_name}</div>
+                        <div class="order_goods_attr">
+
+						        <p class="order_goods_attr_item">{$refund_goods.goods_attr}</p>
+                                <p class="order_goods_attr_item">
+                                    <font class="order_goods_price"><i>¥</i>{$refund_goods.goods_price} <small> X{$refund_goods.goods_number}</small></font>
+                                </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <FORM action="user.php" method="post" enctype="multipart/form-data" name="theForm" onsubmit="return check_refund_frm(this)">
+    <div class="refund">
+        <ul>
+            <li><SELECT name="refund_reason" class="inp"><OPTION value="">请选择退款原因</OPTION>{html_options options=$refund_reason_options}</SELECT></li>
+            <li><p>退款金额：<font class="order_goods_price">{$refund_goods.subtotal}</font></p></li>
+            <li><TEXTAREA name="refund_desc" cols="80" rows="5" class="tex" placeholder="退款说明"></TEXTAREA></li>
+            <li>
+                <INPUT type="submit" name="Submit" class="bnt" value="提交"/>
+                <INPUT type="hidden" name="rec_id" value="{$refund_goods.rec_id}" />
+                <INPUT type="hidden" name="suppliers_id" value="{$refund_goods.suppliers_id}" />
+                <INPUT type="hidden" name="act" value="act_refund" />
+            </li>
+        </ul>
+    </div>
+    </FORM>
+</div>
+
+<script>
+	function check_refund_frm()
+	{
+		var refund_reason = document.getElementById('refund_reason').value;
+		
+		if(refund_reason == '')
+		{
+			alert('退款原因不能为空！');
+			
+			return false;
+		}
+		
+		return true;
+	}
+</script>
+<div class="footer">
+
+    <ul>
+
+        <li><a href="index.php" class="nav-index"><i class="ico_index"></i>首页</a></li>
+        
+        <li><a href="catall.php" class="nav-catall"><i class="ico_catall"></i>分类</a></li>
+
+	    <li><a href="flows.php?step=cart" id="cat" class="nav-cart"><i class="ico_cart"></i>购物车</a></li>
+
+        <li><a href="square.php" class="nav-square"><i class="ico_square"></i>广场</a></li>
+
+        <li><a href="user.php"  class="nav-user"><i class="ico_user"></i>个人中心</a></li>
+
+    </ul>
+
+</div>
+</body>
+</html>
+

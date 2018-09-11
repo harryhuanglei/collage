@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>店铺管理平台</title>
+	<link href="templates/css/login.css" rel="stylesheet" type="text/css" />
+{if $auto_redirect}
+	<meta http-equiv="refresh" content="3;URL={$message.back_url}" />
+{/if}	
+</head>
+<body style="background-color: #001E54;">
+	<div class="loginbox loginbox-mess">
+  		<div align="center">
+          <div style="margin:50px auto 0;">
+          <p style="font-size: 16px; font-weight:bold; color: #fff;">{$message.content}</p>
+            <div class="blank"></div>
+            <div class="blank"></div>
+            <!-- {if $message.url_info} -->
+              <!--{foreach from=$message.url_info key=info item=url}-->
+              <p style="margin-top: 15px;"><a href="{$url}" style="color:#fff;">{$info}</a></p><br />
+              <!--{/foreach}-->
+            <!--{/if}-->
+            </div>
+        </div>
+	</div>
+	<div class="loginfoot" style="margin:340px auto 20px;">
+	
+	</div>
+
+
+</body>
+</html>

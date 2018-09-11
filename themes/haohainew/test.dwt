@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/haohaios.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/swiper.min.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,index.js'}
+
+</head>
+<body >
+<div class="container">
+    <div id="login_container">aaaaa {$appid}</div>
+    <input type="button" value="www" onclick="aa();">
+</div>
+
+<script src="http://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js"></script>
+<script language="javascript" type="text/javascript">
+
+    function aa(){
+    	var obj = new WxLogin({
+    	    id:"login_container", 
+    	    appid: "wxef82bindex.phpacb237dd19c", 
+    	    scope: "snsapi_login", 
+    	    redirect_uri: "{$redirect_uri}",
+    	    state: "aaaa",
+    	    style: "",
+    	    href: ""
+    	  });   
+    }         
+
+</script>
+</body>
+</html>

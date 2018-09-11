@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,jquery.lazyload.js,tab_style.js'}
+</head>
+<body id="mall">
+<div class="container">
+    <div class="top_search">
+        <form id="searchForm" name="searchForm" method="get" action="search.php" onSubmit="return checkSearchForm()">
+            <input name="keywords" id="keyword" type="text" class="text" value="{$search_keywords|escape}" placeholder="商品搜索">
+            <input type="submit" value="搜索" class="submit" />
+            <input type="hidden" name="search_type" value="is_mall">
+        </form>
+        <a href="javascript:;" id="menu-tab" onclick="tabStyle(this);"></a>
+    </div>
+    <div class="top_nav">
+		<ul id="top_nav">
+            {if $sub_cat}
+			{if $pid}
+			<li class="cur"><a href="mall.php?cid={$cat_id}&sort=sort_order&uid={$uid}">全部</span></a></li>
+			{else}
+			<li class="cur"><a href="mall.php?cid={$cat_id}&sort=sort_order&uid={$uid}">全部</span></a></li>
+			{/if}
+			{else}
+			{if $pid}
+			<li><a href="mall.php?cid={$pid}&sort=sort_order&uid={$uid}">全部</span></a></li>
+			{else}
+			<li class="cur"><a href="mall.php?sort=sort_order&uid={$uid}">全部</span></a></li>
+			{/if}
+			{/if}
+			{foreach from=$cat_children item=child_data}
+			<li{if $cat_id==$child_data.id} class="cur"{/if}><a href="mall.php?cid={$child_data.id}&sort={$sort}&uid={$uid}">{$child_data.name}</span></a></li>
+			{/foreach}
+            {if 0}
+            <li{if $cat_id eq 0} class="cur"{/if}><a href="mall.php?sort=sort_order&uid={$uid}">全部分类</a></li>
+            {foreach from=$categories item=cat}
+            <li{if $cat_id eq $cat.id} class="cur"{/if}><a href="mall.php?sort={$sort}&cid={$cat.id}&uid={$uid}">{$cat.name}</a></li>
+            {/foreach}
+            {/if}
+		</ul>
+    </div>
+    <div class="blank"></div>
+    <div class="good_list">
+        <ul class="list_B">
+            {foreach from=$goods_list item=goods}
+            <li>
+                <a href="{$goods.url}&uid={$uid}" class="mall-tab-a"><img goods_id="{$goods.goods_id}" data-original="{$goods.goods_thumb}" src="images/loading.gif" class="lazy"></a>
+                <div class="mall-tab-tit">
+                    <p class="tit"><a href="{$goods.url}&uid={$uid}">{$goods.goods_name}</a></p>
+                    <p>
+                        <font class="price">¥<b class="shop_price">{$goods.shop_price}</b></font>
+                        
+                         {if $goods.attr}
+                         <a class="mai iproduct_{$goods.goods_id}" id="iproduct_{$goods.goods_id}" href="javascript:addToCart({$goods.goods_id},0,1,0,0,1)">买</a>
+                         {else}
+						 {if $goods.goods_number > 0}
+                         <a class="mai" id="iproduct_{$goods.goods_id}" href="javascript:addToCart({$goods.goods_id},0,1,0,0,1)">买</a>
+						 {else}
+                         <a class="mai hui" href="javascript:;">缺货</a>
+                       {/if}
+                         {/if}
+                         
+
+                    </p>
+                </div>
+            </li>
+			{foreachelse}
+			<div class="nothing">
+            <i class="iconfont icon-shangpin"></i>
+		    <p>此分类下暂无商品</p>
+            </div>
+            {/foreach}
+        </ul>
+    </div>
+    <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+</div>
+<div class="blank"></div>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+<script>
+var wa = $(window).width(); //获取浏览器显示区域（可视区域）的宽度
+var wb = $("#top_nav .cur").width(); //获取或设置元素的宽度
+var wc = $("#top_nav .cur").offset().left; //当前元素左侧距离
+if(wc+wb > wa){
+	$("#top_nav").scrollLeft(wc-wa+wb+wb); //设置滚动条到左边的宽度
+}
+window.onload=function(){
+	$("img.lazy").lazyload({
+			effect: "fadeIn",
+			threshold : 200
+	});
+	$("img.lazy:eq(0)").attr('src',$("img.lazy:eq(0)").attr('data-original'));
+}
+var btn_buy = "{$lang.btn_buy}";
+var btn_add_to_cart = "{$lang.btn_add_to_cart}";
+var is_cancel = "{$lang.is_cancel}";
+var select_spe = "{$lang.select_spe}";
+</script>
+
+<script type="text/javascript">
+function getElementLeft(element){
+　　　　var actualLeft = element.offsetLeft;
+　　　　var current = element.offsetParent;
+        
+　　　　while ( current !== null ){
+　　　　　　actualLeft += current.offsetLeft;
+　　　　　　current = current.offsetParent;
+
+　　　　}
+
+　　　　return actualLeft;
+　　}
+
+function getElementTop(element){
+　　　　var actualTop = element.offsetTop;
+　　　　var current = element.offsetParent;
+
+　　　　while (current !== null){
+　　　　　　actualTop += current.offsetTop;
+　　　　　　current = current.offsetParent;
+　　　　}
+
+　　　　return actualTop;
+　　}　　
+
+    var Cart = {
+      id: 'cat',
+      addProduct: function(cpid, num, t ) {
+        //添加商品
+        var cat =document.getElementById('cat');  
+        var catLeft=getElementLeft(cat);
+        var catTop=getElementTop(cat);
+        var sTop=document.body.scrollTop+document.documentElement.scrollTop;
+
+
+        var op = $("[id=iproduct_"+cpid+"]").parents("li").find("img");
+        var goods_id = $(op).attr("goods_id");
+
+        if(op.length>0) {
+            var np = op.clone().css({"position":"absolute", "top": op.offset().top, "left": op.offset().left, width: 50, height:50, "z-index": 999999999}).show();
+            np.appendTo("body").animate({top:  catTop + sTop , left: $("#cat").offset().left +30 , width: 20, height:20}, {duration: 1000,
+                    callback:function(){}, complete: function(){np.remove();addToCart(goods_id,0,1 ,0,0,1 );} });
+        }
+       }
+    }
+
+    $(function() {
+        $('[id^=iproduct_]').click(function() {
+            var id = $(this).attr("id");
+            var tmp = id.split('_');
+            var goods_id = tmp[1];
+
+            //var cpid = this.id.replace('iproduct_'+goods_id,goods_id);
+
+             Cart.addProduct(goods_id, 1, 0  );
+
+            return false;
+        });
+     });
+</script>
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script> 
+<script language="javascript" type="text/javascript">
+    wx.config({
+
+        debug: false,//这里是开启测试，如果设置为true，则打开每个步骤，都会有提示，是否成功或者失败
+
+        appId: '{$appid}',
+
+        timestamp: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+
+        nonceStr: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+
+        signature: '{$signature}',
+
+        jsApiList: [
+
+          // 所有要调用的 API 都要加到这个列表中
+
+            'onMenuShareTimeline',
+
+            'onMenuShareAppMessage',
+
+            'onMenuShareQQ',
+
+            'onMenuShareWeibo',
+
+            'checkJsApi',
+
+            'openLocation',
+
+            'getLocation'
+
+        ]
+
+    });
+
+    
+
+    var title="{$title}";
+
+    var link= "{$link}";
+
+    var imgUrl="{$imgUrl}";
+
+    var desc= "{$desc}";
+
+    wx.ready(function () {
+
+        wx.onMenuShareTimeline({//朋友圈
+
+            title: title, // 分享标题
+
+            link: link, // 分享链接
+
+            imgUrl: imgUrl, // 分享图标
+
+            success: function () { 
+
+                // 用户确认分享后执行的回调函数
+
+                statis(2,1);
+
+            },
+
+            cancel: function () { 
+
+                // 用户取消分享后执行的回调函数
+
+                statis(2,2);
+
+            }
+
+        });
+
+        wx.onMenuShareAppMessage({//好友
+
+            title: title, // 分享标题
+
+            desc: desc, // 
+
+            link: link, // 分享链接
+
+            imgUrl: imgUrl, // 分享图标
+
+            type: '', // 分享类型,music、video或link，不填默认为link
+
+            dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+
+            success: function () { 
+
+                // 用户确认分享后执行的回调函数
+
+                statis(1,1);    
+
+            },
+
+            cancel: function () { 
+
+                // 用户取消分享后执行的回调函数
+
+                statis(1,2);
+
+            }
+
+        });
+
+      
+
+        wx.onMenuShareQQ({
+
+            title: title, // 分享标题
+
+            desc: desc, // 分享描述
+
+            link: link, // 分享链接
+
+            imgUrl: imgUrl, // 分享图标
+
+            success: function () { 
+
+               // 用户确认分享后执行的回调函数
+
+                statis(4,1);
+
+            },
+
+            cancel: function () { 
+
+               // 用户取消分享后执行的回调函数
+
+                statis(4,2);
+
+            }
+
+        });
+
+        wx.onMenuShareWeibo({
+
+            title: title, // 分享标题
+
+            desc: desc, // 分享描述
+
+            link: link, // 分享链接
+
+            imgUrl: imgUrl, // 分享图标
+
+            success: function () { 
+
+               // 用户确认分享后执行的回调函数
+
+                statis(3,1);
+
+            },
+
+            cancel: function () { 
+
+                // 用户取消分享后执行的回调函数
+
+                statis(3,2);
+
+            }
+
+        });      
+
+    });
+
+    function statis(share_type,share_status){
+
+        $.ajax({
+
+            type:"post",//请求类型
+
+            url:"share.php",//服务器页面地址
+
+            data:"act=link&share_status="+share_status+"&share_type="+share_type+"&link_url={$link2}",
+
+            dataType:"json",//服务器返回结果类型(可有可无)
+
+            error:function(){//错误处理函数(可有可无)
+
+                //alert("ajax出错啦");
+
+            },
+            success:function(data){
+           }
+
+        });
+    }
+</script>
+
+</body>
+</html>
+

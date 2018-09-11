@@ -1,0 +1,277 @@
+<!-- $Id: category_info.htm 16752 2009-10-20 09:59:38Z wangleisvn $ -->
+
+{include file="pageheader.htm"}
+
+<!-- start add new category form -->
+
+<div class="main-div">
+
+  <form action="category.php" method="post" name="theForm" enctype="multipart/form-data" onsubmit="return validate()">
+
+  <table width="100%" id="general-table">
+
+      <tr>
+
+        <td class="label">{$lang.cat_name}:</td>
+
+        <td>
+
+          <input type='text' name='cat_name' maxlength="20" value='{$cat_info.cat_name|escape:html}' size='27' /> <font color="red">*</font>
+
+        </td>
+
+      </tr>
+
+      <tr>
+
+        <td class="label">{$lang.parent_id}:</td>
+
+        <td>
+
+          <select name="parent_id">
+
+            <option value="0">{$lang.cat_top}</option>
+			{$cat_select}
+
+
+          </select>
+
+        </td>
+
+      </tr>
+
+      <tr>
+
+        <td class="label">分类图标:</td>
+
+        <td>
+
+          <input type='file' name='cat_img' maxlength="20" value=''  /> 
+
+        {if $cat_info.cat_img}
+
+        <a target="_blank" href="category.php?act=show_image&img_url={$cat_info.cat_img}">
+
+			<img border="0" src="images/yes.gif">
+
+		</a>
+
+		{else}
+
+		<a target="_blank" href="javascript:void(0);">
+
+			<img border="0" src="images/no.gif">
+
+		</a>
+
+		{/if}
+
+        </td>
+
+      </tr>
+
+      <tr>
+
+        <td class="label">{$lang.sort_order}:</td>
+
+        <td>
+
+          <input type="text" name='sort_order' {if $cat_info.sort_order}value='{$cat_info.sort_order}'{else} value="50"{/if} size="15" />
+
+        </td>
+
+      </tr>
+
+      <tr>
+
+        <td class="label">{$lang.is_show}:</td>
+
+        <td>
+
+          <input type="radio" name="is_show" value="1" {if $cat_info.is_show neq 0} checked="true"{/if}/> {$lang.yes}
+
+          <input type="radio" name="is_show" value="0" {if $cat_info.is_show eq 0} checked="true"{/if} /> {$lang.no}
+
+        </td>
+
+      </tr>
+
+      <tr>
+
+        <td class="label">&nbsp;</td>
+
+        <td>   <div class="button-div">
+
+        <input type="submit" value="{$lang.button_submit}" />
+
+        <input type="reset" value="{$lang.button_reset}" />
+
+      </div></td>
+
+      </tr>
+
+
+
+    
+
+   
+
+      </table>
+
+   
+
+    <input type="hidden" name="act" value="{$form_act}" />
+
+    <input type="hidden" name="old_cat_name" value="{$cat_info.cat_name}" />
+
+    <input type="hidden" name="cat_id" value="{$cat_info.cat_id}" />
+
+  </form>
+
+</div>
+
+{insert_scripts files="../js/utils.js,validator.js"}
+
+{literal}
+
+<script language="JavaScript">
+
+<!--
+
+document.forms['theForm'].elements['cat_name'].focus();
+
+/**
+
+ * 检查表单输入的数据
+
+ */
+
+function validate()
+
+{
+
+  validator = new Validator("theForm");
+
+  validator.required("cat_name",      catname_empty);
+
+ 
+
+  return validator.passed();
+
+}
+
+onload = function()
+
+{
+
+  // 开始检查订单
+
+  startCheckOrder();
+
+}
+
+
+
+/**
+
+ * 新增一个筛选属性
+
+ */
+
+function addFilterAttr(obj)
+
+{
+
+  var src = obj.parentNode.parentNode;
+
+  var tbl = document.getElementById('tbody-attr');
+
+
+
+  var validator  = new Validator('theForm');
+
+  var filterAttr = document.getElementsByName("filter_attr[]");
+
+
+
+  if (filterAttr[filterAttr.length-1].selectedIndex == 0)
+
+  {
+
+    validator.addErrorMsg(filter_attr_not_selected);
+
+  }
+
+  
+
+  for (i = 0; i < filterAttr.length; i++)
+
+  {
+
+    for (j = i + 1; j <filterAttr.length; j++)
+
+    {
+
+      if (filterAttr.item(i).value == filterAttr.item(j).value)
+
+      {
+
+        validator.addErrorMsg(filter_attr_not_repeated);
+
+      } 
+
+    } 
+
+  }
+
+
+
+  if (!validator.passed())
+
+  {
+
+    return false;
+
+  }
+
+
+
+  var row  = tbl.insertRow(tbl.rows.length);
+
+  var cell = row.insertCell(-1);
+
+  cell.innerHTML = src.cells[0].innerHTML.replace(/(.*)(addFilterAttr)(.*)(\[)(\+)/i, "$1removeFilterAttr$3$4-");
+
+  filterAttr[filterAttr.length-1].selectedIndex = 0;
+
+}
+
+
+
+/**
+
+ * 删除一个筛选属性
+
+ */
+
+function removeFilterAttr(obj)
+
+{
+
+  var row = rowindex(obj.parentNode.parentNode);
+
+  var tbl = document.getElementById('tbody-attr');
+
+
+
+  tbl.deleteRow(row);
+
+}
+
+//-->
+
+</script>
+
+{/literal}
+
+{include file="pagefooter.htm"}

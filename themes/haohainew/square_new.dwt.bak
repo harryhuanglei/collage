@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/square_new.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/tab_pic.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,smoothbox.js'}
+</head>
+<body id="square">
+<div class="container" style="background:#fff; padding-bottom:56px; overflow: hidden; ">
+    <div class="fabu_s">
+        <form action="" class="form">
+            <!--select class="fabu_select" name="orderby">
+                <option value="news">最新</option>
+                <option value="hot">热门</option>
+            </select-->
+            <input name="keywords" type="text" class="input_text" placeholder="  搜索产品名看他们说" value="{$keywords}">
+            <input type="submit" value="搜索" class="input_submit"/>
+        </form>
+        <!--a href="user.php?act=team_list&composite_status=100" class="fabu">发布</a-->
+        <a href="fabu.php" class="fabu">发布</a>
+    </div>
+    <!--置顶 star-->
+    <div class="sticky">
+        <div class="t_news">
+            <span class="tips">置顶</span>
+            <ul class="news_li">
+			    {foreach from=$article item=article}
+                <li><a href="{$article.url}">{$article.title}</a></li>   
+                {/foreach}				
+            </ul>
+            <ul class="swap"></ul>   
+        </div>
+    </div>
+    <div class="line"></div>
+    <!--置顶 end-->
+    <!--团购循环 star-->
+    <div class="square_list">
+    {foreach from=$goods_list item=goods}
+        <div class="square_list_cont">
+            <dl>
+                <dt><img src="{$goods.headimgurl}"><p>{$goods.uname}</p></dt>
+                <dd>
+                    <p class="dd_p1"><span class="send_name"></span><span class="send_time">{$goods.add_time}</span></p>
+                    <p><span class="tips">精选</span><span class="mess">{$goods.square}</span></p>
+                    {if $goods.gallery}
+                    <p class="img">
+                        {foreach from=$goods.gallery item=gallery}
+                        <span class="send_img">
+                            <a href="{$gallery.thumb_url}" class="sb">
+                                <img src="{$gallery.thumb_url}" />
+                            </a>
+                        </span>
+                        {/foreach}
+                    </p>
+                    {/if}
+                    <div class="square_buy">
+                        <div class="square_buy_img">
+                            <div class="square_goods_img">
+                                <img src="{$goods.goods_thumb}">
+                            </div>
+                            <p class="gdname">{$goods.goods_name}</p>
+                            <div class="square_g_core">
+                                <a  onclick="addToCart({$goods.goods_id},0,0,5,{$goods.team_id});">
+                                    <div class="square_g_core_img"></div>
+                                    <div class="square_g_price">
+                                        <!--span>{$goods.team_num}人团</span-->
+                                        <span class="que_ren">缺{$goods.need}人</span>
+                                        <b class="que_mon que_monn">¥{$goods.team_price}</b>
+                                    </div>
+                                    <div class="square_g_btn">去开团</div>
+                                </a>
+                            </div>
+                        </div>
+                        <!--p class="gray">已有 {$goods.buy_nums} 位参团购买该产品</p-->
+                    </div>
+                    <div class="square_share">
+                        <div class="share_btn">
+                            <a href="javascript:;" class="share">分享</a>
+                        </div>
+                        <div class="show_btn">
+                        <span></span><a href="javascript:;" class="zan">123</a>
+                            <a href="javascript:;" class="show" >100</a>
+                        </div>
+                    </div>
+                </dd>
+            </dl>
+            <div class="messages">
+                <div class="line"></div>
+                <ul>
+                    <li>
+                        <div class="messages_content">
+                            <div class="messages_name">
+                                <img src="{$goods.headimgurl}" />
+                                <span></span>
+                            </div>
+                            <div class="messages_flor">
+                                <span class="flor">2楼</span>
+                                <span class="send_time">{$goods.add_time}</span>
+                            </div>
+                            <div class="messages_new">
+                                <span class="send_time">{$goods.square}</span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="line"></div>
+        </div>
+        {foreachelse}
+        <div class="nothing">
+            <i class="iconfont icon-guangchang"></i>
+            <p>还没有小伙伴发布哦</p>
+        </div>
+        {/foreach}
+    </div>
+    <!--团购循环 end-->
+
+
+    <!--商城循环 star-->
+    <div class="square_list">
+    {foreach from=$goods_list item=goods}
+        <div class="square_list_cont">
+            <dl>
+                <dt><img src="{$goods.headimgurl}"><p>{$goods.uname}</p></dt>
+                <dd>
+                    <p class="dd_p1"><span class="send_name"></span><span class="send_time">{$goods.add_time}</span></p>
+                    <p><span class="tips">精选</span><span class="mess">{$goods.square}</span></p>
+                    {if $goods.gallery}
+                    <p class="img">
+                        {foreach from=$goods.gallery item=gallery}
+                        <span class="send_img">
+                            <a href="{$gallery.thumb_url}" class="sb">
+                                <img src="{$gallery.thumb_url}" />
+                            </a>
+                        </span>
+                        {/foreach}
+                    </p>
+                    {/if}
+                    <div class="square_buy">
+                        <div class="square_buy_img">
+                            <div class="square_goods_img">
+                                <img src="{$goods.goods_thumb}">
+                            </div>
+                            <p class="gdname">{$goods.goods_name}</p>
+                            <div class="square_g_core square_mall_core">
+                                <a  onclick="addToCart({$goods.goods_id},0,0,5,{$goods.team_id});">
+                                    <div class="square_g_core_img"></div>
+                                    <div class="square_g_price">
+                                        <!--span>{$goods.team_num}人团</span-->
+                                        <!--span class="que_ren">缺{$goods.need}人</span-->
+                                        <b class="que_mon">¥{$goods.team_price}</b>
+                                        <del class="que_del">¥{$goods.market_price}</del>
+                                    </div>
+                                    <div class="square_g_btn square_mall_btn">去购买</div>
+                                </a>
+                            </div>
+                        </div>
+                        <!--p class="gray">已有 {$goods.buy_nums} 位参团购买该产品</p-->
+                    </div>
+                    <div class="square_share">
+                        <div class="share_btn">
+                            <a href="javascript:;" class="share">分享</a>
+                        </div>
+                        <div class="show_btn">
+                            <span></span><a href="javascript:;" class="zan">123</a>
+                            <a href="javascript:;" class="show" >100</a>
+                        </div>
+                    </div>
+                </dd>
+            </dl>
+            <div class="messages">
+                <div class="line"></div>
+                <ul>
+                    <li>
+                        <div class="messages_content">
+                            <div class="messages_name">
+                                <img src="{$goods.headimgurl}" />
+                                <span>这是死名字</span>
+                            </div>
+                            <div class="messages_flor">
+                                <span class="flor">2楼</span>
+                                <span class="send_time">{$goods.add_time}</span>
+                            </div>
+                            <div class="messages_new">
+                                <span class="send_time">{$goods.square}</span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="line"></div>
+        </div>
+        {foreachelse}
+        <div class="nothing">
+            <i class="iconfont icon-guangchang"></i>
+            <p>还没有小伙伴发布哦</p>
+        </div>
+        {/foreach}
+
+    </div>
+    <!--商城循环 end-->
+</div>
+<!--底部消息发送栏 star-->
+<div class="footer_send_mess">
+    <form id="footer_mess"  name= "footer_mess" method="post"  action="">
+        <input type="text" name="text_mess" placeholder="说点什么吧~" />
+        <a href="javascript:;" id="send_mess_btn">发送</a>
+    </form>
+</div>
+<!--底部消息发送栏 end-->
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script> 
+<script language="javascript" type="text/javascript">
+    wx.config({
+
+        debug: false,//这里是开启测试，如果设置为true，则打开每个步骤，都会有提示，是否成功或者失败
+
+        appId: '{$appid}',
+
+        timestamp: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+
+        nonceStr: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+
+        signature: '{$signature}',
+
+        jsApiList: [
+
+          // 所有要调用的 API 都要加到这个列表中
+
+            'onMenuShareTimeline',
+
+            'onMenuShareAppMessage',
+            'checkJsApi',
+
+            'openLocation',
+
+            'getLocation'
+
+        ]
+
+    });
+
+    
+
+    var title="{$title}";
+
+    var link= "{$link}";
+
+    var imgUrl="{$imgUrl}";
+
+    var desc= "{$desc}";
+
+    wx.ready(function () {
+
+        wx.onMenuShareTimeline({//朋友圈
+
+            title: title, // 分享标题
+
+            link: link, // 分享链接
+
+            imgUrl: imgUrl, // 分享图标
+
+            success: function () { 
+
+                // 用户确认分享后执行的回调函数
+
+                statis(2,1);
+
+            },
+
+            cancel: function () { 
+
+                // 用户取消分享后执行的回调函数
+
+                statis(2,2);
+
+            }
+
+        });
+
+        wx.onMenuShareAppMessage({//好友
+
+            title: title, // 分享标题
+
+            desc: desc, // 
+
+            link: link, // 分享链接
+
+            imgUrl: imgUrl, // 分享图标
+
+            type: '', // 分享类型,music、video或link，不填默认为link
+
+            dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+
+            success: function () { 
+
+                // 用户确认分享后执行的回调函数
+
+                statis(1,1);    
+
+            },
+
+            cancel: function () { 
+
+                // 用户取消分享后执行的回调函数
+
+                statis(1,2);
+
+            }
+
+        });
+
+ 
+
+    });
+
+    function statis(share_type,share_status){
+
+        $.ajax({
+
+            type:"post",//请求类型
+
+            url:"share.php",//服务器页面地址
+
+            data:"act=link&share_status="+share_status+"&share_type="+share_type+"&link_url={$link2}",
+
+            dataType:"json",//服务器返回结果类型(可有可无)
+
+            error:function(){//错误处理函数(可有可无)
+
+                //alert("ajax出错啦");
+
+            },
+            success:function(data){
+           }
+
+        });
+    }
+</script>
+<script type="text/javascript">
+    //消息滚动
+    function b(){   
+          t = parseInt(x.css('top'));
+          y.css('top','32px');  
+          x.animate({top: t - 32 + 'px'},'slow');   //32为每个li的高度
+          if(Math.abs(t) == h-32){ //32为每个li的高度
+            y.animate({top:'0px'},'slow');
+            z=x;
+            x=y;
+            y=z;
+          }
+          setTimeout(b,3000);//滚动间隔时间 现在是3秒
+        }
+        $(document).ready(function(){
+          $('.swap').html($('.news_li').html());
+          x = $('.news_li');
+          y = $('.swap');
+          h = $('.news_li li').length * 32; //32为每个li的高度
+          setTimeout(b,3000);//滚动间隔时间 现在是3秒
+          
+        });
+</script>
+
+<script type="text/javascript">
+    //消息切换显示
+    $('.square_list_cont').attr('data', 'true');
+    //$('.footer_send_mess').attr('data', 'true');
+    $('.show').on('click',function(){
+        if($(this).parents('.square_list_cont').attr('data')==='true'){
+             $(this).parents('.square_list_cont').find('.messages').show();
+             $('.footer_send_mess').animate({bottom:"0"},500).show();
+             $('.footer').animate({bottom:'-56px'},500);
+             $(this).parents('.square_list_cont').attr('data','false');
+        }else{
+            $(this).parents('.square_list_cont').find('.messages').hide();
+            $('.footer_send_mess').animate({bottom:'-56px'},500).show();
+            $('.footer').animate({bottom:'0'},500);
+            $(this).parents('.square_list_cont').attr('data','true');
+        }
+    });
+
+
+    //赞
+    $('.zan').on('click',function(){
+        var zanNum = parseInt($(this).text());
+            zanNum ++ ;
+            $(this).text(zanNum);
+            $(this).siblings('span').css({
+                                    'background-image':'url(themes/haohainew/images/zan_active.png)',
+                                    'background-position':'0 0',
+                                    'background-size':'20px 20px'
+                                });
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>提货单</title>
+</head>
+<body>
+	<table width="100%" border="0" cellpadding="5" cellspacing="1">
+	<tr><td colspan="7" align="center" >提货单</td></tr>
+	</table>
+    <table style="background-color:black"  width="100%" border="0" cellpadding="5" cellspacing="1">
+        
+        <tr>
+        <th align="center" bgcolor="#FFFFFF">分店</th>
+          <th align="center" bgcolor="#FFFFFF">订单号</th>
+            <th align="center" bgcolor="#FFFFFF">提货人</th>
+            <th align="center" bgcolor="#FFFFFF">下单时间</th>		
+          <th align="center" bgcolor="#FFFFFF">收货人</th>
+ 		  <th align="center" bgcolor="#FFFFFF">提货时间</th>
+           <th align="center" bgcolor="#FFFFFF">提货状态</th>
+			<th align="center" bgcolor="#FFFFFF">备注</th>
+        </tr>
+        <!-- {if $delivery_list} -->
+        <!--{foreach from=$delivery_list item=item name=name}-->
+        <tr>
+         <td align="center" bgcolor="#FFFFFF">{if $item.supp_account_name}{$item.supp_account_name}{else}未指派{/if}</td>
+          <td align="center" bgcolor="#FFFFFF">{$item.order_sn}</td>
+           <td align="center" bgcolor="#FFFFFF">{$item.delivery_person}</td>
+           <td align="center" bgcolor="#FFFFFF">{$item.add_time}</td>
+          <td align="center" bgcolor="#FFFFFF">{$item.consignee}</td>
+          <td align="center" bgcolor="#FFFFFF">{$item.update_time}</td>
+          <td align="center" bgcolor="#FFFFFF">{$item.status_name}</td>
+
+           <td align="center" bgcolor="#FFFFFF"></td>
+        </tr>
+        <!--{/foreach}-->
+		<tr>
+
+          <td align="center" colspan="4" bgcolor="#FFFFFF">合计</td> 
+          <td align="center" bgcolor="#FFFFFF">{$total_settlement_amount}</td>
+          <td align="center" bgcolor="#FFFFFF"></td>
+          <td align="center" bgcolor="#FFFFFF"></td>
+		<td align="center" bgcolor="#FFFFFF"></td>
+        </tr>
+        <!-- {else} -->
+        <tr>
+          <td colspan="8" bgcolor="#FFFFFF">无可结算订单</td>
+        </tr>
+        <!-- {/if} -->
+      </table>
+ </body>
+</html>

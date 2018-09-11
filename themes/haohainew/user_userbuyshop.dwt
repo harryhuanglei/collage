@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/order.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,user.js,shopping_flow.js,region.js'}
+</head>
+<body>
+    <div class="nav_fixed nav_spike gb_nav_spike">
+        <a href="user.php?act=userbuyshop" class="curr_on"><span>单独购订单</span></a>
+        <a href="user.php?act=team_list" ><span>团购订单</span></a>
+    </div>
+   <div  class="mt_order">
+        <!-- {if $userbuyshop} --> 
+        <div class="mt_order" style="padding-top:50px;">
+        <!--{foreach from=$userbuyshop item=item}-->
+        <div class="mt_g">
+            <div class="mt_g_img" ><a href="goods.php?id={$item.goods_id}"><img src="{$item.goods_thumb}"></a></div>
+            <div class="mt_g_info" >
+                <p class="mt_g_name">{$item.goods_name}</p>
+                <p class="mt_g_price"><b>¥{$item.total_fee}</b></p>
+            </div>
+        </div>
+        <div class="mt_status">
+            <a href="user.php?act=order_detail&order_id={$item.order_id}"> 订单详情 </a>
+            <a href="javascript:void(0);" class="mt_status_lk1 marg_right qfabu" data-id="{$item.goods_id}"  data-order_id="{$item.order_id}">发布</a>
+        </div>
+        <div class="blank"></div>
+        <!--{/foreach}--> 
+    </div>
+         <!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+        <!-- {else} --> 
+        <div class="nothing">
+            <i class="iconfont icon-pintuan"></i>
+            <p><a href="tuan.php">您还没有单独购买过任何商品哦，赶快去火拼吧！</a></p>
+        </div>
+        <!--{/if}--> 
+<div class="common">
+    <a href="javascript:void(0);" class="close"></a>
+    <div class="common-title">发布广场</div>
+    <div class="common-content">
+        <p><textarea id="square"></textarea></p>
+        <p><input id="btn-square" type="submit"  value="发布"></p>
+    </div>
+</div>
+<div class="common-bg"></div>
+<!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+</div>
+<script>
+var stars = 0;
+var goods_id = 0;
+var order_id = 0;
+$(function () {
+    H_login = {};
+    H_login.openLogin = function(){
+        $('.qfabu').click(function(){
+            goods_id = $(this).data('id');
+            order_id = $(this).data('order_id');
+            $("#comment").val('');
+            $('.common').show();
+            $('.common-bg').show();
+        });
+    };
+    H_login.closeLogin = function(){
+        $('.close').click(function(){
+            $('.common').hide();
+            $('.common-bg').hide();
+        });
+    };
+    H_login.run = function () {
+        this.closeLogin();
+        this.openLogin();
+    };
+    H_login.run();
+
+    $("#btn-square").click(function(event) {
+       var square = $.trim($("#square").val());
+       console.info(square)
+       if (square.length>0) {
+        $.ajax({
+            url: 'square_new.php?act=create',
+            type: 'POST',
+            dataType: 'json',
+            data: {square: square,order_id: order_id,goods_id:goods_id},
+            success: function (res) {
+                if(res.isError == 1){
+                    //alert(res.message)
+                    layer.open({
+                        content: res.message,
+                        btn: ['嗯']
+                    });
+                }
+                else{
+                    //alert('发布成功！')
+                    layer.open({
+                        content: '发布成功！',
+                        btn: ['嗯']
+                    });
+                    location.reload();
+                }
+            }
+        })
+        
+       }
+    });
+});
+</script>
+
+</html>
+
+
+

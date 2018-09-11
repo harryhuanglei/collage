@@ -1,0 +1,84 @@
+<!-- $Id: order_info.htm 17060 2010-03-25 03:44:42Z liuhui $ -->
+
+{include file="pageheader.htm"}
+{insert_scripts files="topbar.js,../js/utils.js,listtable.js,selectzone.js,common.js"}
+
+<form action="order.php?act=operate" method="post" name="theForm">
+<div class="list-div" style="margin-bottom: 5px">
+<table width="100%" cellpadding="3" cellspacing="1">
+  <tr>
+    <th colspan="4">订单信息</th>
+  </tr>
+  <tr>
+    <td width="18%"><div align="right"><strong>{$lang.label_order_sn}</strong></div></td>
+    <td width="34%">{$order.order_sn}</td>
+    <td width="15%"><div align="right"><strong>{$lang.label_order_status}</strong></div></td>
+    <td>{$order.status}</td>
+  </tr>
+  <tr>
+    <td><div align="right"><strong>{$lang.label_user_name}</strong></div></td>
+    <td>{$order.user_name|default:$lang.anonymous}</td>
+    <td><div align="right"><strong>{$lang.label_order_time}</strong></div></td>
+    <td>{$order.formated_add_time}</td>
+  </tr>
+  <tr>
+    <td><div align="right"><strong>{$lang.label_payment}</strong></div></td>
+    <td>{if $order.pay_id > 0}{$order.pay_name}{else}{$lang.require_field}{/if}</td>
+    <td><div align="right"><strong>{$lang.label_pay_time}</strong></div></td>
+    <td>{$order.pay_time}</td>
+  </tr>
+ 
+  <tr>
+    <th colspan="4">{$lang.consignee_info}</th>
+  </tr>
+  <tr>
+    <td><div align="right"><strong>{$lang.label_consignee}</strong></div></td>
+    <td>{$order.consignee|escape}</td>
+    <td><div align="right"><strong>   公司类别：</div></td>
+    <td>{if $order.address_type eq 1}家庭{else}公司{/if}</td>
+  </tr>
+  <tr>
+    <td><div align="right"><strong>{$lang.label_address}</strong></div></td>
+    <td>[{$order.region}] {$order.address|escape}</td>
+    <td><div align="right"><strong>{$lang.label_mobile}</strong></div></td>
+    <td>{$order.mobile|escape}</td>
+  </tr>
+  <tr>
+    <th colspan="4">配送信息</th>
+  </tr>
+   <tr>
+    <td><div align="right"><strong>{$lang.label_shipping}</strong></div></td>
+    <td>{if $exist_real_goods}{if $order.shipping_id > 0}{$order.shipping_name}{else}{$lang.require_field}{/if}<a href="order.php?act=edit&order_id={$order.order_id}&step=shipping&url=view_print" class="special">{$lang.edit}</a>&nbsp;&nbsp; {if $order.insure_fee > 0}（{$lang.label_insure_fee}{$order.formated_insure_fee}）{/if}{/if}</td>
+    <td><div align="right"><strong>{$lang.label_shipping_time}</strong></div></td><!-- <input type="button" onclick="window.open('order.php?act=info&order_id={$order.order_id}&shipping_print=1')" class="button" value="{$lang.print_shipping}"> -->
+    <td>{$order.shipping_time}</td>
+  </tr>
+  <tr>
+    <td><div align="right"><strong>发货单号</strong></div></td>
+    <td>{$order.invoice_no}</td>
+    <td><div align="right"><strong></strong></div></td>
+    <td></td>
+  </tr>
+  <tr>
+    <th colspan="4">
+    <input type="button" onclick="window.open('order.php?act=info&order_id={$order.order_id}&shipping_print=1')" class="button" value="{$lang.print_shipping}">
+    
+	</th>
+  </tr>
+  
+</table>
+</div>
+</form>
+{literal}
+<script language="JavaScript">
+{/literal}
+  
+{literal}
+  onload = function()
+  {
+    // 开始检查订单
+    startCheckOrder();
+  }
+</script>
+{/literal}
+
+{include file="pagefooter.htm"}

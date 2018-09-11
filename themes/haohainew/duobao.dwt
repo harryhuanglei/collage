@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$shop_name}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/haohaios.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{* 包含脚本文件 *}
+{insert_scripts files='jquery.js,haohaios.js,user.js'}
+</head>
+<body class="bodycolor">
+    <div>
+        <div class = "post_sale_title">
+            一元夺宝
+        </div>
+        <div class = "post_sale_desc">
+<p>【1元夺宝机制】：1元抢宝是一种新型的网购模式，只需1元就有可能买到一件商品。1元抢宝是把一件商品平分成若干“等份”出售，每份1元，当一件商品所有“等份”售出后抽出一名幸运者，该幸运者即可获得此商品。</p>
+<p>【规则】：</p>
+<p>1、每件商品参考市场价平分成相应“等份”，每份1元，1份对应1个抢宝码。</p>
+<p>2、同一件商品一次可购买多份。</p>
+<p>3、当一件商品所有“等份”全部售出后计算出“幸运夺宝码”，幸运者即可获得此商品。</p>
+<p>【流程】：</p>
+<p>A.	挑选商品</p>
+<p>在一元夺宝中浏览商品，点击商品上的“抢购”进入抢购页面 购买商品。</p>
+<p>B.	支付1元</p>
+<p>通过在线支付平台，支付1元即购买1人次，获得1个“夺宝码”。同一件商品可一次购买多份，购买的“夺宝码”越多，获得商品的几率越大。</p>
+<p>C.	揭晓获得者</p>
+<p>当一件商品达到总参与人次，抽出1名商品获得者，会通过微信推送消息通知客户是否中奖。</p>
+<p>注：</p>
+<p>1）商品揭晓后您可登录用户中心"夺宝记录"查询详情；</p>
+<p>2）所有已揭晓商品中奖者发货，未中奖者均不给予退款</p>
+        </div>
+    </div>
+</body>
+</html>

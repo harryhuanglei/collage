@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style_new.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{* 包含脚本文件 *}
+{insert_scripts files='jquery.js,haohaios.js'}
+</head>
+<body id="service">
+	<div class="container">
+		<!--service star-->
+		<div class="dialogue">
+			<!--商品信息 star-->
+			<div class="goods_info_box">
+				<div class="goods_info_img">
+					<img src="" />
+				</div>
+				<div class="goods_info">
+					<h4 class="goods_info_name">拼团 敬腾韩哈根达斯敬腾韩哈根达斯敬腾韩哈根达斯</h4>
+					<p class="goods_info_price"><span class="team">拼团价<i>￥50</i></span><span class="alone">单独购￥5000</span></p>
+					<p class="freight">运费￥0.00</p>
+				</div>
+				<div class="goods_info_link"><a href="javascript:;" class="send_link" id="send_link">发送宝贝链接</a><a href="javascript:;" class="buy_link">立即购买</a></div>
+			</div>
+			<!--商品信息 star-->
+		</div>
+		<div class="clear"></div><!--claer float-->
+		<!--service end-->
+		
+		<!--message content display area   star-->
+		<div class="message_content" id="message_content">
+			
+		</div>
+		<!--message content display area   end-->
+		
+		<!--footer star-->
+		<div class="footer_send">
+			<form action="" method="post" name="messages">
+				<div class="menu">
+					<input type="text" name="text" id="text" class="write_mess" />
+					<a href="javascript:;" class="send_btn" id="send_btn"></a>
+				</div>
+				<div class="menu_photo">
+					<a href="javascript:;" class="camera" id="camera">拍照</a>
+					<a href="javascript:;" class="photo" id="photo">选择照片</a>
+					<a href="javascript:;" id="clear_style" style="background:none;">点击清除测试样式</a>
+				</div>
+			</form>
+		</div>
+		<!--footer end-->
+	</div>
+</body>
+<script type="text/javascript">
+	$(document).ready(function(){
+		//底部消息菜单调出
+		var tab = true;
+
+		// 客户咨询消息弹出
+		$('#send_btn').on('click',function(){
+			if(tab){
+				$(this).css('background-image','url(themes/haohainew/images/service_btn_active.png)');
+				$('.menu_photo').show();
+				/*因用手机系统自带的'发送'按钮发送对话,故此没有发送按钮,利用'#send_btn'测试发送   以下两段是生成测试消息的样式效果*/
+				$('#message_content').append("<div class='test_my'><div class='head'><img src='../images/tuan_tip.png' /></div><div class='myself'></div></div>");
+				$('.myself').last().append("<p class='myself_goods_messages'>你好!</p>");
+
+				tab = false;
+			}else{
+				$(this).css('background-image','url(themes/haohainew/images/service_btn.png)');
+				$('.menu_photo').hide();
+				tab = true;
+			}
+		});
+
+		// 客服消息弹出
+		$('#send_link').on('click',function(){
+			/*因用手机系统自带的'发送'按钮发送对话,故此没有发送按钮,利用'#send_btn'测试发送   以下两段是生成测试消息的样式效果*/
+			$('#message_content').append("<div class='test left_kefu'><div class='head'><img src='../images/tuan_tip.png' /></div><div class='myself'></div></div>" );
+			$('.myself').last().append("<img src='../images/ceshi.png' class='myself_goods_img' />" + "<a href='#' class='myself_goods_messages'>这是商品链接!</a>");
+		});
+
+		// 手动清除填充内容
+		$('#clear_style').on('click',function(){
+			$('#message_content .test , #message_content .test_my').remove();
+		});
+
+	});
+
+</script>
+</html>

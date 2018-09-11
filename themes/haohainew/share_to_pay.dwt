@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$shop_name}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/base.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/trade.css" rel="stylesheet" />
+{* 包含脚本文件 *}
+{insert_scripts files='jquery.js,haohaios.js,user.js'}
+</head>
+<iframe id="__WeixinJSBridgeIframe_SetResult" style="display: none;"></iframe>
+<iframe id="__WeixinJSBridgeIframe" style="display: none;"></iframe>
+<body>
+<div class="container">
+    <div class="content peerpay-gift">
+        <div class="app app-order">
+            <div class="app-inner inner-order">
+                <div id="peerpay-content-container">
+                    <div class="message-container center" style="background-color:#a0bf54;">
+                        <div class="avatar avatar-peerpay center"> <img class="circular" src="{$user_info.headimgurl}">
+                            <p class="js-counter-msg"> <span class="txt-status" style="color:#ffffff;"> {$user_info.user_name} </span> </p>
+                        </div>
+                        <p>{$order_info.wxdesc}</p>
+                        <div class="bottom-arrow"></div>
+                    </div>
+
+                    <h2>来自小伙伴的代付订单</h2>
+                    <div class="block block-list block-list-peerpay">
+                        <div class="block-item name-card clearfix"> <a href="#" class="thumb"><img src="{$order_goods[0].little_img}" alt=""></a>
+                            <div class="detail clearfix no-price detail-peerpay">
+                                <h3><a class="ellipsis" href="javascript:void(0);">{$order_goods[0].goods_name}</a></h3>
+                                <p class="ellipsis"> {$order_info.consignee}&nbsp;{$order_info.mobile}</p>
+                                <p class="ellipsis"> {$order_info.address} </p>
+                                <p class="ellipsis c-orange"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <h2>付款人信息</h2>
+                    <ul class="block block-form">
+                        <li class="block-item clearfix">
+                            <label>我的姓名</label>
+                            <input id="name" class="txt txt-black ellipsis js-name" placeholder="请输入您的姓名" value="">
+                        </li>
+                        <li class="block-item clearfix">
+                            <label>给他留言</label>
+                            <textarea  id="message" class="txt txt-black js-message" placeholder="说点什么吧？">刷我滴卡，包你满足</textarea>
+                        </li>
+                    </ul>
+                    <ul class="block block-form" style="margin-top:10px;">
+                        <li class="block-item">
+                            <label>付款金额</label>
+                            <span class="text-right c-orange">￥{$order_info.order_amount}</span> </li>
+                    </ul>
+
+                    <div class="action-container" id="confirm-pay-way-opts" style="margin-top:20px;margin-bottom:20px;">
+                        <div style="margin-bottom: 10px;">
+                            <button type="button" onclick="done(this);" data-pay-type="wxpay" class="btn-pay btn btn-block btn-large btn-wxpay  btn-green"> 微信安全支付 </button>
+                        </div>
+                        <a href="index.php" class="btn btn-block btn-large btn-white">我也要去玩</a>
+                        <button style="margin-top:0; type="  class="btn btn-block btn-large btn-white " onclick="document.getElementById('share_img').style.display='';">找小伙伴帮TA付款</button>
+                    </div>
+                </div>
+                <div id="peerpay-pay-container" style="overflow: auto;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="share_img" style="position:fixed;top:0;left:0;z-index:999;display:none; background:#000;opacity:0.8;filter:alpha(opacity=80);  width:100%;height:100%; text-align:right; " onclick="document.getElementById('share_img').style.display='none';"><img class="arrow" src="themes/haohainew/images/share-it.png" ></div>
+<script src="js/youzan/common_452e0e827f.js" ></script> 
+<script src="js/youzan/base_133b82eb14.js" ></script> 
+<script src="js/youzan/u_b.js" ></script> 
+<script src="js/youzan/jquery.minicounter.min.js"></script> 
+<script src="js/youzan/pay_16c4b3fa77.js"></script> 
+<script>
+    
+    function jsApiCall(code,returnrul){
+    	
+    	WeixinJSBridge.invoke('getBrandWCPayRequest',code,function(res){
+    			WeixinJSBridge.log(res.err_msg);
+
+    		//	alert(res.err_code+'调试信息：'+res.err_desc+res.err_msg);
+    		
+    			if(res.err_msg.indexOf('ok')>0){
+    				window.location.href=returnrul;
+    			}else{
+    				window.location.href=returnrul;
+    			}
+    		});
+    }
+
+    		function callpay(code,returnrul)
+    		{
+    			if (typeof WeixinJSBridge == "undefined"){
+    			    if( document.addEventListener ){
+    			        document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+    			    }else if (document.attachEvent){
+    			        document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+    			        document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+    			    }
+    			}else{
+    				
+    			    jsApiCall(code,returnrul);
+    			    
+    			}
+    		}
+    		function done(thisObj){
+    			
+     		   //thisObj.value='正在支付 请稍候';
+     		   /*
+     		   var payment=document.forms[0].payment.value;
+     		   var bonus=document.forms[0].bonus.value;
+     		   */
+     		    var name=$('name').text();
+    		    var message=$('#message').text();
+     		    var money='{$order_info.order_amount}';
+	     		  $.ajax({
+	     	            type:"post",//请求类型
+	     	            url:"share_pay.php?act=share_pay_check",//服务器页面地址
+	     	            data:'id={$order_id}&name='+name+"&message="+message+"&money="+money,
+	     	            dataType:"json",//服务器返回结果类型(可有可无)
+	     	            error:function(){//错误处理函数(可有可无)
+	     	                //alert("ajax出错啦");
+	     	            },
+	     	            success:function(result){
+	     	            	if(result.error==0){
+	     	    				callpay({$code},"{$returnrul}");
+	     	    			}else if(result.error==1){
+	     	    				//alert(result.url);
+	     	    				window.location=result.url;
+	     	    			}else if(result.error==2){
+	     	    				alert(result.message);
+	     	    				window.location=result.url;
+	     	    			}
+	     	            }
+	     	        });
+
+     		}
+</script>
+</body>
+</html>

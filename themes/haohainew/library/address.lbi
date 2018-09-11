@@ -1,0 +1,43 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<table class="ordertable" cellspacing="0" cellpadding="0" id="show_table_address">
+    <tr>
+        <td width="100" align="right">收货人：</td>
+        <td><input type="text" id="consignee" value="{$address_row.consignee|escape}"  name="consignee" class="input"></td>
+    </tr>
+    <tr>
+        <td align="right">手机：</td>
+        <td><input type="text" name="mobile" id="mobile" value="{$address_row.mobile|escape}" class="input"></td>
+    </tr>
+    <tr>
+        <td align="right">省市区：</td>
+        <td><select name="province" id="selProvinces" class="select" onchange="region.changed(this, 2, 'selCities')">
+                <option value="0">{$lang.please_select}{$name_of_region[1]}</option>
+                <!-- {foreach from=$province_list item=province} -->
+                <option value="{$province.region_id}" {if $address_row.province eq $province.region_id}selected{/if}>{$province.region_name}</option>
+                <!-- {/foreach} -->
+            </select>
+            <select name="city" id="selCities" class="select" onchange="region.changed(this, 3, 'selDistricts')" >
+                <option value="0">{$lang.please_select}{$name_of_region[2]}</option>
+                <!-- {foreach from=$city_list item=city} -->
+                <option value="{$city.region_id}" {if $address_row.city eq $city.region_id}selected{/if}>{$city.region_name}</option>
+                <!-- {/foreach} -->
+            </select>
+            <select name="district" id="selDistricts" class="select" onchange="region.changed(this, 4, 'selarea')" {if !$district_list}style="display:none"{/if}>
+                <option value="0">{$lang.please_select}{$name_of_region[3]}</option>
+                <!-- {foreach from=$district_list item=district} -->
+                <option value="{$district.region_id}" {if $address_row.district eq $district.region_id}selected{/if}>{$district.region_name}</option>
+                <!-- {/foreach} -->
+            </select></td>
+    </tr>
+    <tr>
+        <td align="right">街道地址：</td>
+        <td><input type="text" id="address"  class="input long" name="address" value="{$address_row.address|escape}"></td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+        <td><input type="button" value="提 交"  onclick="save_address()" class="btn">
+            <input type="hidden" name="step" value="consignee" />
+            <input type="hidden" name="act" value="checkout" />
+            <input name="address_id" id="hidden_address_id" type="hidden" value="{$address_row.address_id}" /></td>
+    </tr>
+</table>

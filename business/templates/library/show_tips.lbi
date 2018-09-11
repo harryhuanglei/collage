@@ -1,0 +1,30 @@
+<!--二维码绑定店铺提示页面 star-->
+
+{if $info.suppliers_id and $info.user_id eq 0}
+<div class="show_tips">
+	<div class="tips_box">
+		<div id="qrcode"></div>
+		<p>请扫描二维码绑定店主</p>
+	</div>
+</div>
+{/if}
+<script type="text/javascript">
+var suppliers_id = {$info.suppliers_id};
+var uri = {if $info.user_id}'unbind'{else}'bind'{/if};
+var qrcode = new QRCode(document.getElementById("qrcode"), {
+    text: location.origin + "/"+uri+".php?suppliers_id="+suppliers_id,
+    width: 128,
+    height: 128,
+    colorDark : "#000000",
+    colorLight : "#ffffff",
+    correctLevel : QRCode.CorrectLevel.H
+});
+</script>
+<script>
+	$(function(){
+		$('.tips_box').click(function(){
+			$(this).hide();
+			$('.show_tips').hide();
+		});
+	});
+</script>

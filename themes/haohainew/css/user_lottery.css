@@ -1,0 +1,23 @@
+.cj_list { height: 160px; margin-top: 10px; background: #fff; padding:0 10px 10px 10px; overflow: hidden; position: relative; }
+.cj_list .zj, .cj_list .wzj { top: auto; bottom: 5px; right: 0; }
+.cj_list .cj_hd { background: #fff; border-bottom: 1px solid #eee; height: 40px; line-height: 40px; overflow: hidden; }
+.cj_list .cj_hd img { width: 30px; height: 30px; vertical-align: middle; margin-right: 5px; border-radius: 15px; }
+.cj_list .cj_hd span { float: right; }
+.cj_list .cj_l { width: 100px; height: 100px; position: absolute; left: 10px; top: 50px; }
+.cj_list .cj_l img { width: 100px; height: 100px; border: #eee 1px solid; border-radius: 6px; padding: 1px; }
+.cj_list .cj_l em, .cj_list .cj_l span { width: 100px; height: 20px; line-height: 20px; left: 0; bottom: 0; }
+.cj_list .cj_l em { background: #FF4339; opacity: 0.6; position: absolute; border-radius: 0 0 6px 6px; }
+.cj_list .cj_l span { color: #fff; text-align: center; position: absolute; }
+.cj_list .cj_r { height: 100px; padding-left: 110px; color: #333; margin-top:10px; position:relative; }
+.cj_list .cj_r h3 { height: 24px; line-height: 24px; overflow: hidden; font-size: 14px; margin-bottom: 10px; }
+.cj_list .cj_r li { float: left; width: 100%; line-height: 22px; }
+.cj_list .cj_r li font { color: #f60; }
+.cj_list .cj_r a { display:block; position:absolute; left:110px; bottom:0; background-color:#FF4339; color:#fff; padding:3px 10px; border-radius:3px; }
+.schedule { width: 100%; float: left; margin-top: 10px; }
+.schedule-hd { width: 100%; height: 5px; margin: 0 auto; background: #e8e8e8; border-radius: 5px; }
+.schedule-bd { height: 5px; background: #f95441; border-radius: 5px; }
+.details-pep { width: 100%; line-height: 30px; }
+.details-pep span { display: block; float: left; color: #333; font-size: 12px; width: 33%; }
+.details-pep span b { color: #f95441; }
+.details-pep span:nth-child(2) { text-align: center; }
+.details-pep span:nth-child(3) { text-align: right; }

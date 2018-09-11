@@ -1,0 +1,188 @@
+@charset "UTF-8";
+.lottery_specific_goods {
+    position: relative;
+    width: 100%;
+    height: 120px;
+    background-color: #fff;
+}
+.lottery_specific_img {
+    display: inline-block;
+    width: 100px;
+	position:absolute;
+	left:10px;
+	top:10px;
+}
+.lottery_specific_img img { width: 100%; }
+.lottery_specific_goods_info {
+    display: inline-block;
+	margin-left:120px;
+	padding-top: 20px;
+}
+.lottery_specific_goods_name {
+    font-size: 14px;
+    line-height:20px;
+    padding-right: 0;
+    height: 20px;
+    width: 100%;
+    overflow: hidden;
+}
+.lottery_specific_sale_price {
+    display: inline-block;
+    margin-top: 7px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #f0373d;
+}
+.lottery_specific_market_price {
+    display: inline-block;
+    margin-left: 5px;
+    margin-top: 10px;
+    font-size: 11px;
+    color: gray;
+    overflow: hidden;
+    text-decoration: line-through;
+}
+.lottery_specific_status {
+    position: absolute;
+    bottom: 10px;
+    height:30px;
+    line-height: 30px;
+    font-size: 14px;
+	padding:0 20px;
+    text-align: center;
+    color: #fff;
+    background-color: #a9a09c;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+.lottery_specific_bg {
+    margin: 0;
+    height: 10px;
+    width: 100%;
+    background-color: #eceded;
+}
+.lottery_specific_result {
+    margin: 0;
+    height: auto;
+    width: 100%;
+}
+.lottery_result_title {
+    background-color: #fff;
+    height: 35px;
+    width: 100%;
+}
+.lottery_reward_pic {
+    width: 16px;
+    height: 16px;
+    margin: 7px 0 7px 15px;
+}
+.lottery_reward_list {
+    display: inline-block;
+    width: 70px;
+    height: 30px;
+    padding-top: 6px;
+    font-size: 13px;
+    font-weight: 700;
+}
+.lottery_coupons {
+    display: inline-block;
+    width: 130px;
+    height: 35px;
+    padding-top: 8px;
+    margin-right: 0;
+    float: right;
+    background-color: #f69600;
+    text-align: center;
+    font-size: 14px;
+}
+.lottery_coupons a {color: #fff; }
+.lottery_result_info {
+    background-color: #fff;
+    border-top: 1px solid #d5d5d5;
+    border-bottom: 1px solid #d5d5d5;
+    margin-bottom: 10px;
+    width: 100%;
+    height: 40px;
+    font-size: 16px;
+}
+.lottery_lucky_guy {
+    display: inline-block;
+    height: 100%;
+    width: 30%;
+    text-align: center;
+    padding-top: 4px;
+}
+.lottery_order_id, .lottery_tel_num {
+    display: inline-block;
+    height: 100%;
+    text-align: center;
+    padding-top: 4px;
+}
+.lottery_order_id {
+    width: 37%;
+}
+.lottery_tel_num {
+    float: right;
+    width: 30%;
+}
+.lottery_pp_list {
+    overflow: hidden;
+    padding-top: 15px;
+    position: relative;
+}
+.lottery_pp_list_item {
+    background-color: #fff;
+    border: 1px solid #d5d5d5;
+    margin-bottom: 20px;
+    padding: 10px 5px 10px 50px;
+    position: relative;
+}
+.lottery_pp_list_avatar {
+    background-clip: padding-box;
+    border-radius: 30px;
+    display: block;
+    height: 30px;
+    left: 10px;
+    position: absolute;
+    top: -15px;
+    width: 30px;
+}
+.lottery_pp_list_info {
+    height: 21px;
+    margin-bottom: 3px;
+}
+.lottery_pp_list_name {
+    width: 19%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 3.9%;
+    text-align: left;
+    float: left;
+}
+.lottery_pp_list_name b {
+    color: #333;
+    font-weight: 400;
+    margin-right: 5px;
+}
+.lottery_pp_list_mobile, .lottery_pp_list_order {
+    display: inline-block;
+    overflow: hidden;
+    text-align: center;
+}
+.lottery_pp_list_order {
+    width: 46%;
+}
+.lottery_pp_list_mobile, .lottery_pp_list_order {
+    display: inline-block;
+    overflow: hidden;
+    text-align: center;
+}
+.lottery_pp_list_mobile {
+    width: 30%;
+    float: right;
+}
+.pp_list_name_hide {
+    text-align: center;
+    color: #000;
+}

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/store_list.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,store_list.js'}
+</head>
+<body>
+<div class="container" style="padding:49px 0 60px 0;">
+    <div class="nav_fixed_wrap">
+        <ul class="nav_fixed_catgoods" id="top_nav">
+            <li class="fixed_nav_item_catgoods fixed_nav_item_catgoods_first">
+                <a href="store_list.php"><span{if $hangye_id eq 0} class="nav_cur_cat"{/if}>全部</span></a>
+            </li>
+            {foreach from=$hangye item=item name=name}
+            <li class="fixed_nav_item_catgoods">
+                <a href="store_list.php?id={$item.id}">
+                <span{if $hangye_id eq $item.id} class="nav_cur_cat"{/if}>{$item.name}</span>
+                </a>
+            </li>
+            {/foreach}
+        </ul>
+    </div>
+    <div class="store_list">
+        {foreach from=$store_list item=suppliers key=key name=suppliers}
+        <div class="grst-block hangye hangye-{$suppliers.hangye_id}">
+            <a href="store.php?id={$suppliers.suppliers_id}"><img class="grst-logo" src="{if $suppliers.supp_logo}{$suppliers.supp_logo}{else}images/store_logo.jpg{/if}"></a>
+            <div class="grst-detail">
+                <h3>{$suppliers.suppliers_name}</h3>
+                <p>{$suppliers.province_id} {$suppliers.city_id}</p>
+                <p>商品：{$suppliers.goods_num}　销量：{$suppliers.sales_num}</p>
+                <a href="store.php?id={$suppliers.suppliers_id}" class="in">进入店铺</a>
+            </div>
+        </div>
+		{foreachelse}
+			<div class="nothing">
+            <i class="iconfont icon-shangpin"></i>
+		    <p>此分类下暂无店铺</p>
+            </div>
+        {/foreach}
+    </div>
+</div>
+<div class="blank"></div>
+<div class="blank"></div>
+<div class="blank"></div>
+<div class="blank"></div>
+<div class="blank"></div>
+<div class="blank"></div>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+
+<div class="back-top" style=""><a href="javascript:;" uigs="wap_to_top"></a></div>
+<script type="text/javascript">
+var wa = $(window).width(); //获取浏览器显示区域（可视区域）的宽度
+var wb = $("#top_nav .nav_cur_cat").width(); //获取或设置元素的宽度
+var wc = $("#top_nav .nav_cur_cat").offset().left; //当前元素左侧距离
+if(wc+wb > wa){
+	$("#top_nav").scrollLeft(wc-wa+wb+wb); //设置滚动条到左边的宽度
+}
+$(function(){   
+	$('.choosebox li a').click(function(){
+		var thisToggle = $(this).is('.size_radioToggle') ? $(this) : $(this).prev();
+		var checkBox = thisToggle.prev();
+		checkBox.trigger('click');
+		$('.size_radioToggle').removeClass('current');
+		thisToggle.addClass('current');
+		return false;
+	});		
+});
+
+$(".choosebox li a").click(function(){
+	var text = $(this).html();
+	$(".choosetext span").html(text);
+	$("#result").html("" + getSelectedValue("dress-size"));
+});
+			
+function getSelectedValue(id){
+	return 
+	$("#" + id).find(".choosetext span.value").html();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,701 @@
+{if $full_page}
+
+{include file="pageheader.htm"}
+
+{insert_scripts files="../js/utils.js,listtable.js,../js/region.js"}
+
+<script language="javascript" type="text/javascript" src="../js/DatePicker/WdatePicker.js"></script>
+
+<!-- 订单搜索 -->
+<div class="form-div">
+
+  <form action="javascript:searchOrder()" name="searchForm">
+
+    <img src="images/icon_search.gif" width="26" height="22" border="0" alt="SEARCH" />
+    订单号<input name="order_sn" type="text" id="order_sn" size="15">
+    微信订单编号<input name="transaction_id" type="text" id="transaction_id" size="15">
+    订单状态
+    <select name="status" id="status">
+		<option value="4">请选择</option>
+		<option value="5">待发货</option>
+      <option value="102">已完成</option>
+      <option value="3">已退款</option>
+    </select>
+
+    支付方式
+    <select name="pay_id" id="pay_id">
+		<option value="-1">请选择</option>
+      {foreach from=$payment item=v}
+        <option value="{$v.pay_id}">{$v.pay_name}</option>
+      {/foreach}
+    </select>
+	   商家名称
+    <select name="suppliers_id" id="suppliers_id">
+		<option value="-1">请选择商家</option>
+    <option value="0">自营店</option>
+      {foreach from=$suppliers_list item=item}
+        <option value="{$item.suppliers_id}">{$item.suppliers_name}</option>
+      {/foreach}
+    </select>
+
+      下单时间
+
+    <input class="Wdate" type="text" name="start_time" readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-M-d HH:mm'})"/>
+
+      ~       
+
+      <input class="Wdate" type="text" name="end_time" readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-M-d HH:mm'})"/>
+
+    <input type="submit" value="{$lang.button_search}" class="button" />
+
+  </form>
+
+</div>
+
+<!-- 订单列表 -->
+
+<form method="post" action="" name="listForm" >
+
+  <div class="list-div" id="listDiv">
+
+{/if}
+
+<table cellpadding="3" cellspacing="1">
+
+  <tr>
+
+    <th>
+
+      <input onclick='listTable.selectAll(this, "checkboxes")' type="checkbox" /><a href="javascript:listTable.sort('order_sn', 'DESC'); ">订单号</a>{$sort_order_sn}
+
+    </th>
+
+    <th><a href="javascript:listTable.sort('pay_time', 'DESC'); ">支付时间</a>{$sort_pay_time}</th>
+
+
+
+    <th><a href="javascript:listTable.sort('consignee', 'DESC'); ">收货人</a>{$sort_consignee}</th>
+
+
+
+    <th><a href="javascript:listTable.sort('total_fee', 'DESC'); ">总金额</a>{$sort_total_fee}</th>
+
+
+
+    <th><a href="javascript:listTable.sort('order_amount', 'DESC'); ">应付金额</a>{$sort_order_amount}</th>
+
+
+    <th>红包抵扣</th>
+
+
+    <th>商品ID</th>
+ 
+    <th class="left" width="340"><a href="javascript:listTable.sort('extension_id', 'DESC');">商品名称</a>{$sort_extension_id}</th>
+
+    <th>商品数量</th>
+
+
+    <th>微信单号</th>
+	
+	<!--th>线下门店</th-->
+
+  <tr>
+
+
+
+  {foreach from=$order_list item=order key=okey}
+
+
+
+  <tr>
+
+
+
+    <td align="center" valign="top" nowrap="nowrap">{$order.order_sn}</td>
+
+    <td align="center">{$order.formated_pay_time}</td>
+
+    <td align="center" valign="top">
+  {$order.consignee|escape}{if $order.mobile} [TEL: {$order.mobile|escape}]{/if} 
+  </td>
+
+    <td align="center" valign="top" nowrap="nowrap">{$order.formated_total_fee}</td>
+
+    <td align="center" valign="top" nowrap="nowrap">{$order.formated_order_amount}</td>
+
+    <td align="center" valign="top" nowrap="nowrap">{$order.bonus}</td>
+
+    <td align="center"   width="100" >{$order.goods_idxy}</td>
+
+    <td align="left"   width="340"  >{$order.goods_namexy}</td>
+
+    <td align="center">{$order.goods_number}</td>
+
+   <td align="center">{if $order.transaction_id}{$order.transaction_id}{else}无{/if}</td>
+   
+   <!--td align="center">{if $order.shop_name}{$order.shop_name}{else}自营{/if}</td-->
+
+  </tr>
+
+  {/foreach}
+
+</table>
+总金额：{$totle_money}
+<!-- 分页 -->
+
+<table id="page-table" cellspacing="0">
+
+  <tr>
+
+    <td align="right" nowrap="true">
+
+    {include file="page.htm"}
+
+    </td>
+
+  </tr>
+
+</table>
+
+{if $full_page}
+
+  </div>
+
+
+</form>
+
+
+
+<script language="JavaScript">
+
+
+
+region.isAdmin = true;
+
+
+
+listTable.recordCount = {$record_count};
+
+
+
+listTable.pageCount = {$page_count};
+
+
+
+var str="";
+
+
+
+{foreach from=$filter item=item key=key}
+
+
+
+
+
+
+
+listTable.filter.{$key} = '{$item}';
+
+
+
+
+
+
+
+if('{$key}'!='sort_by'&&'{$key}'!='sort_order'){
+
+
+
+  str+="{$key}={$item}&";
+
+
+
+}
+
+
+
+{/foreach}
+
+
+
+str=str.slice(0,-1);
+
+
+
+
+
+
+
+{literal}
+
+
+
+
+
+
+
+    onload = function()
+
+
+
+    {
+
+
+
+        // 开始检查订单
+
+
+
+        startCheckOrder();
+
+
+
+        getDownUrl(1);
+
+
+
+    }
+
+
+
+
+
+
+
+    /**
+
+
+
+     * 搜索订单
+
+
+
+     */
+
+
+
+    function searchOrder()
+
+
+
+    {
+
+
+
+        listTable.filter['order_sn']         = Utils.trim(document.forms['searchForm'].elements['order_sn'].value);
+
+
+
+        listTable.filter['transaction_id']   = document.forms['searchForm'].elements['transaction_id'].value;
+
+        listTable.filter['pay_id']   = document.forms['searchForm'].elements['pay_id'].value;
+		
+		listTable.filter['suppliers_id']   = document.forms['searchForm'].elements['suppliers_id'].value;
+
+		
+        listTable.filter['composite_status'] = document.forms['searchForm'].elements['status'].value;
+
+
+        listTable.filter['start_time']       = document.forms['searchForm'].elements['start_time'].value;
+
+
+
+        listTable.filter['end_time']         = document.forms['searchForm'].elements['end_time'].value;
+
+
+
+        listTable.filter['page']             = 1;
+
+
+
+        listTable.loadList();
+
+
+
+        getDownUrl();
+
+
+
+    }
+
+
+    /**
+
+
+
+     * 显示订单商品及缩图
+
+
+
+     */
+
+
+
+    var show_goods_layer = 'order_goods_layer';
+
+
+
+    var goods_hash_table = new Object;
+
+
+
+    var timer = new Object;
+
+
+
+
+
+
+
+    /**
+
+
+
+     * 绑定订单号事件
+
+
+
+     *
+
+
+
+     * @return void
+
+
+
+     */
+
+
+
+    function bind_order_event()
+
+
+
+    {
+
+
+
+        var order_seq = 0;
+
+
+
+        while(true)
+
+
+
+        {
+
+
+
+            var order_sn = Utils.$('order_'+order_seq);
+
+
+
+            if (order_sn)
+
+
+
+            {
+
+
+
+                order_sn.onmouseover = function(e)
+
+
+
+                {
+
+
+
+                    try
+
+
+
+                    {
+
+
+
+                        window.clearTimeout(timer);
+
+
+
+                    }
+
+
+
+                    catch(e)
+
+
+
+                    {
+
+
+
+                    }
+
+
+
+                    var order_id = Utils.request(this.href, 'order_id');
+
+
+
+                    show_order_goods(e, order_id, show_goods_layer);
+
+
+
+                }
+
+
+
+                order_sn.onmouseout = function(e)
+
+
+
+                {
+
+
+
+                    hide_order_goods(show_goods_layer)
+
+
+
+                }
+
+
+
+                order_seq++;
+
+
+
+            }
+
+
+
+            else
+
+
+
+            {
+
+
+
+                break;
+
+
+
+            }
+
+
+
+        }
+
+
+
+    }
+
+
+
+    listTable.listCallback = function(result, txt) 
+
+
+
+    {
+
+
+
+        if (result.error > 0) 
+
+
+
+        {
+
+
+
+            alert(result.message);
+
+
+
+        }
+
+
+
+        else 
+
+
+
+        {
+
+
+
+            try 
+
+
+
+            {
+
+
+
+                document.getElementById('listDiv').innerHTML = result.content;
+
+
+
+                bind_order_event();
+
+
+
+                if (typeof result.filter == "object") 
+
+
+
+                {
+
+
+
+                    listTable.filter = result.filter;
+
+
+
+                }
+
+
+
+                listTable.pageCount = result.page_count;
+
+
+
+                
+
+
+
+                getDownUrl();
+
+
+
+            }
+
+
+
+            catch(e)
+
+
+
+            {
+
+
+
+                alert(e.message);
+
+
+
+            }
+
+
+
+        }
+
+
+
+    }
+
+
+
+    /**
+
+
+
+     * 浏览器兼容式绑定Onload事件
+
+
+
+     *
+
+
+
+     */
+
+
+
+    if (Browser.isIE)
+
+
+
+    {
+
+
+
+        window.attachEvent("onload", bind_order_event);
+
+
+
+    }
+
+
+
+    else
+
+
+
+    {
+
+
+
+        window.addEventListener("load", bind_order_event, false);
+
+
+
+    }
+
+    function getDownUrl(is_first)
+
+    {
+
+      var aTags = document.getElementsByTagName('A');
+
+        for (var i = 0; i < aTags.length; i++)
+
+        { 
+
+          if (aTags[i].href.indexOf('download') >= 0)
+
+
+          {
+
+            if(typeof(is_first) != "undefined"&&is_first){
+
+
+              aTags[i].href = "statistics.php?act=download&"+str+"&sort_by="+listTable.filter['sort_by']+"&sort_order="+listTable.filter['sort_order'];
+
+
+            }else{
+
+
+            aTags[i].href = "statistics.php?act=download&order_sn="+listTable.filter['order_sn']+
+            "&transaction_id="+listTable.filter['transaction_id']
+			+
+            "&suppliers_id="+listTable.filter['suppliers_id']
+            +"&pay_id="+listTable.filter['pay_id']
+
+            +"&composite_status="+listTable.filter['composite_status']+"&start_time="+listTable.filter['start_time']+"&end_time="+listTable.filter['end_time']
+
+			
+            +"&sort_by="+listTable.filter['sort_by']+"&sort_order="+listTable.filter['sort_order'];
+
+
+            } 
+
+          }
+
+        }
+
+    }
+
+</script>
+
+{/literal}
+
+
+{include file="pagefooter.htm"}
+
+
+
+{/if}

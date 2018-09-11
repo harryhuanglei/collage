@@ -1,0 +1,229 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+  <title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/pc.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="header">
+    <div class="container">
+      <a href="javascript:;" class="js-hover logo" data-target="js-shop-info">{$shop_name}<span class="icon-wxv"></span></a>
+      <ul class="nav">
+        <li><a href="default.php">首页</a></li>
+		<!--{foreach from=$categories item=cat}-->
+        <li{if $one_cat_id eq $cat.id} class="cur"{/if}><a href="cate.php?id={$cat.id}">{$cat.name|escape:html}</a></li>
+	    <!--{/foreach}-->
+      </ul>
+    </div>
+    <!-- 浮层店铺信息 -->
+    <div class="shop-info shop-info-fixed js-shop-info">
+      <div class="container clearfix" style="height: 220px;">
+	    <img class="shop-qrcode pull-left" src="{$qr_code}">
+        <div class="shop-desc pull-left" style="margin-left: 50px;">
+          <dl>
+            <dt>
+              {$shop_name} 
+                          </dt>
+            <dd></dd>
+            <dt>微信扫描二维码，访问我们的微信店铺</dt>
+                            <dd>您可以使用微信联系我们，随时随地的购物、客服咨询、查询订单和物流...</dd>
+                       </dl>
+        </div>
+        <span class="arrow"></span>
+      </div>
+    </div>
+  </div>
+  <div class="container main clearfix">
+    <div class="content">
+      <!-- 商品简介 -->
+      <div class="goods-summary clearfix">
+        <!-- 商家信息 -->
+
+		<div class="sidebar">
+		  <div class="shop-card clearfix">
+		    <div class="shop-image pull-left">
+			  {if $goods.suppliers_id > 0}<img src="{$stores_info.supp_logo}">{else}<img src="{$shop_logo}">{/if}
+			  <span class="icon-wxv"></span>
+			</div>
+			<div class="shop-link pull-left">
+			  <span class="shop-name">{$shop_name}自营店</span>
+			  <!--a href="shop.php?id={$stores_info.suppliers_id}" class="btn-add-wx js-hover">进入店铺</a-->
+			</div>
+          </div>
+		</div>
+		<!-- 商品信息 -->
+        <div class="goods-info pull-right">
+          <h3 class="goods-title">{$goods.goods_name}</h3>
+          <div class="goods-price clearfix">
+            <strong class="goods-current-price pull-left">
+              <em class="goods-rmb">￥</em>{if $goods.team_price gt 0 && $goods.is_team}{$goods.team_price}{else}{$goods.shop_price}{/if}
+			</strong>
+            <span class="goods-origin-price pull-left">
+                          	            </span>
+          </div>
+                    <table class="goods-meta">
+            <tbody>
+              <tr >
+               	  <td class="goods-meta-name">库存：</td>
+	                <td>{$goods.goods_number} 件</td>
+                             </tr>
+                          </tbody>
+          </table>
+          <div class="goods-action clearfix">
+          	          	          	<a href="javascript:;" class="goods-buy-link icon-buybutton pull-left js-hover" data-target="js-popover-goods" data-position="top" data-shake="true">立即购买</a>
+	          	                  <a href="javascript:;" class="btn-share goods-share-link pull-left js-hover" data-target="js-popover-share" data-position="top" data-shake="true">收藏 / 分享</a>
+          </div>
+                    <div class="goods-payment">
+            <dl class="clearfix">
+              <dt>支付：</dt>
+              <dd class="pull-left clearfix">
+              	                	<a href="javascript:;" class="clearfix pull-left"><span class="icon-wxpay"></span>微信支付</a>
+                                                <a href="javascript:;" class="clearfix pull-left"><span class="icon-alipay"></span>支付宝</a>
+              </dd>
+            </dl>
+          </div>
+                  </div>
+        <!-- 商品图片 -->
+        <div class="goods-image pull-left">
+		
+		
+    <div id="preview" class="spec-preview">
+	    {if $pictures.0.img_url}
+        <span class="jqzoom"><img jqimg="{$pictures.0.img_url}" src="{$pictures.0.img_url}" /></span>
+		{else}
+		<span class="jqzoom"><img jqimg="{$goods.goods_img}" src="{$goods.goods_img}" /></span>
+		{/if}
+	</div>
+	{if $pictures}
+    <div class="spec-scroll">
+      <div class="items">
+        <ul>
+		  {foreach from=$pictures item=picture name=ptab}
+		  {if $smarty.foreach.ptab.index<6}
+          <li><img bimg="{$picture.img_url}" src="{$picture.thumb_url}" onmousemove="preview(this);"></li>
+		  {/if}
+		  {/foreach}
+        </ul>
+      </div>
+    </div>
+	{/if}
+	
+
+        </div>
+      </div>
+      <!-- 商品详情 -->
+            <div class="goods-detail js-goods-detail">
+        <h4 class="title">商品详情</h4>
+
+                <div class="rich-text">
+				
+				{$goods.goods_desc}
+          	    </div>
+        
+      </div>
+            <!-- 店铺信息 -->
+			
+			
+			
+			
+      <div class="shop-info shop-info-bottom clearfix">
+	  {if $goods.suppliers_id > 0}
+	  <img class="shop-qrcode pull-left" src="http://qr.topscan.com/api.php?text={$www}store.php?id={$goods.suppliers_id}">
+	  {else}
+	  <img class="shop-qrcode pull-left" src="{$qr_code}">
+	  {/if}
+        <div class="shop-desc pull-left">
+          <dl>
+            <dt>{$stores_info.suppliers_name}</dt>
+            <dd>
+			    <p>地址：{if $goods.suppliers_id > 0}{$stores_info.province_name}{$stores_info.city_name}{$stores_info.district_name} {$stores_info.address}{else}{$shop_address}{/if}</p>
+				<p>电话：{if $goods.suppliers_id > 0}{$stores_info.phone}{else}{$service_phone}{/if}</p>
+			</dd>
+          </dl>
+          <dl>
+            <dt>微信扫描二维码，访问我们的微信店铺</dt>
+			<dd>您可以使用微信联系我们，随时随地的购物、客服咨询、查询订单和物流...</dd>
+		  </dl>
+        </div>
+      </div>
+	  
+	  
+	  
+    </div>
+    <div class="goods-info-fixed js-autofixed clearfix">
+      <h3 class="goods-info-title pull-left">{$goods.goods_name}</h3>
+      <div class="goods-info-link pull-right">
+      	        	        <a href="javascript:;" class="btn-buy js-hover" data-target="js-popover-goods-fixed" data-shake="true">
+		       				        			       		￥{if $goods.team_price gt 0}{$goods.team_price}{else}{$goods.shop_price}{/if}			       			       		          购买
+	        </a>
+	        	            <a href="javascript:;" class="btn-share goods-share-link js-hover" data-target="js-popover-share-fixed" data-shake="true">收藏 / 分享</a>
+      </div>
+      <div class="popover popover-goods js-popover-goods-fixed">
+        <div class="popover-inner">
+          <h4 class="title clearfix"><span class="icon-weixin pull-left"></span>手机启动微信<br>扫一扫购买</h4>
+		  <img class="ui-goods-qrcode" src="http://qr.topscan.com/api.php?text={$www}goods.php?id={$goods.goods_id}">
+        </div>
+      </div>
+      <div class="popover popover-share js-popover-share-fixed">
+        <div class="popover-inner clearfix">
+          <div class="popover-qrcode pull-left">
+            <h4 class="title">收藏到微信 or 发给朋友</h4>
+			<img class="ui-goods-qrcode" src="{$qr_code}">
+          </div>
+          <div class="popover-share-info pull-left">
+            <p>1. 打开微信，扫一扫左侧二维码</p>
+            <p>2. 点击右上角图标</p>
+            <img src="images/share_1.png" alt="点击右上角分享图标" width="212" height="71">
+            <p>3. 发送给朋友、分享到朋友圈、收藏</p>
+            <img src="images/share_2.png" alt="发送给朋友、分享到朋友圈、收藏" width="212" height="71">
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+  <div class="popover popover-goods js-popover-goods">
+    <div class="popover-inner">
+      <h4 class="title clearfix"><span class="icon-weixin pull-left"></span>手机启动微信<br>扫一扫购买</h4>
+	  <img class="ui-goods-qrcode" src="http://qr.topscan.com/api.php?text={$www}goods.php?id={$goods.goods_id}">
+    </div>
+  </div>
+  <div class="popover popover-weixin js-popover-weixin">
+    <div class="popover-inner">
+      <h4 class="title">打开微信，扫一扫</h4>
+	  
+	  {if $goods.suppliers_id > 0}
+	  <img class="ui-goods-qrcode" src="http://qr.topscan.com/api.php?text={$www}store.php?id={$goods.suppliers_id}">
+	  {else}
+	  <img class="ui-goods-qrcode" src="{$qr_code}">
+	  {/if}
+    </div>
+  </div>
+  <div class="popover popover-share js-popover-share">
+    <div class="popover-inner clearfix">
+      <div class="popover-qrcode pull-left">
+        <h4 class="title">收藏到微信 or 发给朋友</h4>
+		<img class="ui-goods-qrcode" src="http://qr.topscan.com/api.php?text={$www}goods.php?id={$goods.goods_id}">
+      </div>
+      <div class="popover-share-info pull-left">
+        <p>1. 打开微信，扫一扫左侧二维码</p>
+        <p>2. 点击右上角图标</p>
+        <img src="images/share_1.png" alt="点击右上角分享图标" width="212" height="71">
+        <p>3. 发送给朋友、分享到朋友圈、收藏</p>
+        <img src="images/share_2.png" alt="发送给朋友、分享到朋友圈、收藏" width="212" height="71">
+      </div>
+    </div>
+  </div>
+{insert_scripts files='jquery.js,pc_min.js,swiper.js'}
+<script>
+    (function() {
+      $('.js-hover').hover();
+
+    })();
+  </script>
+</body>
+</html>

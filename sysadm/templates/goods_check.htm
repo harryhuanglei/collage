@@ -1,0 +1,72 @@
+<!-- $Id: agency_info.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+{include file="pageheader.htm"}
+{insert_scripts files="validator.js,../js/transport.js,../js/region.js"}
+<link href="../js/calendar/calendar.css" rel="stylesheet" type="text/css" />
+<div class="main-div">
+<form method="post" action="suppliers_goods.php" name="theForm" enctype="multipart/form-data" onsubmit="return validate()">
+<table cellspacing="1" cellpadding="3" width="100%">
+
+  <tr>
+    <td class="label">审核状态：</td>
+    <td>
+  	<input name="is_check" type="radio" value="0" {if $is_check eq 0} checked{/if}>审核中&nbsp;
+    <input name="is_check" type="radio" value="1"  {if $is_check eq 1} checked{/if}>审核通过&nbsp;
+    <input name="is_check" type="radio" value="2"  {if $is_check eq 2} checked{/if}>审核未通过&nbsp;
+    </td>
+  </tr>
+    
+         <tr>
+          <td class="label">备注信息：</td>
+          <td>
+          <textarea name='check_desc' cols="30" rows="3">{$check_desc}</textarea>
+          </td>
+    	</tr>
+        
+        <td class="label"></td>
+    <td>
+    <!-- 
+  	<input name="is_sms" type="checkbox"  >短信通知&nbsp; -->
+    <input name="is_email" type="checkbox" >邮件通知&nbsp;
+    </td>
+  </tr>
+  
+        
+        
+        
+        <tr>
+          <td class="label">&nbsp;</td>
+          <td>
+      <input type="submit" class="button" value="{$lang.button_submit}" />
+      <!--   <input type="button" class="button" value="{$lang.button_submit}" onclick="return validate()" />-->
+      <input type="reset" class="button" value="{$lang.button_reset}" />
+      <input type="hidden" name="act" value="check_act" />
+      <input type="hidden" name="id" value="{$id}" />
+      <input type="hidden" name="page" value="{$page}" />
+      </td>
+        </tr>
+</table>
+
+</form>
+
+</div>
+
+{insert_scripts files="../js/utils.js,validator.js"}
+
+{literal}
+
+<script language="JavaScript">
+<!--
+
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+region.isAdmin = true;
+//-->
+
+</script>
+
+{/literal}
+
+{include file="pagefooter.htm"}

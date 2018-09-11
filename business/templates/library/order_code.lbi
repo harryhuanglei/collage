@@ -1,0 +1,131 @@
+<div class="conbox">
+<form action="suppliers.php" method="post" name="theForm" {if $delivery_order.status eq 2}  onSubmit="return check_delivery_person();" {/if}>
+            <table width="100%" cellpadding="3" cellspacing="1">
+  <tr>
+    <th colspan="4">{$lang.base_info}</th>
+  </tr>
+  <tr>
+    <td><div align="right"><strong>{$lang.delivery_sn_number}</strong></div></td>
+    <td>{$delivery_order.delivery_sn}</td>
+    <td><div align="right"><strong>{$lang.label_shipping_time}</strong></div></td>
+    <td>{$delivery_order.formated_update_time}</td>
+  </tr>
+  <tr>
+    <td width="18%" height="25"><div align="right"><strong>{$lang.label_order_sn}</strong></div></td>
+   <td width="34%" height="25">{$delivery_order.order_sn}{if $delivery_order.extension_code eq "group_buy"}<a href="group_buy.php?act=edit&id={$delivery_order.extension_id}">{$lang.group_buy}</a>{elseif $delivery_order.extension_code eq "exchange_goods"}<a href="exchange_goods.php?act=edit&id={$delivery_order.extension_id}">{$lang.exchange_goods}</a>{/if}
+    <td height="25"><div align="right"><strong>{$lang.label_order_time}</strong></div></td>
+    <td height="25">{$delivery_order.formated_add_time}</td>
+  </tr>
+  <tr>
+    <td height="25"><div align="right"><strong>{$lang.label_user_name}</strong></div></td>
+    <td height="25">{$delivery_order.user_name|default:$lang.anonymous}</td>
+    <td height="25"><div align="right"><strong>提货人：</strong></div></td>
+    <td height="25">{if $delivery_order.status neq 1}<input name="delivery_person" id="delivery_person" type="text" value="{$delivery_order.delivery_person}" {if $delivery_order.status eq 0} readonly {/if}>{else}{$delivery_order.delivery_person}{/if}</td>
+  </tr>
+  <tr>
+    <th height="25" colspan="4">{$lang.consignee_info}</th>
+    </tr>
+  <tr>
+    <td height="25"><div align="right"><strong>{$lang.label_consignee}</strong></div></td>
+    <td height="25">{$delivery_order.consignee|escape}</td>
+    <td height="25"><div align="right"><strong>{$lang.label_email}</strong></div></td>
+    <td height="25">{$delivery_order.email}</td>
+  </tr>
+  <tr>
+
+    <td height="25"><div align="right"><strong>{$lang.label_address}</strong></div></td>
+
+    <td height="25">[{$delivery_order.region}] {$delivery_order.address|escape}</td>
+
+    <td height="25"><div align="right"><strong>{$lang.label_zipcode}</strong></div></td>
+
+    <td height="25">{$delivery_order.zipcode|escape}</td>
+
+  </tr>
+  <tr>
+    <td height="25"><div align="right"><strong>{$lang.label_tel}</strong></div></td>
+
+    <td height="25">{$delivery_order.tel}</td>
+
+    <td height="25"><div align="right"><strong>{$lang.label_mobile}</strong></div></td>
+
+    <td height="25">{$delivery_order.mobile|escape}</td>
+
+  </tr>
+
+</table>
+
+
+
+ <table width="100%" cellpadding="3" cellspacing="1" >
+
+  <tr>
+
+    <th colspan="7" scope="col">{$lang.goods_info}</th>
+
+    </tr>
+
+  <tr>
+
+    <td align="center"><strong>{$lang.goods_name_brand}</strong></td>
+
+    <td align="center" ><strong>{$lang.goods_sn}</strong></td>
+
+    <td align="center" ><strong>{$lang.product_sn}</strong></td>
+
+    <td align="center" ><strong>{$lang.goods_attr}</strong></td>
+
+    <td align="center" ><strong>{$lang.label_send_number}</strong></td>
+
+  </tr>
+
+  {foreach from=$goods_list item=goods}
+
+  <tr>
+
+    <td align="center">
+
+    <a href="../goods.php?id={$goods.goods_id}" target="_blank">{$goods.goods_name} {if $goods.brand_name}[ {$goods.brand_name} ]{/if}
+
+    </td>
+
+    <td align="center">{$goods.goods_sn}</td>
+
+    <td align="center">{$goods.product_sn}</td>
+
+    <td align="center">{$goods.goods_attr|nl2br}</td>
+
+    <td align="center">{$goods.send_number}</td>
+
+  </tr>
+ 
+
+  {/foreach}
+   <tr>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+    <td align="center">&nbsp;</td>
+    <td align="center">总计：{$rows.total_fee}</td>
+  </tr>
+
+</table>
+
+<table cellpadding="3" cellspacing="1">
+  {if $delivery_order.status neq 1}
+  <tr>
+    <td><div align="right"><strong>{$lang.label_action_note}</strong></div></td>
+  <td colspan="5"><textarea name="action_note" cols="60" rows="2"></textarea></td>
+  </tr>
+  <tr>
+    <td><div align="right"><strong>{$lang.label_operable_act}</strong></div></td>
+    <td colspan="6" align="left">{if $delivery_order.status eq 2}<input name="delivery_confirmed" type="submit" value="确认提货" class="button"/>&nbsp;&nbsp;{else}<input name="unship" type="submit" value="{$lang.op_cancel_ship}" class="button" />{/if}
+        <input name="order_id" type="hidden" value="{$delivery_order.order_id}">
+        <input name="delivery_id" type="hidden" value="{$delivery_order.delivery_id}">
+        <input name="act" type="hidden" value="{$action_act}">
+    </td>
+  </tr>
+  {/if}
+</table>
+ </form>
+ </div>

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/square_new.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/tab_pic.css" rel="stylesheet" />
+<link rel="stylesheet" href="themes/haohainew/uploadplugs/control/css/zyUpload.css" type="text/css">
+{insert_scripts files='jquery.js,haohaios.js,smoothbox.js'}
+<script type="text/javascript" src="themes/haohainew/uploadplugs/core/zyFile.js"></script>
+<script type="text/javascript" src="themes/haohainew/uploadplugs/control/js/zyUpload.js"></script>
+<script type="text/javascript" src="themes/haohainew/uploadplugs/demo.js"></script>
+</head>
+<body id="square">
+<div class="container" style="padding-bottom:56px; overflow: hidden; ">
+
+    <div class="square_list">
+        <div class="square_list_cont">
+            <dl>
+                <dt><img src="{$goods.users.headimgurl}"><span class="send_name">{$goods.users.uname}</span><span class="send_time">{$goods.add_time}</span></dt>
+                <dd>
+                    <p><span class="tips">精选</span><span class="mess">{$goods.users.square}</span></p>
+                    {if $goods.gallery}
+                    <p class="img">
+                        {foreach from=$goods.gallery item=gallery}
+                        <span class="send_img">
+                            <a href="{$gallery.thumb_url}" class="sb">
+                                <img src="{$gallery.thumb_url}" />
+                            </a>
+                        </span>
+                        {/foreach}
+                    </p>
+                    {/if}
+                </dd>
+            </dl>
+            <div class="messages">
+                <div class="line"></div>
+                <ul>
+                    <li>
+                        <div class="messages_content">
+                            <div class="messages_name">
+                                <img src="{$goods.headimgurl}" />
+                                <span>这是死名字</span>
+                            </div>
+                            <div class="messages_flor">
+                                <span class="flor">2楼</span>
+                                <span class="send_time">{$goods.add_time}</span>
+                            </div>
+                            <div class="messages_new">
+                                <span class="send_time">{$goods.square}</span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div> 
+    
+    <div class="line"></div>
+<div class="mess-send">
+    <from name="messAction" mothod="POST" action="">
+        <input type="text" name="messText" />
+        <input type="button" name="messBtn" value="发送" />
+    </from>
+</div>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+
+
+
+
+
+</body>
+</html>

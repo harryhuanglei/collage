@@ -1,0 +1,7 @@
+<div id="append_parent"></div>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+{if $user_info}
+{$lang.hello} <span><a href="user.php">{$user_info.username}</a></span> ，{$lang.welcome_return} <a href="../index.php" title="{$lang.home}" ><span>{$shop_name}</span></a> <span>[<a href="user.php">{$lang.user_center}</a>] </span> <span>[<a href="user.php?act=logout">{$lang.user_logout}</a>] </span>
+{else}
+{$lang.hello}，{$lang.welcome} <a href="../index.php" title="{$lang.home}">{$shop_name}</a> <span>[<a href="user.php">登录</a>]</span> <span>[<a href="user.php?act=register">注册</a>]</span>
+{/if}

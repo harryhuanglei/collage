@@ -1,0 +1,90 @@
+
+{include file="pageheader.htm"}
+
+{insert_scripts files="../js/utils.js"}
+{insert_scripts files="../js/region.js"}
+<div class="main-div">
+<form method="post" action="users_false.php" name="theForm" onsubmit="return validate()" enctype="multipart/form-data">
+<table width="100%" >
+  <tr>
+    <td class="label">{$lang.username}:</td>
+    <td><input type="text" name="username" maxlength="60" value="{$user_info.uname}" />{$lang.require_field}</td>
+  </tr>
+  <tr>
+    <td class="label">会员性别:</td>
+    <td>
+		<input type="radio" name="sex" value="1"{if $user_info.sex eq 1}checked{/if}>女
+		<input type="radio" name="sex" value="2"{if $user_info.sex eq 2}checked{/if}>男
+	</td>
+  </tr>
+  <tr>
+    <td class="label">会员图片:</td>
+    <td><input type="file" name="headimgurl" id="logo" size="45">
+		{if $user_info.headimgurl}
+
+                <a href="users_false.php?act=show_image&img_url={$user_info.headimgurl}" target="_blank"><img src="images/yes.gif" border="0" />点击查看</a>
+
+              {else}
+
+                <img src="images/no.gif" />
+
+              {/if}
+	</td>
+  </tr>
+   <tr>
+    <td class="label">地区:</td>
+    <td><select name="province" id="selProvinces" onChange="region.changed(this, 2, 'selCities')" style="border:1px solid #ccc;">
+			        <option value="0">请选择省份</option>
+			        <!-- {foreach from=$province_list item=province} -->
+			        <option value="{$province.region_id}" {if $user_info.province eq $province.region_id}selected{/if}>{$province.region_name}</option>
+			        <!-- {/foreach} -->
+		      	</select>
+				<select name="city" id="selCities" onChange="region.changed(this, 3, 'selDistricts')" style="border:1px solid #ccc;">
+			        <option value="0">请选择城市</option>
+			        <!-- {foreach from=$city_list item=city} -->
+			        <option value="{$city.region_id}" {if $user_info.city eq $city.region_id}selected{/if}>{$city.region_name}</option>
+			        <!-- {/foreach} -->
+			   </select>
+			   <select name="district" id="selDistricts"  style="border:1px solid #ccc;">
+			        <option value="0">请选择区域</option>
+			        <!-- {foreach from=$district_list item=district} -->
+			        <option value="{$district.region_id}" {if $user_info.district eq $district.region_id}selected{/if}>{$district.region_name}</option>
+			        <!-- {/foreach} -->  
+		        </select> 
+				
+				</td>
+  </tr>
+  <tr>
+            <td class="label">地址</td>
+            <td><input type="text" name="address" value="{$user_info.address|escape}" size="30" />&nbsp;
+            </td>
+          </tr>
+	<tr>
+    <td colspan="2" align="center">
+      <input type="submit" value="{$lang.button_submit}" class="button" />
+      <input type="reset" value="{$lang.button_reset}" class="button" />
+      <input type="hidden" name="act" value="{$form_action}" />
+      <input type="hidden" name="id" value="{$user_info.user_id}" />  
+		<input type="hidden" name="address_id" value="{$user_info.address_id}" />  
+	  </td>
+  </tr>
+</table>
+
+</form>
+</div>
+<script>
+region.isAdmin=true;
+function validate()
+{
+  if(document.theForm.username.value=='')
+  {
+    alert('请填写用户昵称');
+    return false;
+  }
+  return true;
+  
+}
+</script>
+
+{insert_scripts files="../js/utils.js,validator.js"}
+{include file="pagefooter.htm"}

@@ -1,0 +1,82 @@
+<!-- $Id: article_info.htm 16780 2009-11-09 09:28:30Z sxc_shop $ -->
+
+{include file="pageheader.htm"}
+
+{insert_scripts files="../js/utils.js,listtable.js,../js/region.js"}
+
+<script language="javascript" type="text/javascript" src="../js/DatePicker/WdatePicker.js"></script>
+
+<!-- start goods form -->
+
+<div class="tab-div">
+
+  <div id="tabbody-div">
+
+    <form  action="announcement.php?act=insert" method="post" enctype="multipart/form-data" name="theForm" >
+
+    <table width="90%" id="general-table">
+
+      <tr>
+
+        <td class="narrow-label">标题</td>
+
+        <td><input type="text" name="title" size ="40" maxlength="60" value="" />{$lang.require_field}</td>
+
+      </tr>          
+	  <tr>
+
+        <td class="narrow-label">内容</td>
+
+        <td colspan="5"><textarea name="content" cols="80" rows="3"></textarea></td>
+
+      </tr> 
+	<tr>
+		<td class="narrow-label">是否显示</td>
+		
+		<td>
+			<input type="radio" name="is_display"  value="1"  checked/>是
+			<input type="radio" name="is_display"  value="2" />否
+		</td>
+	</tr>
+	<tr>
+		<td  class="narrow-label" >发布时间</td>
+		<td>
+		 	<input class="Wdate" type="text" name="add_time" readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-M-d HH:mm'})"/><font cokor="red">不填则为当前时间</font>
+		</td>
+	</tr>
+	<tr>
+		<td class="narrow-label" ></td>
+		<td>
+			<input type='submit'  style="margin-top:10px;" value="提交" />
+    	</td>
+    </tr>
+</table>
+</form>
+
+  </div>
+
+</div>
+
+<!-- end goods form -->
+
+<script language="JavaScript">
+
+{literal}
+
+onload = function()
+
+{
+
+  // 开始检查订单
+
+  startCheckOrder();
+
+}
+
+
+{/literal}
+
+
+</script>
+
+{include file="pagefooter.htm"}

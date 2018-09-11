@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>商家入驻申请</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{* 包含脚本文件 *}
+{insert_scripts files='jquery.js,common.js,region.js,haohaios.js,utils.js'}
+<script language="javascript">
+// what a fuck!!
+	function regs()
+	{
+		 var reg = /^[0-9]+/;
+		 var reg2 = /^1[345678]\d{9}$/;
+		
+			var suppliers_name =  $("#suppliers_name").val();
+			var address =  $("#address").val();
+			var real_name = $("#real_name").val();
+			var phone = $("#phone").val();
+			var email = $("#email").val();
+			var user_name = $("#user_name").val();
+			var password = $("#password").val();
+			var password1 = $("#password1").val();
+			if(suppliers_name=='')
+			{
+				$("#suppliers_name_notice").html("请输入商家名称!");
+				return false;
+			}
+			else if(suppliers_name.length > 24)
+			{
+				$("#suppliers_name_notice").html("商家名称不能大于24个字符!");
+				return false;
+			}
+			
+			if(address=='')
+			{
+				$("#address_notice").html("请输入详细地址!");
+				return false;
+			}	
+
+
+			if(real_name=='')
+			{
+				$("#real_name_notice").html("请输入店长姓名!");
+				return false;
+			}
+			if(phone=='')
+			{
+				$("#qq_notice").html("请输入店长手机号码!");
+				return false;
+			}
+			else if(!reg2.test(phone))
+			{
+				$("#phone_notice").html("请输入正确店长手机号码!");
+				return false;
+			}
+			if(user_name=='')
+			{
+				$("#phone_notice").html("请输入登录用户名!");
+				return false;
+			}
+			else
+			{
+				var result = Ajax.call('business/suppliers.php?act=check_user_name', 'user_name='+user_name, null, 'GET', 'JSON',false);
+				if(result.error ==1)
+				{
+					$("#user_name_notice").html("该用户名已被使用!");
+					return false;
+				}
+				else
+				{
+					$("#user_name_notice").html("");
+				}
+			}
+			
+			if(email=='')
+			{
+				$("#email_notice").html("请输入负责人邮箱地址!");
+			}
+			else if ( ! Utils.isEmail(email))
+			{
+					$("#email_notice").html("请输入正确邮箱地址!");
+			}
+			else
+			{
+					$("#email_notice").html("");
+			}
+			
+			
+			
+			if(password=='')
+			{
+				$("#password_notice").html("密码不能为空!");
+				return false;
+			}
+			else
+			{
+				$("#password_notice").html("");
+			}
+			if(password1=='')
+			{
+				$("#password1_notice").html("确认密码不能为空!");
+				return false;
+			}
+			else
+			{
+				if(password1!=password)
+				{
+					$("#password1_notice").html("俩次输入不一致!");
+					return false;
+				}
+				else
+				{
+					$("#password1_notice").html("");
+				}
+			}
+			$('#setp'+first).hide();
+			$('#setp'+second).show();
+	}
+	function check_suppliers_name(value)
+	{
+		if(value=='')	
+		{
+			$("#suppliers_name_notice").html("请输入商家名称!");
+		}
+		else
+		{
+			Ajax.call( 'enter.php?act=is_suppliers_name', 'suppliers_name=' + value, suppliers_name_callback , 'GET', 'TEXT', true, true );
+			//$("#suppliers_name_notice").html("");	
+		}
+	}
+	function suppliers_name_callback(result){
+		if(result==1){
+			$('#suppliers_name_notice').html('商家名称已存在');
+		}else{
+			$('#suppliers_name_notice').html('');
+		}
+	}
+	function check_user_name(value)
+	{
+		if(value=='')	
+		{
+			$("#user_name_notice").html("请输入管理登录用户名!");
+		}
+		else
+		{
+			Ajax.call( 'enter.php?act=is_user_name', 'user_name=' + value, user_name_callback , 'GET', 'TEXT', true, true );
+			//$("#suppliers_name_notice").html("");	
+		}
+	}
+	function user_name_callback(result){
+		if(result==1){
+			$('#user_name_notice').html('管理登录用户名已存在');
+		}else{
+			$('#user_name_notice').html('');
+		}
+	}
+	function check_address(value)
+	{
+		if(value=='')
+		{
+			$("#address_notice").html("请输入详细地址!");
+		}
+		else
+		{
+			$("#address_notice").html("");
+		}
+	}
+
+
+	function checkreal_name(value)
+	{
+		if(value=='')
+		{
+			$("#real_name_notice").html("请输入负责人!");
+		}
+		else
+		{
+			$("#real_name_notice").html("");
+		}
+	}
+	function check_email(value)
+	{
+		if(value=='')
+		{
+			$("#email_notice").html("请输入负责人邮箱地址!");
+		}
+ 		else if ( ! Utils.isEmail(value))
+  		{
+   				$("#email_notice").html("请输入正确邮箱地址!");
+ 		}
+		else
+		{
+				$("#email_notice").html("");
+		}
+	}
+	function check_phone(value)
+	{
+		var reg2 = /^1[345678]\d{9}$/;
+		if(value=='')
+		{
+			$("#phone_notice").html("请输入负责人手机号码!");
+		}
+		else if(!reg2.test(value))
+		{
+			$("#phone_notice").html("请输入正确负责人手机号码!");
+		}	
+		else
+		{
+			$("#phone_notice").html("");
+		}
+	}
+
+</script>
+</head>
+<body>
+<div class="enter">
+    <form action="enter.php" name="myfrom"  enctype="multipart/form-data"   method="post" onSubmit="return regs();">
+    <ul>
+        <li>
+            <label>商家名称：</label>
+            <div><input name="suppliers_name" type="text" placeholder="请填写入驻店铺名称" onblur="check_suppliers_name(this.value);" id="suppliers_name" class="inp"/></div>
+            <span id="suppliers_name_notice"></span>
+        </li>
+        <li>
+            <label>所属行业：</label>
+            <div>
+            <select name="hangye_id" id="hangye_id">
+                <option value="">请选择经营行业</option>
+                {foreach from=$hangye item=item}
+                <option value="{$item.id}">{$item.name}</option>
+                {foreach from=$item.children item=child}
+                <option value="{$child.id}">└──{$child.name}</option>
+                {/foreach}
+                {/foreach}
+            </select>
+            </div> 
+        </li>
+        <li>
+            <label>经营区域：</label>
+            <div>
+        	  <select name="city_id" id="selCities"  onchange="region.changed(this, 3, 'selDistricts')">
+          <option value='1'>全国</option>
+            {foreach from=$cities item=region}
+              <option value="{$region.region_id}" {if $region.region_id eq $suppliers.city_id}selected="selected"{/if}>{$region.region_name}</option>
+            {/foreach}
+
+        </select>
+         <select name="district_id" id="selDistricts">
+
+				<option value="0">请选择</option>
+
+				{foreach from=$district_list item=district}
+
+				<option value="{$district.region_id}" {if $district.region_id eq $suppliers.district_id}selected="selected"{/if}  >{$district.region_name}</option>
+
+				{/foreach}
+
+		</select> 
+            </div>
+        </li>
+        <li>
+            <label>详细地址：</label>
+            <div><input name="address" placeholder="实体店铺地址" onblur="check_address(this.value);" type="text" id="address" class="inp" /></div>
+            <span id="address_notice"></span>  
+        </li>
+        <li>
+            <label>　负责人：</label>
+            <div><input name="real_name" type="text" placeholder="店铺负责人" onblur="checkreal_name(this.value);" id="real_name" class="inp" /></div>
+            <span id="real_name_notice"></span>  
+        </li>
+        <li>
+            <label>手机号码：</label>
+            <div><input name="phone" type="text" placeholder="负责人手机号" onblur="check_phone(this.value);" id="phone" class="inp" /></div>
+            <span id="phone_notice"></span>  
+        </li>
+        <li>
+            <label>邮箱地址：</label>
+            <div><input name="email" type="text" placeholder="邮箱地址" onblur="check_email(this.value);" id="email" class="inp" /></div>
+            <span id="email_notice"></span>  
+        </li>
+        
+        
+        <li>
+            <label>登录账号：</label>
+            <div><input name="user_name" type="text" id="user_name" class="inp" placeholder="管理后台登陆账号" onblur="check_user_name(this.value);" /></div>
+           	<span id="user_name_notice"></span>  
+        </li>
+        <li>
+            <label>登录密码：</label>
+            <div><input name="password" type="password" id="password" class="inp" placeholder="管理后台登录密码" /></div>
+            <span id="password_notice"></span>  
+        </li>
+        <li>
+            <label>密码确认：</label>
+            <div><input name="password1" type="password" id="password1" class="inp" placeholder="再次输入密码" /></div>
+           	<span id="password_notice"></span>  
+        </li>
+        <li class="us_Submit_reg">
+            <input name="act" type="hidden" value="enter_act">
+            <input name="Submit" type="submit" value="提交申请">
+        </li>
+
+</form>
+</div>
+   <script>
+	region.isAdmin = true;
+	</script>
+<div class="blank"></div>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+</html>

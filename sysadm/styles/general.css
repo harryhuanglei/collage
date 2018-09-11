@@ -1,0 +1,124 @@
+/*
+$Id: general.css 13504 2007-11-08 09:51:13Z weberliu $
+*/
+
+body {
+  margin: 0px;
+  padding: 0px;
+  color: #192E32;
+  font: 12px "sans-serif", "Arial", "Verdana";
+}
+
+p, td, div {
+  font: 12px "sans-serif", "Arial", "Verdana";
+}
+
+th {
+  font: 12px "sans-serif", "Arial", "Verdana";
+  font-weight: bold;
+}
+
+form {
+  margin: 0px;
+  padding: 0px;
+}
+
+input, textarea, select {
+  font: 12px "courier new";
+}
+
+a:visited {
+  color: #335B64;
+  text-decoration: none;
+}
+
+a:link {
+  color: #335B64;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #EB8A3D;
+  text-decoration: underline;
+}
+
+a:active {
+  color: #EB8A3D;
+  text-decoration: underline;
+}
+
+.clear {
+  clear: both;
+  float: none;
+  font-size: 0px;
+  margin: 0;
+  padding: 0;
+  display:block;
+}
+
+.nowrap {
+  white-space:nowrap;
+}
+.common-new{
+    width: 40%;
+    padding: 30px;
+    background: rgba(0,0,0,0.8);
+    border-radius: 5px;
+    position: fixed;
+    left: 50%;
+    top: 40%;
+    transform: translate(-50%,-50%);
+    -webkit-transform: translate(-50%,-50%);
+    -moz-transform: translate(-50%,-50%);
+    display: none;
+    z-index: 9999;
+}
+.common-new *{
+    font-size: 15px;
+    text-align: center;
+    color: #fff;
+    line-height: 30px;
+}
+.common-new input[name="invoice_no"]{
+   height: 28px;
+   background-color: rgba(255,255,255,1);
+   border-radius: 3px;
+   overflow: hidden;
+   font-size: 14px;
+   color: #666;
+   padding: 0 5px;
+   border:none; 
+   text-align: left;
+}
+.common-new input[name="btn-send"]{
+   height: 28px;
+   background-color: #5977b4;
+   border-radius: 3px;
+   overflow: hidden;
+   font-size: 14px;
+   color: #fff;
+   padding: 0 5px;
+   border:none; 
+    cursor: pointer;
+}
+.common-new .btn-send-li{
+  text-align: right;
+  margin-top: 20px;
+}
+.common-new .close{
+  width: 28px;
+  height:28px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(0,0,0,.6);
+  text-align: center;
+  line-height: 28px;
+  color: #fff;
+  font-size: 12px;
+  display: block;
+  border-radius: 28px;
+}
+.common-new .close:hover{
+  text-decoration: none;
+}

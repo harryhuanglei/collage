@@ -1,0 +1,57 @@
+{include file="pageheader.htm"}
+<div class="tab-div">
+  <!-- tab bar -->
+  <!-- body -->
+  <div class="tab-body">
+  <div class="list-div list-div-ad" id="listDiv">
+  <table cellspacing='1' cellpadding='3' id='list-table' width="70%">
+    <tr>
+      <th width="400px">名称</th>
+    <th>图片</th>
+      <th>链接URL</th>
+      <th>排序</th>
+    <th width="70px">操作</th>
+    </tr>
+    {foreach from=$supp_photo item=item key=key}
+    <tr>
+      <td align="center">{$item.name}</td>
+    <td align="center"><a href="{$item.photo_file}" target="_blank"><img src="/{$item.photo_file}" width="100" height="100"> </a></td>
+      <td align="center">{$item.link}</td>
+      <td align="center">{$item.sort_order}</td>
+    <td align="center">
+      
+        <a href="suppliers.php?act=ad_del&photo_id={$item.photo_id}&suppliers_id={$item.supp_id}&photo_file={$item.photo_file}" onclick="return check_del();" title="{$lang.trash_img}"><img src="images/icon_drop.gif" width="16" height="16" border="0" /></a>
+      </td>
+    </tr>
+    {/foreach}
+  </table>
+ 
+  </div>
+  
+  </div>
+
+</div>
+<script language="JavaScript">
+<!--
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+function check_del()
+{
+  if (confirm('确定要删除吗?'))
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+
+//-->
+</script>
+
+{include file="pagefooter.htm"}

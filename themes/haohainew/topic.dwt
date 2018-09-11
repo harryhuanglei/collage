@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/topic.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,aotime.js'}
+</head>
+<body>
+<div class="container">
+    <div class="topad">
+        <img src="{$topic.topic_img}">
+        <div class="times">剩余时间：<span class="aotime" data="{$topic.end_time}"></span></div>
+    </div>
+    <!-- {foreach from=$sort_goods_arr item=sort key=sort_name} -->
+    <div class="topic_goods">
+        <h3>{$sort_name}</h3>
+        <ul>
+            <!-- {foreach from=$sort item=goods} -->
+            <li>
+                <a href="{$goods.url}"><img src="{$goods.goods_thumb}" alt="{$goods.name|escape:html}" /></a>
+                <p class="tit">{$goods.name}</p>
+                <p class="price">活动价：¥<b>{if $goods.promote_price neq ""}{$goods.promote_price}{else}{$goods.shop_price}{/if}</b></p>
+                <p class="bnt"><a href="{$goods.url}">立即抢购</a></p>
+            
+            </li>
+            <!--{/foreach}-->
+        </ul>
+    </div>
+    <!--{/foreach}-->
+    <div class="topic_bot">
+        <div class="topic_line"></div>
+        <p>已经到底部了</p>
+        <a href="index.php">返回首页</a>
+    </div>
+</div>
+</body>
+</html>

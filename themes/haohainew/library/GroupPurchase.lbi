@@ -1,0 +1,23 @@
+<!--{foreach name=name from=$group_list item=group}-->
+<div class="list">
+    <img class="mf-image-preload" onclick="window.location='share.php?team_sign={$group.team_sign}';" src="{$group.headimgurl}">
+    <div class="message">
+        <h6>{$group.goods_name}</h6>
+        <div class="progress">
+            <span class="schedule" style="width:{$group.progress}%"></span>
+        </div>
+        <div class="xin">
+            <span class="name">{$group.user_name}</span>
+            <p class="already">
+                已有<span>{$group.teammen_num}/{$group.team_num}</span>人加入
+            </p>
+        </div>
+    </div><a href="javascript:void(0);" onclick="addToCart({$group.extension_id},0,0,5,{$group.team_sign});" class="join">参团</a>
+</div>
+<!-- {foreachelse} -->
+<div class="list">
+	<div class="message">
+        <h2 style="text-align:center;">您的附近没有任何团</h2>
+        </div>
+</div>
+<!-- {/foreach} -->

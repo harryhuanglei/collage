@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/square_new.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/tab_pic.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,smoothbox.js'}
+</head>
+<body id="square">
+<div class="container" style="padding-bottom:56px; overflow: hidden; ">
+
+    <div class="square_list">
+        <div class="square_list_cont">
+            <dl>
+                <dt><img src="themes/haohainew/images/mr_head.png"><span class="send_name">商城管理部</span></dt>
+                <dd>
+                    <p class="bg-text-p"><span class="mess">{$announcement.title}</span></p>
+                    <p class="bg-text-p"><span class="mess">发布时间：{$announcement.add_time}</span></p>
+                    <p class="bg-text-p"><span class="mess">{$announcement.content}</span></p>
+                </dd>
+            </dl>
+            <div class="messages">
+                <div class="line"></div>
+                <ul>
+                    {foreach from=$comment item=item}
+                    <li>
+                        <div class="messages_content">
+                            <div class="messages_name">
+                                <img src="{$item.headimgurl}" />
+                                <span>{$item.uname}</span>
+                            </div>
+                            <div class="messages_flor">
+                                <span class="send_time">{$item.add_time}</span>
+                            </div>
+                            <div class="messages_new">
+                                <span class="send_time">{$item.content}</span>
+                            </div>
+                        </div>
+                    </li>
+                    {/foreach}
+                </ul>
+            </div>
+        </div>
+    </div> 
+    
+    <div class="line"></div>
+<div class="mess-send">
+    <from name="messAction" mothod="" action="">
+        <input type="text" id="content" name="content" />
+        <input type="button" name="messBtn" id="sub" onclick="return comment();" value="发送" />
+    </from>
+</div>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+<script type="text/javascript">
+    function comment(){
+        var content = $('#content').val();
+        var id = "{$announcement.id}";
+        document.getElementById('sub').style.display = 'none';
+        if (content == null) {
+            alert('评论内容为空,请填写！');
+            return false;
+        }
+          $.ajax({   
+                type:"POST",   
+                url:"square_comment.php?act=announcement_comment_insert",  
+                dataType: 'json', 
+                data:{"id":id,"content":content},
+                cache:false, //不缓存此页面   
+                success:function(res){   
+                       if(res.isError == 0){
+                            alert('评论成功！');
+                            window.location.reload();
+                            document.getElementById('content').value = '';
+                            document.getElementById('sub').style.display = '';
+                       }
+                       if(res.isError == 1){
+                        alert('评论内容为空,请填写！');
+                       }
+                }   
+            });   
+    }  
+</script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+                <div class="goods-comments-detail">
+                    <img class="goods-comments-avatar" src="{$item.headimgurl}">
+                    <div class="goods-comments-name">{$item.username}</div>
+                    <div class="goods-comments-time">{$item.add_time}</div>
+                    <div class="goods-comments-stars">
+                    {if $item.rank==1}
+                        <div class="goods-comments-stars-show"></div>
+                     {elseif $item.rank==2}   
+                        <div class="goods-comments-stars-show"></div>
+                        <div class="goods-comments-stars-show"></div>
+                      {elseif $item.rank==3}     
+                        <div class="goods-comments-stars-show"></div>
+                        <div class="goods-comments-stars-show"></div>
+                        <div class="goods-comments-stars-show"></div>
+                        {elseif $item.rank==4}  
+                         <div class="goods-comments-stars-show"></div>
+                        <div class="goods-comments-stars-show"></div>
+                        <div class="goods-comments-stars-show"></div>
+                         <div class="goods-comments-stars-show"></div> 
+                         {elseif $item.rank==5}  
+                         <div class="goods-comments-stars-show"></div>
+                        <div class="goods-comments-stars-show"></div>
+                        <div class="goods-comments-stars-show"></div>
+                         <div class="goods-comments-stars-show"></div> 
+                         <div class="goods-comments-stars-show"></div>
+                         {/if}
+                         
+                    </div>
+                    <div class="goods-comments-content"><em></em><p>{$item.content}</p>{if $item.re_content}<p class="re_content">{$item.re_username}{$item.re_content}</p>{/if}</div>
+                </div>

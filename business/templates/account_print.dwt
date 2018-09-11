@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>{$title}</title>
+</head>
+<body>
+	<table width="100%" border="0" cellpadding="5" cellspacing="1">
+	<tr><td colspan="7" align="center" >{$title}</td></tr>
+	</table>
+    <table style="background-color:black"  width="100%" border="0" cellpadding="5" cellspacing="1">
+        
+        <tr>
+<th align="center" bgcolor="#FFFFFF">序号</th>
+<th align="center" bgcolor="#FFFFFF">结算单号</th>
+<th align="center" bgcolor="#FFFFFF">总金额</th>
+<th align="center" bgcolor="#FFFFFF">平台佣金</th>		
+<th align="center" bgcolor="#FFFFFF">分销佣金</th>
+<th align="center" bgcolor="#FFFFFF">结算总额</th>
+<th align="center" bgcolor="#FFFFFF">结算时间</th>
+<th align="center" bgcolor="#FFFFFF">状态</th>
+<th align="center" bgcolor="#FFFFFF">备注</th>
+        </tr>
+        <!-- {if $account} -->
+        <!--{foreach from=$account item=item name=name}-->
+        <tr>
+<td align="center" bgcolor="#FFFFFF">{$smarty.foreach.name.iteration}</td>
+<td align="center" bgcolor="#FFFFFF">{$item.settlement_sn}</td>
+<td align="center" bgcolor="#FFFFFF">{$item.total}</td>
+<td align="center" bgcolor="#FFFFFF">{$item.commission}</td>
+<td align="center" bgcolor="#FFFFFF">{$item.fenxiao_money}</td>
+<td align="center" bgcolor="#FFFFFF">{$item.settlement_amount}</td>
+<td align="center" bgcolor="#FFFFFF">{$item.add_time}</td>
+<td align="center" bgcolor="#FFFFFF">{$lang.account_settlement_status[$item.settlement_status]}</td>
+
+           <td align="center" bgcolor="#FFFFFF"></td>
+        </tr>
+        <!--{/foreach}-->
+		<tr>
+
+          <td align="center" colspan="5" bgcolor="#FFFFFF">合计</td> 
+          <td align="center" bgcolor="#FFFFFF">{$total_settlement_amount}</td>
+          <td align="center" bgcolor="#FFFFFF"></td>
+          <td align="center" bgcolor="#FFFFFF"></td>
+		<td align="center" bgcolor="#FFFFFF"></td>
+        </tr>
+        <!-- {else} -->
+        <tr>
+          <td colspan="8" bgcolor="#FFFFFF">无可结算订单</td>
+        </tr>
+        <!-- {/if} -->
+      </table>
+ </body>
+</html>

@@ -1,0 +1,63 @@
+*{ word-wrap:break-word; outline:none; }
+body{ text-align:center; overflow-x: hidden; background:url(../img/bg.jpg) no-repeat center center; }
+body, td, input, textarea, select, button{ color:#555; font:14px "微软雅黑", Microsoft YaHei; }
+body, ul, dl, dd, p, h1, h2, h3, h4, h5, h6, form, fieldset { margin:0; padding:0; }
+ul { list-style:none; }
+h1, h2, h3, h4, h5, h6{ font-size:12px; }
+a{ color:#fff; text-decoration:none; }
+a img{ border:none; }
+em, cite, th{ font-style:normal; font-weight:normal; }
+table{ border-collapse:collapse; }
+@font-face {font-family: "iconfont";
+  src: url('iconfont.eot'); /* IE9*/
+  src: url('iconfont.eot') format('embedded-opentype'), /* IE6-IE8 */
+  url('iconfont.woff') format('woff'), /* chrome, firefox */
+  url('iconfont.ttf') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('iconfont.svg') format('svg'); /* iOS 4.1- */
+}
+.iconfont {
+  font-family:"iconfont";
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-stroke-width: 0.2px;
+  -moz-osx-font-smoothing: grayscale;
+}
+.headermenu { width:100%; height:154px; }
+.headermenu .head { height:80px; position:relative; }
+.headermenu .logo { width:550px; height:60px; background:url(../img/logo.png) no-repeat left center;position:absolute; top:10px; left:20px;  }
+.headermenu .uinfo{ position:absolute; top:20px; right:10px; }
+.headermenu .uinfo a { display:inline-block; height:30px; line-height:30px; padding:0 20px; margin:0 5px; color:#fff; background:#263F77; font-size:14px; border-radius:15px;}
+.headermenu ul { width:100%; height:74px; float:left; overflow:hidden; }
+.headermenu li { float:left; width:6%; min-width:80px; height:74px; display:inline-block; background: url(../img/nav_bg.jpg); }
+.headermenu li h3 { height:74px; display:block; background:url(../img/nav_li.png) no-repeat right bottom; }
+.headermenu li a { display: block; min-width:50px; color:#5977b4; padding:10px; font-size:14px; font-weight:400; text-align: center; }
+.headermenu li a i { height:30px; line-height:30px; text-align: center;color:#5977b4; display: block; margin:3px; font-size:32px; }
+.headermenu li.navon { background: url(../img/navon.jpg); }
+.headermenu ul ul { display:none; }
+.headermenu li:first-child { margin-left:150px; border-radius:10px 0 0 0; }
+.headermenu li:last-child { border-radius:0 10px 0 0; }
+.headermenu li:last-child h3 { background:none; }
+
+        
+.menutd { width:180px; }
+.menu_top { height:59px; margin-top:-59px; background:url(../img/nav_left.png) no-repeat right bottom; }
+.menu{ width:150px; }
+.menu ul{ float:right; width:158px; background:url(../img/menu_bg.png); }
+.menu li { float:left; width:158px; line-height:30px; overflow: hidden; text-align:center; }
+.menu li:first-child { border-top:0; }
+.menu li.line { float:right; width:154px; height:2px; overflow:hidden; background:url(../img/menu_line.png) right; opacity:0.4; }
+.menu li a { display:block; margin:10px 0; color:#fff; }
+.menu li a.tabon, .menu li a.tabon:hover{ width:142px; float:right; text-align:center; text-decoration:none; background:#fff; color:5977b4; border-radius:10px 0 0 10px; }
+/*#menu_index li:first-child { display:none; }*/
+.copyright{ width:145px; position:absolute; z-index:10; left:0;  bottom:3px; padding-top:3px; border-top:1px solid #576a85; line-height:150%; font-family:Tahoma; font-size:11px;  text-shadow: 0 1px 1px #576a85; }
+.copyright a {  color:#394962;}
+.headermenu .logo_text {
+    font-size: 20px;
+    color: #fff;
+    position: absolute;
+    top: 26px;
+    left: 240px;
+}
+#show , #promote_4{display: none;}
+.buxianshi{display:none;}
+

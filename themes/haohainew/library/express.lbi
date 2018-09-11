@@ -1,0 +1,17 @@
+
+<a href="javascript:void(0);" onclick="cancel_invoice();" class="close">X</a>
+    <div class="exp_top">
+        <p>物流信息<font>({$expressid})</font></p>
+        <p><font>运单号：{$expressno}</font></p>
+    </div>
+    <div class="exp_list" id='retData'>
+        <ul>
+        {if $express.resultcode eq 200 }
+             <!--{foreach from=$express.result.list item=item name=name}-->
+             <li {if $smarty.foreach.name.index eq 0}class="on" {/if}><i></i>{$item.datetime}<br/>{$item.remark}</li>
+             <!-- {/foreach} -->
+        {else}
+        <li>{$express.reason}</li>
+        {/if}
+        </ul>
+    </div>

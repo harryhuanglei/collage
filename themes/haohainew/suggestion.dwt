@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/suggestion.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js'}
+</head>
+<body id="user">
+<div class="container">
+    <div class="suggestion-wrap">
+        <div class="suggestion-header">常见问题</div>
+        <div style="height: 45px; visibility: hidden;"></div>
+        <div class="suggestion-body">
+            <div class="suggestion-list">
+                {foreach from=$suggestion item=suggestion}
+                <div class="suggestion-one">
+                    <a href="faq.php?id={$suggestion.article_id}">
+                    <div class="suggestion-title">{$suggestion.title}</div>
+                    <div class="suggestion-arrow">
+                        <img src="images/home_arrow.png">
+                    </div>
+                    </a>
+                </div>
+                {/foreach}  
+            </div>
+        </div>
+        <div style="height: 50px; visibility: hidden;"></div>
+    </div>
+</div>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+</html>

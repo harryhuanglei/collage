@@ -1,0 +1,146 @@
+<!-- $Id: sale_list.htm 15848 2009-04-24 07:07:13Z pangbin $ -->
+{if $full_page}
+{include file="pageheader.htm"}
+<script language="javascript" type="text/javascript" src="../js/DatePicker/WdatePicker.js"></script>
+{insert_scripts files="../js/utils.js,listtable.js"}
+<div class="form-div">
+    <form action="/sysadm/sale_list.php?act=list" name="TimeInterval" style="margin:0px">
+        {$lang.start_date}&nbsp;
+        <input class="Wdate" name="start_date" type="text" value='{$start_date}' readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-M-d HH:mm',maxDate:'%y-%M-%d %HH:%mm'})"/>&nbsp;&nbsp;
+        {$lang.end_date}&nbsp;
+        <input class="Wdate" name="end_date" type="text" value='{$end_date}' readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-M-d HH:mm',maxDate:'%y-%M-%d %HH:%mm'})"/>&nbsp;&nbsp;
+        <select name="suppliers_id[]" multiple>
+            <!--<option>选择商家</option>-->
+            <option value="0" {if in_array(0,$suppliers_id)}selected{/if}>自营店</option>
+            {foreach from=$storeList item=value}
+            <option value="{$value.suppliers_id}" {if in_array($value.suppliers_id, $suppliers_id)}selected{/if}>{$value.suppliers_name}</option>
+            {/foreach}
+        </select>&nbsp;&nbsp;
+        <select name="order_status">
+            <option value="" {if $order_status==0}selected{/if}>订单状态</option>
+            <option value="1" {if $order_status==1}selected{/if}>待确认</option>
+            <option value="2" {if $order_status==2}selected{/if}>已确认代付款</option>
+            <option value="3" {if $order_status==3}selected{/if}>待发货</option>
+            <option value="4" {if $order_status==4}selected{/if}>已付款</option>
+            <option value="5" {if $order_status==5}selected{/if}>已发货</option>
+            <option value="6" {if $order_status==6}selected{/if}>已完成</option>
+            <option value="7" {if $order_status==7}selected{/if}>取消</option>
+            <option value="8" {if $order_status==8}selected{/if}>已退款</option>
+        </select>&nbsp;&nbsp;
+        <select name="team">
+            <option value="">购买类型</option>
+            <option value="1" {if $team==1}selected{/if}>团购订单</option>
+            <option value="0" {if $team===0}selected{/if}>单独购买</option>
+        </select>&nbsp;&nbsp;
+        <input type="submit" name="submit" value="{$lang.query}" class="button"/>
+    </form>
+</div>
+<form method="POST" action="" name="listForm">
+    <div class="list-div" id="listDiv">
+        {/if}
+        <table width="100%" cellspacing="1" cellpadding="3">
+            <tr>
+                <th>货号</th>
+                <th>商品名</th>
+                <th>所属商家</th>
+                <th>订单属性</th>
+                <th>销量</th>
+                <th>单价</th>
+                <th>日期</th>
+                <th>订单状态</th>
+            </tr>
+            {foreach from=$goods_sales_list item=list}
+            <tr align="center">
+                <td>{$list.goods_sn}</td>
+                <td align="left"><a href="sale_goods_list.php?act=list&goods_id={$list.goods_id}">{$list.goods_name}</a></td>
+                <td>{if $list.suppliers_id}{$list.suppliers_name}{else}自营店{/if}</td>
+                <td>{if $list.extension_id}团购{else}单独购买{/if}</td>
+                <td>{$list.goods_num}</td>
+                <td>{$list.goods_price}</td>
+                <td>{$list.sales_time}</td>
+                <td>
+                    {if $order_status == 1}
+                    待确认
+                    {elseif $order_status == 2}
+                    已确认待付款
+                    {elseif $order_status == 3}
+                    待发货
+                    {elseif $order_status == 4}
+                    已付款
+                    {elseif $order_status == 5}
+                    已发货
+                    {elseif $order_status == 6}
+                    已完成
+                    {elseif $order_status == 7}
+                    取消
+                    {elseif $order_status == 8}
+                    已退款
+                    {else}
+                    全部
+                    {/if}
+                 </td>
+            </tr>
+            {foreachelse}
+            <tr>
+                <td class="no-records" colspan="10">{$lang.no_records}</td>
+            </tr>
+            {/foreach}
+        </table>
+        <table id="page-table" cellspacing="0">
+            <tr>
+                <td>&nbsp;</td>
+                <td align="right" nowrap="true">
+                    {include file="page.htm"}
+                </td>
+            </tr>
+        </table>
+        {if $full_page}
+    </div>
+</form>
+<script type="Text/Javascript" language="JavaScript">
+    listTable.recordCount = {$record_count};
+    listTable.pageCount = {$page_count};
+    {foreach from=$filter item=item key=key}
+    {if is_null(json_decode($item))}
+    listTable.filter.{$key} = '{$item}';
+    {else}
+    listTable.filter.{$key} = {$item};
+    {/if}
+    {/foreach}
+    {literal}
+    onload = function()
+    {
+        // 开始检查订单
+        startCheckOrder();
+        //getDownUrl();
+    }
+    function getList()
+    {
+        var frm =  document.forms['TimeInterval'];
+        listTable.filter['start_date'] = frm.elements['start_date'].value;
+        listTable.filter['end_date'] = frm.elements['end_date'].value;
+        listTable.filter['page'] = 1;
+        listTable.loadList();
+        //getDownUrl();
+    }
+    function getDownUrl()
+    {
+        var aTags = document.getElementsByTagName('A');
+        for (var i = 0; i < aTags.length; i++)
+        {
+            if (aTags[i].href.indexOf('download') >= 0)
+            {
+                if (listTable.filter['start_date'] == "")
+                {
+                    var frm =  document.forms['TimeInterval'];
+                    listTable.filter['start_date'] = frm.elements['start_date'].value;
+                    listTable.filter['end_date'] = frm.elements['end_date'].value;
+                }
+                aTags[i].href = "sale_list.php?act=download&start_date=" + listTable.filter['start_date'] + "&end_date=" + listTable.filter['end_date'];
+            }
+        }
+    }
+</script>
+{/literal}
+{include file="pagefooter.htm"}
+{/if}

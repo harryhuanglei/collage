@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>{$lang.cp_home}</title>
+<link rel="stylesheet" href="css/mobile.css" type="text/css" media="all" />
+<script type="text/javascript" src="js/transport.js"></script>
+<script type="text/javascript" src="js/common.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="main">
+        <h1>{$lang.cp_home}</h1>
+        <div class="mbox">
+            <h3>今日概况</h3>
+            <ul class="ult">
+                <li>订单数（个）<br/>{$today_order}<br/><span>昨日：{$yestoday_order}</span></li>
+                <li>成团数（个）<br/>{$teamtoday}<br/><span>昨日：{$team_yestoday}</span></li>
+                <li>成交额（元）<br/>{$today_money}<br/><span>昨日：{$yestoday_money}</span></li>
+            </ul>
+        </div>
+        <div class="mbox">
+            <h3>整体概况</h3>
+            <ul class="ulb">
+                <li>商品总数<br/>{$goodsnum}</li>
+                <li>共成团<br/>{$totle_team}</li>
+                <li>总成交额<br/>{$totle_money}</li>
+                <li>总订单量<br/>{$totle_count}</li>
+                <li><a href="order.php?act=list&composite_status=101&he=2">待核销订单<br/>{$weihe}</a></li>
+                <li>已核销订单<br/>{$yihe}</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="footer">
+    <ul>
+        <li><a href="index.php" class="cur">首页</a></li>
+        <li><a href="order.php?act=list&composite_status=101&he=1">待发货订单</a></li>
+        <li><a href="order.php?act=list&composite_status=101&he=2">待核销订单</a></li>
+    </ul>
+</div>
+</body>
+</html>

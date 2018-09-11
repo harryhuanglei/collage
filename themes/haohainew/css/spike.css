@@ -1,0 +1,22 @@
+@charset "UTF-8";
+.spike_container { width: 100%; padding:50px 0 60px 0 }
+.spike_goods { background-color: #fff; height: 120px; padding: 10px; overflow: hidden; margin-bottom: 2px; }
+.spike_goods img { height: 100px; width: 100px; float: left; }
+.spike_info { margin-left: 110px; height: 100px; }
+.spike_left_time { height: 26px; width: 100%; color: #999; font-size: 12px; }
+.spike_left_time span { color: #333; padding: 0 2px; }
+.spike_left_time b { background-color: #f34949; color: #fff; padding: 0px 2px; border-radius: 3px; font-weight: 400; }
+.spike_goods_name { display:block; overflow: hidden; width: 100%; height: 40px; line-height: 20px; font-size: 14px; color: #000; }
+.spike_buy { width: 100%; height: 30px; padding-top: 5px; }
+.spike_price_all { display: inline-block; height: 30px; line-height: 30px; }
+.spike_sale_price { font-size: 18px; color: #f00; font-weight: 700; }
+.spike_sale_price del { overflow: hidden; font-size: 12px; color: #999; padding-left: 10px; font-weight: 400; }
+.spike_buy_button_off, .spike_buy_button_on, .spike_buy_button_come { float: right; display: inline-block; height: 30px; line-height: 30px; width: 70px; color: #fff; font-size: 14px; font-weight: 700; text-align: center; border-radius: 5px; }
+.spike_buy_button_off { background-color: #d3d3d3; }
+.spike_buy_button_come { background-color: #FFA700; }
+.spike_buy_button_on { background-color: #f34949; }
+.spike_buy_button_off a, .spike_buy_button_on a, .spike_buy_button_come a { color: #fff; }
+
+.luckdark .spike_goods_name  { height: 20px; }
+.luckdark .luckdark_title  { height: 20px; line-height: 20px; }
+.luckdark .luckdark_title  { color:#666; }

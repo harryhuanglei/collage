@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style_new.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/square_new.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js'}
+</head>
+<body id="fabu">
+    <div class="fabu_page">
+        <form id="fabu_form"  name= "fabu_form" method="post"  action="">
+            <textarea id="fabu_cont" value="" placeholder="有什么想分享给大家, 说说看~"></textarea>
+            <div class="fabu_add">
+                <strong>还能添加<span>3</span>张图片</strong>
+                <a href="javascript:;" class="add_img" id="add_img"> + </a>
+            </div>
+            <a href="javascript:;" class="fabu_add_btn">发布</a>
+        </form>
+    </div>
+    <div class="photo_bg">
+        <div class="photo">
+            <ul>
+                <li>
+                    <a class="pic" href="javascript:;">图片</a>
+                </li>
+                <li>
+                    <a class="choose" href="javascript:;">从手机相册中选择</a>
+                </li>
+                <li>
+                    <a class="camera" href="javascript:;">拍照</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+    $(document).ready(function(){
+        //弹出选框
+        $('#add_img').on('click',function(){
+            $('.photo_bg').show();
+        });
+        //点击任意处关闭选框
+        $('.photo_bg').on('click',function(){
+            $(this).hide();
+        });
+    });
+</script>
+</html>

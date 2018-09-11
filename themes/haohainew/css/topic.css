@@ -1,0 +1,19 @@
+body { background: #EBEBCD; }
+.topad  { margin-bottom:30px; position:relative; }
+.topad img { width: 100%; }
+.topad .times { position:absolute; left:50%; bottom:-20px; width:250px; margin-left:-125px; height:40px; line-height:40px; background:#fff; border:#FF0D4B 2px solid; margin-top:-20px; border-radius:6px; text-align:center; font-size:14px; }
+.topad .times em { background-color:#FF0D4B; color:#fff; padding:2px; border-radius:3px; margin:0 2px; }
+.topic_goods { margin-bottom: 10px; }
+.topic_goods h3 { height: 40px; line-height: 40px; background-color: #fff; border-bottom: #eee 1px solid; margin-bottom: 4px; border-left: #FF4339 3px solid; padding-left: 10px; font-size: 16px; color: #333; }
+.topic_goods ul { overflow: hidden; padding: 0 4px; }
+.topic_goods li { float: left; width: 49.5%; margin-bottom: 3px; background: #fff; padding-bottom: 5px; position: relative; }
+.topic_goods li:nth-child(2n) { margin-left: 1%; }
+.topic_goods li img { width: 100%; display: block; }
+.topic_goods li p { width:100%; padding: 0 2%; }
+.topic_goods .tit { font-size:14px; height:30px; line-height: 30px; overflow: hidden; }
+.topic_goods .price { padding-bottom:5px; color: #FF0D4B; font-size: 14px; }
+.topic_goods .bnt a { width:96%; height: 34px; line-height: 34px; display: block; margin:0 auto; border-radius:3px; background-color: #FF0D4B; color: #fff; font-size: 14px; text-align:center; font-weight: 700; }
+.topic_bot { height: 60px; width: 100%; line-height: 60px; margin: 30px auto; text-align: center; }
+.topic_bot .topic_line { border-bottom: 2px solid #FF0D4B; height: 30px; width: 90%; margin-left: auto; margin-right: auto; }
+.topic_bot p { position: relative; top: -30px; width: 140px; margin-left: auto; margin-right: auto; background: #EBEBCD; color: #FF0D4B; font-size: 16px; font-weight: 700; }
+.topic_bot a { width: 70%; height: 40px; line-height: 40px; display: block; margin: -20px auto 0 auto; border-radius: 5px; background-color: #FF0D4B; color: #fff; font-size: 16px; font-weight: 700; text-align:center;  }

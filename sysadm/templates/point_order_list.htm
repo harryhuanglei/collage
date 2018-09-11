@@ -1,0 +1,449 @@
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js,../js/region.js"}
+<script language="javascript" type="text/javascript" src="../js/DatePicker/WdatePicker.js"></script>
+<!-- 订单搜索 -->
+<div class="form-div">
+  <form action="javascript:searchOrder()" name="searchForm">
+    <img src="images/icon_search.gif" width="26" height="22" border="0" alt="SEARCH" />
+    {$lang.order_sn}<input name="order_sn" type="text" id="order_sn" size="15">
+    {$lang.consignee|escape}<input name="consignee" type="text" id="consignee" size="15">
+    微信订单编号<input name="transaction_id" type="text" id="transaction_id" size="15">
+        商品货号<input name="goods_sn" type="text" id="goods_sn" size="15">
+    {$lang.all_status}
+    <select name="status" id="status">
+      <option value="-1" >{$lang.select_please}</option>
+<option value="100">已确认待付款</option>
+<option value="120">已付款</option>
+<option value="3">已退款</option>
+<option value="102">已核销</option>
+<option value="101">待核销</option>
+    </select>
+    购买类型
+    <select name="order_type" id="order_type">
+      <option value="-1">全部</option>
+      <option value="1">单独购</option>
+      <option value="2">团购</option>
+      <!--<option value="3">零元购</option>-->
+    </select>
+     购买方式
+    <select name="is_app_buy" id="is_app_buy">
+      <option value="">全部</option>
+      <option value="1">APP</option>
+      <option value="0">微信</option>
+      <!--<option value="3">零元购</option>-->
+    </select>
+     区域选择
+     <select name="city_id" id="selCities"  onchange="region.changed(this, 3, 'selDistricts')">
+          <option value=''>请选择</option>
+            {foreach from=$cities item=region}
+              <option value="{$region.region_id}" {if $region.region_id eq $goods.city_id}selected="selected"{/if}>{$region.region_name}</option>
+            {/foreach}
+        </select>
+         <select name="district_id" id="selDistricts">
+				<option value="0">请选择</option>
+				{foreach from=$district_list item=district}
+				<option value="{$district.region_id}" {if $district.region_id eq $goods.district_id}selected="selected"{/if}  >{$district.region_name}</option>
+				{/foreach}
+		</select> 
+  {if $suppliers_exists eq 1}    
+		提货提醒
+      <select name="point_shop_remind" id="point_shop_remind">
+		<option value="-1">请选择</option>
+		<option value="1">待提醒</option>
+		<option value="2">已提醒</option>
+	  </select>
+      <!-- 供货商 -->
+		商家名称
+      <select name="suppliers_id" onchange="point_list();" id="suppliers_id">
+      <option value="-1">请选择</option>
+      <option value="0">自营店</option>{html_options options=$suppliers_list_name selected=$smarty.get.suppliers_id}</select>
+      {/if}  
+	自提店名称
+ <select name="point_id" id="point_id">
+      <option value="">请选择</option>
+</select>
+<!--导出订单项目要求-->
+<input type="hidden" name="is_suppliers" value="1" id="is_suppliers"/>
+      下单时间
+    <input class="Wdate" type="text" name="start_time" readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-M-d HH:mm'})"/>
+      ~       
+      <input class="Wdate" type="text" name="end_time" readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-M-d HH:mm'})"/>
+    <input type="submit" value="{$lang.button_search}" class="button" />
+    <a href="order.php?act=list&composite_status={$os_unconfirmed}">{$lang.cs.$os_unconfirmed}</a>
+    <a href="order.php?act=list&composite_status={$cs_await_pay}">{$lang.cs.$cs_await_pay}</a>
+    <a href="order.php?act=list&composite_status={$cs_await_ship}">待核销</a>
+  </form>
+</div>
+<!-- 订单列表 -->
+<form method="post" action="order.php?act=operate" name="listForm" onsubmit="return check()">
+  <div class="list-div" id="listDiv">
+{/if}
+<table cellpadding="3" cellspacing="1">
+  <tr>
+    <th>
+      <input onclick='listTable.selectAll(this, "checkboxes")' type="checkbox" /><a href="javascript:listTable.sort('order_sn', 'DESC'); ">{$lang.order_sn}</a>{$sort_order_sn}
+    </th>
+    <th><a href="javascript:listTable.sort('add_time', 'DESC');">{$lang.order_time}</a>{$sort_order_time}</th>
+    <th><a href="javascript:listTable.sort('pay_time', 'DESC'); ">支付时间</a>{$sort_pay_time}</th>
+    <th><a href="javascript:listTable.sort('consignee', 'DESC'); ">{$lang.consignee}</a>{$sort_consignee}</th>
+    <th><a href="javascript:listTable.sort('total_fee', 'DESC'); ">{$lang.total_fee}</a>{$sort_total_fee}</th>
+    <th><a href="javascript:listTable.sort('order_amount', 'DESC'); ">{$lang.order_amount}</a>{$sort_order_amount}</th>
+    <th>{$lang.all_status}</th>
+    <th>购买类型</th>
+    <th>商品ID</th>
+    <th><a href="javascript:listTable.sort('extension_id', 'DESC');">商品名称</a>{$sort_extension_id}</th>
+    <!--th>商品数量</th>
+    <th>商品价格</th-->
+	<th>商家名称</th>
+    <th>微信单号</th>
+    <th>{$lang.handler}</th>
+  <tr>
+  {foreach from=$order_list item=order key=okey}
+  <tr>
+    <td align="center" valign="top" nowrap="nowrap"><input type="checkbox" name="checkboxes" value="{$order.order_sn}" /><a href="order.php?act=info&order_id={$order.order_id}" id="order_{$okey}">{$order.order_sn}{if $order.extension_code eq "group_buy"}<br /><div align="center">{$lang.group_buy}</div>{elseif $order.extension_code eq "exchange_goods"}<br /><div align="center">{$lang.exchange_goods}</div>{/if}</a>{if $order.is_app_buy eq 1}<font color="#FF0000">[APP]</font>{/if}</td>
+    <td align="center">{$order.buyer|escape}<br />{$order.formated_order_time}</td>
+     <td align="center">{if $order.formated_pay_time}{$order.formated_pay_time}{else}无{/if}</td>
+    <td align="center" valign="top">{if $order.point_id eq 0}[{$order.region}]{$order.consignee|escape}{if $order.tel} [TEL: {$order.tel|escape}]{/if} <br />
+	{$order.address|escape}{else}到店自提<br/><span style="color:green;">[{$order.shop_name}]</span>{/if}</td>
+    <td align="center" valign="top" nowrap="nowrap">{$order.formated_total_fee}</td>
+    <td align="center" valign="top" nowrap="nowrap">{$order.formated_order_amount}</td>
+    <td align="center" valign="top" nowrap="nowrap">{$lang.os[$order.order_status]},{$lang.ps[$order.pay_status]},{$lang.pos[$order.shipping_status]},{if $order.point_shop_remind eq 1}待提醒{else}已提醒{/if}</td>
+   <td align="center" valign="top" nowrap="nowrap">{if $order.extension_code eq 'team_goods'}团购【{$lang.team_status[$order.team_status]}】{else}单独购买{/if} {if $order.point_id gt 0} 自提{/if} {if $order.package_one eq 1} 同楼购{/if}</td>
+    <td align="center">{$order.goods_idxy}</td>
+    <td align="center">{$order.goods_namexy}</td>
+    <!--td align="center">{$order.goods_number}</td>
+   <td align="center">{$order.goods_price}</td-->
+   <td align="center">{$order.suppliers_name}</td>
+   <td align="center">{if $order.transaction_id}{$order.transaction_id}{else}无{/if}</td>
+    <td width="120" class="bnt_a">
+     <a href="order.php?act=info&order_id={$order.order_id}">{$lang.detail}</a>
+     {if $order.can_remove}
+     <a href="javascript:;" onclick="listTable.remove({$order.order_id}, remove_confirm, 'remove_order')">{$lang.remove}</a>
+     {/if}
+     {if $order.shipping_status gt 0}
+     <a href="order.php?act=info&order_id={$order.order_id}&view_print=1" >打印</a>
+     {/if}
+      {if $order.team_sign neq 0}
+ <a href="order.php?act=teammem_list&team_sign={$order.team_sign}" >团</a>
+     {/if}
+    </td>
+  </tr>
+  {/foreach}
+</table>
+<!-- 分页 -->
+<table id="page-table" cellspacing="0">
+  <tr>
+    <td align="right" nowrap="true">
+    {include file="page.htm"}
+    </td>
+  </tr>
+</table>
+{if $full_page}
+  </div>
+  <div>
+    <input name="confirm" type="submit" id="btnSubmit" value="{$lang.op_confirm}" class="button" disabled="true" onclick="this.form.target = '_self'" />
+    <input name="invalid" type="submit" id="btnSubmit1" value="{$lang.op_invalid}" class="button" disabled="true" onclick="this.form.target = '_self'" />
+    <input name="cancel" type="submit" id="btnSubmit2" value="{$lang.op_cancel}" class="button" disabled="true" onclick="this.form.target = '_self'" />
+    <input name="remove" type="submit" id="btnSubmit3" value="{$lang.remove}" class="button" disabled="true" onclick="this.form.target = '_self'" />
+    <input name="print" type="submit" id="btnSubmit4" value="{$lang.print_order}" class="button" disabled="true" onclick="this.form.target = '_blank'" />
+    <input name="shipping_print" type="submit" id="btnSubmit5" value="打印快递单" class="button" disabled="true" onclick="this.form.target = '_blank'" />
+<input name="point_shop_remind" type="submit" id="btnSubmit6" value="取货提醒" class="button" disabled="true" onclick="this.form.target = '_self'" />
+    <input name="batch" type="hidden" value="1" />
+    <input name="order_id" type="hidden" value="" />
+  </div>
+</form>
+<script language="JavaScript">
+region.isAdmin = true;
+listTable.recordCount = {$record_count};
+listTable.pageCount = {$page_count};
+listTable.query = 'point_order_list_query';
+var str="";
+{foreach from=$filter item=item key=key}
+listTable.filter.{$key} = '{$item}';
+if('{$key}'!='sort_by'&&'{$key}'!='sort_order'){
+	str+="{$key}={$item}&";
+}
+{/foreach}
+str=str.slice(0,-1);
+{literal}
+    onload = function()
+    {
+        // 开始检查订单
+        startCheckOrder();
+        getDownUrl(1);
+    }
+    /**
+     * 搜索订单
+     */
+    function searchOrder()
+    {
+        listTable.filter['order_sn']         = Utils.trim(document.forms['searchForm'].elements['order_sn'].value);
+        listTable.filter['consignee']        = Utils.trim(document.forms['searchForm'].elements['consignee'].value);
+        listTable.filter['transaction_id']   = document.forms['searchForm'].elements['transaction_id'].value;
+        listTable.filter['composite_status'] = document.forms['searchForm'].elements['status'].value;
+        listTable.filter['goods_sn']         = document.forms['searchForm'].elements['goods_sn'].value;
+        listTable.filter['city_id']          = document.forms['searchForm'].elements['city_id'].value;
+        listTable.filter['district_id']      = document.forms['searchForm'].elements['district_id'].value;
+			listTable.filter['is_app_buy']      = document.forms['searchForm'].elements['is_app_buy'].value;
+		if(document.forms['searchForm'].elements['suppliers_id'])
+		{
+        listTable.filter['suppliers_id']     = document.forms['searchForm'].elements['suppliers_id'].value;
+		listTable.filter['point_id']     = document.forms['searchForm'].elements['point_id'].value;
+		listTable.filter['point_shop_remind']     = document.forms['searchForm'].elements['point_shop_remind'].value;
+		}
+        listTable.filter['order_type']       = document.forms['searchForm'].elements['order_type'].value;
+        listTable.filter['start_time']       = document.forms['searchForm'].elements['start_time'].value;
+        listTable.filter['end_time']         = document.forms['searchForm'].elements['end_time'].value;
+        listTable.filter['page']             = 1;
+        listTable.loadList();
+        getDownUrl();
+    }
+    function check()
+    {
+      var snArray = new Array();
+      var eles = document.forms['listForm'].elements;
+      for (var i=0; i<eles.length; i++)
+      {
+        if (eles[i].tagName == 'INPUT' && eles[i].type == 'checkbox' && eles[i].checked && eles[i].value != 'on')
+        {
+          snArray.push(eles[i].value);
+        }
+      }
+      if (snArray.length == 0)
+      {
+        return false;
+      }
+      else
+      {
+        eles['order_id'].value = snArray.toString();
+        return true;
+      }
+    }
+    /**
+     * 显示订单商品及缩图
+     */
+    var show_goods_layer = 'order_goods_layer';
+    var goods_hash_table = new Object;
+    var timer = new Object;
+    /**
+     * 绑定订单号事件
+     *
+     * @return void
+     */
+    function bind_order_event()
+    {
+        var order_seq = 0;
+        while(true)
+        {
+            var order_sn = Utils.$('order_'+order_seq);
+            if (order_sn)
+            {
+                order_sn.onmouseover = function(e)
+                {
+                    try
+                    {
+                        window.clearTimeout(timer);
+                    }
+                    catch(e)
+                    {
+                    }
+                    var order_id = Utils.request(this.href, 'order_id');
+                    show_order_goods(e, order_id, show_goods_layer);
+                }
+                order_sn.onmouseout = function(e)
+                {
+                    hide_order_goods(show_goods_layer)
+                }
+                order_seq++;
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+    listTable.listCallback = function(result, txt) 
+    {
+        if (result.error > 0) 
+        {
+            alert(result.message);
+        }
+        else 
+        {
+            try 
+            {
+                document.getElementById('listDiv').innerHTML = result.content;
+                bind_order_event();
+                if (typeof result.filter == "object") 
+                {
+                    listTable.filter = result.filter;
+                }
+                listTable.pageCount = result.page_count;
+                getDownUrl();
+            }
+            catch(e)
+            {
+                alert(e.message);
+            }
+        }
+    }
+    /**
+     * 浏览器兼容式绑定Onload事件
+     *
+     */
+    if (Browser.isIE)
+    {
+        window.attachEvent("onload", bind_order_event);
+    }
+    else
+    {
+        window.addEventListener("load", bind_order_event, false);
+    }
+    /**
+     * 建立订单商品显示层
+     *
+     * @return void
+     */
+    function create_goods_layer(id)
+    {
+        if (!Utils.$(id))
+        {
+            var n_div = document.createElement('DIV');
+            n_div.id = id;
+            n_div.className = 'order-goods';
+            document.body.appendChild(n_div);
+            Utils.$(id).onmouseover = function()
+            {
+                window.clearTimeout(window.timer);
+            }
+            Utils.$(id).onmouseout = function()
+            {
+                hide_order_goods(id);
+            }
+        }
+        else
+        {
+            Utils.$(id).style.display = '';
+        }
+    }
+    /**
+     * 显示订单商品数据
+     *
+     * @return void
+     */
+    function show_order_goods(e, order_id, layer_id)
+    {
+        create_goods_layer(layer_id);
+        $layer_id = Utils.$(layer_id);
+        $layer_id.style.top = (Utils.y(e) + 12) + 'px';
+        $layer_id.style.left = (Utils.x(e) + 12) + 'px';
+        if (typeof(goods_hash_table[order_id]) == 'object')
+        {
+            response_goods_info(goods_hash_table[order_id]);
+        }
+        else
+        {
+            $layer_id.innerHTML = loading;
+            Ajax.call('order.php?is_ajax=1&act=get_goods_info&order_id='+order_id, '', response_goods_info , 'POST', 'JSON');
+        }
+    }
+    /**
+     * 隐藏订单商品
+     *
+     * @return void
+     */
+    function hide_order_goods(layer_id)
+    {
+        $layer_id = Utils.$(layer_id);
+        window.timer = window.setTimeout('$layer_id.style.display = "none"', 500);
+    }
+    /**
+     * 处理订单商品的Callback
+     *
+     * @return void
+     */
+    function response_goods_info(result)
+    {
+        if (result.error > 0)
+        {
+            alert(result.message);
+            hide_order_goods(show_goods_layer);
+            return;
+        }
+        if (typeof(goods_hash_table[result.content[0].order_id]) == 'undefined')
+        {
+            goods_hash_table[result.content[0].order_id] = result;
+        }
+        Utils.$(show_goods_layer).innerHTML = result.content[0].str;
+    }
+    function getDownUrl(is_first)
+    {
+		  var aTags = document.getElementsByTagName('A');
+	      for (var i = 0; i < aTags.length; i++)
+	      { 
+	        if (aTags[i].href.indexOf('download') >= 0)
+	        {
+	          if(typeof(is_first) != "undefined"&&is_first){
+	      		  aTags[i].href = "order.php?act=download&"+str+"&sort_by="+listTable.filter['sort_by']+"&sort_order="+listTable.filter['sort_order'];
+	          }else{
+	      		aTags[i].href = "order.php?act=download&order_sn="+listTable.filter['order_sn']+"&consignee="+listTable.filter['consignee']
+	      		+"&transaction_id="+listTable.filter['transaction_id']
+				+"&goods_sn="+listTable.filter['goods_sn']
+				+"&suppliers_id="+listTable.filter['suppliers_id']
+				+"&point_id="+listTable.filter['point_id']
+				+"&is_suppliers="+document.getElementById('is_suppliers').value
+	      		+"&composite_status="+listTable.filter['composite_status']+"&start_time="+listTable.filter['start_time']+"&end_time="+listTable.filter['end_time']+"&type="+listTable.filter['type']
+	      		+"&sort_by="+listTable.filter['sort_by']+"&sort_order="+listTable.filter['sort_order'];
+	      	  } 
+	        }
+	      }
+    }
+/*
+    listTable.listCallback = function(result, txt)
+    {
+      if (result.error > 0)
+      {
+        alert(result.message);
+      }
+      else
+      {
+        try
+        {
+          document.getElementById('listDiv').innerHTML = result.content;
+          if (typeof result.filter == "object")
+          {
+            listTable.filter = result.filter;
+          }
+          listTable.pageCount = result.page_count;
+        }
+        catch (e)
+        {
+          alert(e.message);
+        }
+      }
+    }
+*/
+//自提店名称
+function point_list()
+{
+	var suppliers_id = document.getElementById("suppliers_id").value;
+	Ajax.call('order.php?act=get_point_list', 'suppliers_id='+suppliers_id, response_point_list, 'POST', 'JSON');
+}
+function response_point_list(result)
+{
+	var str = '<option value="">请选择</option>';
+	if(result.error == 1)
+	{
+		str = str;
+	}
+	for(var i=0; i < result.content.length; i++)
+	{
+		str += "<option value="+result.content[i].id+">"+result.content[i].shop_name+"</option>"
+	}
+	document.getElementById("point_id").innerHTML = str;
+}
+</script>
+{/literal}
+{include file="pagefooter.htm"}
+{/if}

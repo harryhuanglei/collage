@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,user.js'}
+</head>
+<body>
+<!-- {if $action eq 'level'} -->
+<div class="container">
+    <div class="fx_level">
+        <dl>
+            <dt><i class="my fa fa-sitemap"></i>我的盟友</dt>
+            <dd><a href="user.php?act=level&level=1"{if $level eq 1} class="cur"{/if}>一级盟友</a></dd>
+            <dd><a href="user.php?act=level&level=2"{if $level eq 2} class="cur"{/if}>二级盟友</a></dd>
+            <dd><a href="user.php?act=level&level=3"{if $level eq 3} class="cur"{/if}>三级盟友</a></dd>
+        </dl>   
+        <ul>
+        {foreach from=$follows item=item}
+            <li><img src="{$item.headimgurl}"><p>{$item.user_name}</p></li>
+        {/foreach}
+        </ul>
+    </div>
+    <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+</div>
+<div class="blank"></div>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+<!-- {/if} -->
+</body>
+</html>
+

@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$info.user_name}的商铺</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/swiper.min.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,jquery.mmenu.js,swiper.min.js'}
+</head>
+<body>
+<div class="container">
+    <div class="myshop_header">
+        <div class="avatar"><img src="{$info.headimgurl}"></div>
+        <div class="content">
+            <h3><b>{$info.user_name}的分销商铺</b></h3>
+            <a class="share" id="share_button" href="javascript:void(0);" onclick="document.getElementById('share_img').style.display='';">分享店铺</a>
+            <ul>
+                <!-- <li>[商品]<font>100</font></li>
+                <li>[销量]<font>100</font></li> -->
+                <li><a href="javascript:;showCode();">[二维码]<i class="fa fa-qrcode"></i></a></li>     
+            </ul>
+        </div>
+    
+        <!--div class="tpl-shop-header">
+            <div class="tpl-shop-title">{$title}<a href="javascript:;showCode({$id});"><i class="fa fa-qrcode"></i>二维码</a></div>
+            <div class="tpl-shop-avatar">
+                <img src="{$info.headimgurl}">
+            </div>
+        </div-->
+        <!--div class="tpl-shop-content">
+            <ul>
+                <li>
+                    <span class="count">{$goods_num}</span>
+                    <span class="text">全部商品</span>
+                </li>
+                <li>
+                    <span class="count">{$sales_num}</span>
+                    <span class="text">本月销量</span>
+                </li>
+                <li>
+	                <a id="share_button" href="javascript:void(0);" onclick="document.getElementById('share_img').style.display='';">分享店铺</a>
+                </li>     
+            </ul>
+        </div-->
+    </div>
+    <div class="top_search">
+        <form id="searchForm" name="searchForm" method="get" action="search.php" onSubmit="return checkSearchForm()">
+            <input name="keywords" id="keyword" type="text" class="text" value="{$search_keywords|escape}" placeholder="商品搜索">
+            <input type="submit" value="搜索" class="submit" />
+        </form>
+    </div>
+    <div class="top_nav">
+        <ul class="sort">
+            <li><a href="myshop.php?sort=sort_order&uid={$uid}" {if $sort eq 'sort_order'}class="cur"{/if}>综合</a></li>
+            <li><a href="myshop.php?sort=click_count&cid={$cat_id}&uid={$uid}" {if $sort eq 'click_count'}class="cur"{/if}>人气</a></li>
+            <li><a href="myshop.php?sort=sales_num&cid={$cat_id}&uid={$uid}" {if $sort eq 'sales_num'}class="cur"{/if}>销量</a></li>
+            <li><a href="myshop.php?sort=shop_price&cid={$cat_id}&uid={$uid}" {if $sort eq 'shop_price'}class="cur"{/if}>价格</a></li>
+        </ul>
+        <ul class="menu">
+            <li><a href="myshop.php?sort=sort_order&uid={$uid}" {if $cat_id eq 0}class="cur"{/if}>全部</a></li>
+            {foreach from=$categories item=cat}
+            <li><a href="myshop.php?cid={$cat.id}&uid={$uid}" {if $cat_id eq $cat.id}class="cur"{/if}>{$cat.name}</a></li>
+            {/foreach}
+        </ul>
+    </div>
+
+    <div class="blank"></div>
+    <div class="good_list">
+        <div class="blank"></div>
+        <ul class="list_B">
+            <!--{foreach from=$goods_list item=goods}-->
+            <li>
+                <a href="{if $goods.goods_number gt 0}{$goods.url}&uid={$uid}{else}javascript:void(0);{/if}"><img src="{$goods.goods_thumb}"></a>
+                <p class="tit"><a href="{$goods.url}&uid={$uid}">{$goods.goods_name}</a></p>
+                <p class="brief">{$goods.goods_brief}</p>
+                <p><del>¥{$goods.market_price}</del><font class="price">¥<b>{$goods.shop_price}</b></font></p>
+            </li>
+            <!--{/foreach}-->
+        </ul>
+    </div>
+
+
+    <div id="share_img" class="share_img" style="display:none;" onclick="document.getElementById('share_img').style.display='none';">
+        <p><img class="arrow" src="themes/haohaios/images/share.png" ></p>
+        <p style="margin-top:120px; margin-right:50px;">点击右上角，</p>
+        <p style="margin-right:50px;">将此店铺分享给好友</p>
+    </div>
+</div>
+<div class="blank"></div>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+<div id="qr_code" class="qr_code" style="display:none;" onclick="document.getElementById('qr_code').style.display='none';">
+    <div class="qrcode_bg"></div>
+    <div class="qrcode"><img src="qrcode.php"></div>
+</div>
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+
+<script>
+function showCode(){
+    document.getElementById('qr_code').style.display='';
+}
+</script>
+<script language="javascript" type="text/javascript">
+    wx.config({
+        debug: false,//这里是开启测试，如果设置为true，则打开每个步骤，都会有提示，是否成功或者失败
+        appId: '{$appid}',
+        timestamp: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+        nonceStr: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+        signature: '{$signature}',
+        jsApiList: [
+          // 所有要调用的 API 都要加到这个列表中
+            'onMenuShareTimeline',
+            'onMenuShareAppMessage',
+            'onMenuShareQQ',
+            'onMenuShareWeibo',
+            'checkJsApi',
+            'openLocation',
+            'getLocation'
+        ]
+    });
+    
+    var title="{$title}";
+    var link= "{$link}";
+    var imgUrl="{$imgUrl}";
+    var desc= "{$desc}";
+    wx.ready(function () {
+        wx.onMenuShareTimeline({//朋友圈
+            title: title, // 分享标题
+            link: link, // 分享链接
+            imgUrl: imgUrl, // 分享图标
+            success: function () { 
+                // 用户确认分享后执行的回调函数
+                statis(2,1);
+            },
+            cancel: function () { 
+                // 用户取消分享后执行的回调函数
+                statis(2,2);
+            }
+        });
+        wx.onMenuShareAppMessage({//好友
+            title: title, // 分享标题
+            desc: desc, // 
+            link: link, // 分享链接
+            imgUrl: imgUrl, // 分享图标
+            type: '', // 分享类型,music、video或link，不填默认为link
+            dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+            success: function () { 
+                // 用户确认分享后执行的回调函数
+                statis(1,1);    
+            },
+            cancel: function () { 
+                // 用户取消分享后执行的回调函数
+                statis(1,2);
+            }
+        });
+      
+        wx.onMenuShareQQ({
+            title: title, // 分享标题
+            desc: desc, // 分享描述
+            link: link, // 分享链接
+            imgUrl: imgUrl, // 分享图标
+            success: function () { 
+               // 用户确认分享后执行的回调函数
+                statis(4,1);
+            },
+            cancel: function () { 
+               // 用户取消分享后执行的回调函数
+                statis(4,2);
+            }
+        });
+        wx.onMenuShareWeibo({
+            title: title, // 分享标题
+            desc: desc, // 分享描述
+            link: link, // 分享链接
+            imgUrl: imgUrl, // 分享图标
+            success: function () { 
+               // 用户确认分享后执行的回调函数
+                statis(3,1);
+            },
+            cancel: function () { 
+                // 用户取消分享后执行的回调函数
+                statis(3,2);
+            }
+        });
+        {if $goods.is_nearby }
+        wx.checkJsApi({
+            jsApiList: [
+                'getLocation'
+            ],
+            success: function (res) {
+                 //alert(JSON.stringify(res));
+                // alert(JSON.stringify(res.checkResult.getLocation));
+                if (res.checkResult.getLocation == false) {
+                    alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
+                    return;
+                }
+            }
+        });
+        wx.getLocation({
+            success: function (res) {
+                var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                var speed = res.speed; // 速度，以米/每秒计
+                var accuracy = res.accuracy; // 位置精度
+                $.ajax({
+                    type:"post",//请求类型
+                    url:"goods.php",//服务器页面地址
+                    data:"act=save_location&lat="+latitude+"&lng="+longitude,
+                    dataType:"json",//服务器返回结果类型(可有可无)
+                    error:function(){//错误处理函数(可有可无)
+                        //alert("ajax出错啦");
+                    },
+                    success:function(data){
+                        
+                        if(data.error==1){
+                            //alert('错误'+data.message);
+                        }else{
+                            //document.getElementById('loading').style.display='none';
+                            
+                        }
+                    }
+                });
+            },
+            cancel: function (res) {
+                alert('用户拒绝授权获取地理位置');
+            }
+        });
+        {/if}   
+        
+    });
+    
+    function statis(share_type,share_status){
+        $.ajax({
+            type:"post",//请求类型
+            url:"share.php",//服务器页面地址
+            data:"act=link&share_status="+share_status+"&share_type="+share_type+"&link_url={$link2}",
+            dataType:"json",//服务器返回结果类型(可有可无)
+            error:function(){//错误处理函数(可有可无)
+                //alert("ajax出错啦");
+            },
+            success:function(data){
+                
+            }
+        });
+    }
+
+</script>
+</body>
+</html>
+

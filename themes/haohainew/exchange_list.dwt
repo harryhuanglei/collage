@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+{* 包含脚本文件 *}
+{insert_scripts files='jquery.js,haohaios.js,jquery.lazyload.js'}
+</head>
+<body>
+<div class="container">
+        <div class="exchange_ad"> 
+            {foreach from=get_advlist_position_name('积分兑换广告位',1) item=ad name=index_image}
+            <img src="{$ad.image}" width="100%"/>
+            {/foreach}
+        </div>
+    <div class="exchange_list">
+        <ul>
+            <!--{foreach from=$goods_list item=goods}-->
+            <li>
+                <a href="{$goods.url}"><img goods_id="{$goods.goods_id}" data-original="{$goods.goods_thumb}" src="images/loading.gif" class="lazy"></a>
+                <p class="tit"><a href="{$goods.url}">{$goods.goods_name}</a></p>
+                <p><font>¥{$goods.shop_price}</font><span><a href="{$goods.url}">{$goods.exchange_integral}分兑换</a></span></p>
+            </li>
+            {foreachelse}
+        <div class="nothing">
+            <i class="iconfont icon-shangpin"></i>
+            <p>还没有积分兑换商品哦</p>
+        </div>
+            <!--{/foreach}-->
+        </ul>
+    </div>
+    <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+</div>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+<script>
+	window.onload=function(){
+		$("img.lazy").lazyload({
+                effect: "fadeIn",
+                threshold : 200
+        });
+        $("img.lazy:eq(0)").attr('src',$("img.lazy:eq(0)").attr('data-original'));
+	}
+</script>
+</body>
+</html>

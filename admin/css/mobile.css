@@ -1,0 +1,86 @@
+@charset "utf-8";
+* { margin: 0; padding: 0 }
+html, body { height: 100% }
+ul li { list-style: none }
+i { font-style:normal; }
+img { border: 0 }
+body { height: 100%; font: 14px "微软雅黑", "宋体", Arial, Sans-Serif; color: #333; background: #f4f4f4; }
+a { text-decoration:none; }
+.container { position: relative; width: 100%; max-width: 640px; min-height: 100%; margin: 0 auto; padding-bottom:60px; }
+/*商户登陆*/
+.logintop { width: 100%; overflow: hidden; }
+.loginlogo { width: 100%; height: 100px; background-repeat: no-repeat; background-position: center center; background-size: 80%; text-indent: -5000px; overflow: hidden; }
+.loginbox { width: 90%; margin: 0 auto; padding: 30px 0; background:#64B5ED; border-radius:10px; position: relative; }
+.logincon { width: 80%; margin: 0 auto; overflow: hidden; }
+.logincon li { width: 100%; height: 55px; position: relative; }
+.logincon li.title { font-size: 24px; text-align: center; color: #fff; font-weight: 400; letter-spacing: 3px; }
+.logincon li div { margin-left: 30px; }
+.loginbox li i { position: absolute; left: 0; top: 8px; width: 24px; height: 24px; display: block; background-repeat: no-repeat; background-size: 100%; }
+.loginbox li i.username { background-image: url(../images/username.png); }
+.loginbox li i.password { background-image: url(../images/password.png); }
+.loginbox li input { width: 100%; height: 40px; background: #fff; line-height: 40px; border-radius: 20px; border: none 0; color: #333; }
+.loginbox li input.loginbtn { font-weight: 700; font-size: 20px; color: #fff; background:#348DC9; cursor: pointer; }
+
+
+.main { padding:0 10px; }
+.main h1 { width:100%; height:60px; line-height:60px; text-align:center; font-size:20px; }
+.main .mbox { overflow:hidden; margin-bottom:20px; }
+.main .mbox h3 { width:100%; height:40px; line-height:40px; text-align:center; font-size:16px; background: #ffcc66; color:#fff; border-radius:6px; }
+.main .mbox ul { padding:10px 0; }
+.main .mbox li { float:left; background:#92C9ED; color:#fff; text-align:center; border-radius:6px; min-height:60px; line-height:30px; padding:10px 0; font-size:16px; }
+
+.main .mbox .ult li { width:32%;}
+.main .mbox .ult li:nth-child(3n-1) { margin:0 2%; }
+.main .mbox .ult li span { font-size:12px; }
+
+.main .mbox .ulb li { width:49%; margin-bottom:10px; }
+.main .mbox .ulb li:nth-child(2n) { margin-left:2%; }
+.main .mbox .ulb li  a { color:#fff; }
+
+.footer { width:100%;max-width: 640px; height:50px; line-height:50px; background:#75AFD7; position:fixed; bottom:0; left: 50%;transform: translate3d(-50%,0,0);overflow: hidden;-webkit-box-shadow: 0 0 4px rgba(0,0,0,.2);box-shadow: 0 0 4px rgba(0,0,0,.2); z-index: 99999; }
+.footer li { float:left; width:33.333%; text-align:center; }
+.footer li a { display:block; color:#fff; font-size:16px; }
+.footer li a.cur { background:#4890C0; }
+
+.order_list { width:100%; overflow: hidden; }
+.order_list li { float:left; width:96%; height:60px; padding:10px 2%; background:#92C9ED; color:#fff; }
+.order_list li a { color:#fff; }
+.order_list li p { height:30px; line-height:30px; }
+.order_list li i { display:inline-block; width:26px; height:26px; line-height:26px; margin-right:5px; border-radius:13px; background:#fff; color:#92C9ED; font-size:12px; text-align:center; }
+.order_list li span { float:right; }
+.order_list li font { display:inline-block; color:#f60; padding-left:5px; }
+
+
+.order_list li:nth-child(2n) { background:#fff; color:#4890C0; }
+.order_list li:nth-child(2n) a { color:#4890C0; }
+.order_list li:nth-child(2n) i { background:#4890C0; color:#fff; }
+
+.order_search { background: #4890C0; height:36px; padding:10px; position:relative; }
+.order_search div { margin:0 90px 0 0; }
+.order_search .input { width:100%; height:36px; line-height:36px; border:none; border-radius:6px; background:#fff; }
+.order_search .btn { position: absolute; width:80px; height:36px; line-height:36px; text-align:center; border-radius:6px; right:10px; top:10px; border:none; background:#92C9ED; color:#fff; }
+
+
+.order_info {  }
+.order_info h2 { height:40px; line-height:40px; text-align:center; font-size:16px; font-weight:400; position:relative; }
+.order_info h2 a { position:absolute; left:0px; display:block; width:30px; height:40px; line-height:40px; }
+.order_info h2 a i { font-size:24px; color:#333; font-weight:700; }
+.order_info .infobox { background:#75AFD7; margin:10px; padding:0 10px 10px 10px; border-radius:6px; color:#fff; }
+.infobox h3 { padding-top:20px; padding-bottom:10px; }
+.infobox p { width:100%; line-height:30px; }
+.infobox p span { float:right; }
+.infobox p.ter { text-align:right; }
+
+
+.fahuo { position:relative; }
+.fahuo .txt { width:80px; line-height:36px; text-align:right; position:absolute; left:0; top:0; }
+.fahuo .inp { margin:0 90px 0 90px; }
+.fahuo .inp input { width:98%; height:34px; line-height:34px; border:#4890C0 1px solid; border-radius:6px; }
+.fahuo .sub { width:80px; height:36px; line-height:36px; border:none; border-radius:6px; background:#f60; border-radius:6px; color:#fff; position:absolute; right:10px; top:0; }
+
+.pagebar{ height:30px; padding:10px;text-align:center; overflow: hidden;}
+.pagebar a,.pagebar span{padding:5px 20px;background:#fff;border-radius:3px;margin-right:20px;}
+.pagebar a {background:#f60;color:#fff; }
+.pagebar span.page_now{background:#f60;color:#fff;}
+
+

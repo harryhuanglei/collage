@@ -1,0 +1,108 @@
+.fabu_s { width:100%; height:30px; padding:5px 0; background:#fff; position:relative; }
+.fabu_s .fabu_select { width:58px; height:28px; line-height:28px; border:#ddd 1px solid; position:absolute; left:10px; border-radius:6px; text-align:center; }
+.fabu_s .form { margin:0 80px 0 10px; }
+.fabu_s .form .input_text { width:98%; height:30px; line-height:30px; border:#ddd 1px solid; border-radius:6px 0 0 6px; }
+.fabu_s .form .input_submit { position:absolute; top:5px; right:80px; width:50px; height:30px; line-height:30px; text-align:center; border:none; background:#FF4339; border:none; border-radius:0 6px 6px 0; color:#fff; }
+.fabu_s .fabu { position:absolute; right:10px; top:5px; width:60px; height:30px; line-height:30px; text-align:center; border:#FF4339 1px solid; border-radius:6px; background:#fff; color:#FF4339; font-size: 14px; }
+.square_list { margin:10px 10px 0 10px; }
+.square_list dl { border-bottom:#ddd 1px dotted; position:relative; padding-bottom:15px; margin-bottom:10px; }
+.square_list dt { position:absolute; width:52px; left:0; top:10px; }
+.square_list dt img { width:50px; height:50px; border:#ddd 1px solid; border-radius:26px;  }
+.square_list dt p { text-align:center; line-height:16px; padding:10px 0; }
+.square_list dd { margin-left:60px; }
+.square_list dd p { width:100%; overflow:hidden; line-height:30px; }
+.square_list dd .mess { border:#ddd 1px solid; background:#eee; padding:5px; margin-bottom:10px; border-radius:6px; line-height:20px; }
+.square_list dd .img { }
+.square_list dd .img img { float:left; width:70px; height:70px; margin-right:10px; }
+
+
+
+
+.square_g_core {
+    color: #fff;
+    display: block;
+    height: 34px;
+    line-height: 34px;
+    margin-bottom: 10px;
+    position: relative;
+    width: 98%;
+	background: #4f4f4f;
+	margin: 0 auto;
+}
+.square_g_core_img {
+    position: absolute;
+    display: inline-block;
+    float: left;
+    left: 5px;
+    bottom: -5px;
+}
+.square_g_core_img img {
+    height: 24px;
+    width: 24px;
+}
+.square_g_price {
+    display: inline-block;
+    background-color: #4f4f4f;
+    float: left;
+    height: 34px;
+    margin-left: -2px;
+    overflow: hidden;
+    padding-left: 32px;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+	color: #fff;
+}
+.square_g_price b {
+    font-size: 14px;
+    font-weight: 400;
+    margin-left: 5px;
+    margin-right: 2px;
+}
+.square_g_btn {
+    background-color: #FF8000;
+    border-bottom-right-radius: 3px;
+    border-top-right-radius: 3px;
+    float: left;
+    height: 34px;
+    line-height: 34px;
+    padding-right: 15px;
+    position: absolute;
+    font-size: 14px;
+	color: #fff;
+	right: -2px;
+	top: 0;
+}
+.square_g_btn span {
+    display: inline-block;
+    padding: 0 10px 0 28px;
+    position: relative;
+    height: 34px;
+}
+.square_g_btn span:before {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    width: 24px;
+    height: 24px;
+    display: block;
+    background-image: url(../images/icon-weibiaoti3.png);
+    background-size: 100%;
+}
+
+.square_g_btn:after {
+    background-position: -140px -105px;
+    content: " ";
+    height: 11px;
+    position: absolute;
+    right: 12px;
+    top: 11px;
+    width: 7px;
+}
+
+.square_g_btn:after {
+    background-image: url(../images/bg_v7-e5e65ca3ee.png);
+    background-repeat: no-repeat;
+    background-size: 265px 126px;
+	right: 5px;
+}

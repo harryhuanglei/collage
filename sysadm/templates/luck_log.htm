@@ -1,0 +1,71 @@
+<!-- $Id: bonus_list.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+<form method="POST" action="luckmoney.php?act=batch&bonus_type={$smarty.get.bonus_type}" name="listForm">
+<!-- start user_bonus list -->
+<div class="list-div" id="listDiv">
+{/if}
+
+  <table cellpadding="3" cellspacing="1">
+    <tr>
+      <th>
+        <input onclick='listTable.selectAll(this, "checkboxes")' type="checkbox">
+        <a href="javascript:listTable.sort('bonus_id'); ">{$lang.record_id}</a>{$sort_bonus_id}</th>
+      <th>活动名</th>
+      <th><a href="javascript:listTable.sort('money'); ">红包金额</a></th>
+      <th><a href="javascript:listTable.sort('user_id'); ">领取人</a>{$sort_user_id}</th>
+      <th>领取时间</th>
+      <th>{$lang.handler}</th>
+    </tr>
+    {foreach from=$logs_list item=bonus}
+    <tr>
+      <td align="center"><span><input value="{$bonus.id}" name="checkboxes[]" type="checkbox">{$bonus.id}</span></td>
+
+      <td align="center">{$bonus.name}</td>
+      <td align="center">{$bonus.money}</td>
+      <td align="center">{$bonus.user_name}</td>
+      <td align="center">{$bonus.get_at}</td>
+      <td align="center">
+        <a href="javascript:;" onclick="listTable.remove({$bonus.id}, '{$lang.drop_confirm}', 'remove_bonus')">{$lang.remove}</a>
+      </td>
+    </tr>
+    {foreachelse}
+    <tr><td class="no-records" colspan="11">{$lang.no_records}</td></tr>
+    {/foreach}
+  </table>
+
+  <table cellpadding="4" cellspacing="0">
+    <tr>
+      <td><input type="submit" name="drop" id="btnSubmit" value="{$lang.drop}" class="button" disabled="true" />
+      {if $show_mail}<input type="submit" name="mail" id="btnSubmit1" value="{$lang.send_mail}" class="button" disabled="true" />{/if}</td>
+      <td align="right">{include file="page.htm"}</td>
+    </tr>
+  </table>
+
+{if $full_page}
+</div>
+<!-- end user_bonus list -->
+</form>
+
+<script type="text/javascript" language="JavaScript">
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+  listTable.query = "query_bonus";
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+
+  {literal}
+  onload = function()
+  {
+    // 开始检查订单
+    startCheckOrder();
+    document.forms['listForm'].reset();
+  }
+  {/literal}
+</script>
+{include file="pagefooter.htm"}
+{/if}

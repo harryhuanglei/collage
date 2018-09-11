@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/square_new.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/tab_pic.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,smoothbox.js'}
+<link rel="stylesheet" href="themes/haohainew/zyupload/skins/zyupload-1.0.0.min.css " type="text/css">
+<script type="text/javascript" src="themes/haohainew/zyupload/zyupload.basic-1.0.0.js"></script>
+</head>
+<body id="square">
+<div class="container" style="padding-bottom:56px; overflow: hidden; ">
+    <div class="fabu_s">
+        <!--form action="" class="form">
+            <select class="fabu_select" name="orderby">
+                <option value="news">最新</option>
+                <option value="hot">热门</option>
+            </select>
+            <input name="keywords" type="text" class="input_text" placeholder="  搜索产品名看他们说" value="{$keywords}">
+            <input type="submit" value="搜索" class="input_submit"/>
+        </form-->
+        <!--a href="user.php?act=team_list&composite_status=100" class="fabu">发布</a-->
+        <div class="menu">
+            <a href="square_new.php?orderby=j" class="select on">精选</a>
+            <a href="square_new.php?orderby=p" class="comment">评论</a>
+            <a href="square_new.php?orderby=z" class="zan_click">点赞</a>
+        </div>
+        <a href="javascript:;" class="fabu">发布</a>
+    </div>
+    <div >
+	<div class="square_list">
+    {foreach from=$announcement item=item}
+        <div class="square_list_cont">
+            <dl>
+                <dt><img src="{if $item.headimgurl}{$item.headimgurl}{else} themes/haohainew/images/mr_head.png {/if}"><span class="send_name">商城管理部</span><span class="send_time">{$item.add_time}</span></dt>
+                <p class="bg-text-p"><a href="javascript:;" class="gb-text">{$item.title}</a></p>
+                <dd> 
+                    <div class="square_share">
+                        <!-- <div class="share_btn">
+                            <a href="javascript:;" class="share" >分享</a>
+                        </div> -->
+                        <div class="show_btn">
+                        <span class="bg-zan {if $item.iszan}cur{/if}"></span>
+                        <a href="javascript:;" onclick="return announcement_zan('{$item.id}' , this);" class="zan">{$item.zan_num}</a>
+                        <a  href="square_comment.php?act=announcement_comment_list&id={$item.id}"  class="show" >{$item.comment_num}</a>
+                        </div>
+                    </div>
+                </dd>
+            </dl>
+            <div class="blank_bg"></div>
+        </div>
+        {/foreach}
+    </div>
+	
+	<!--朋友圈（开始）-->
+	<div class="square_list">
+		{foreach from=$moments item=item}
+        <div class="square_list_cont">
+            <dl>
+                <dt><img src="{if $item.headimgurl}{$item.headimgurl}{else} themes/haohainew/images/mr_head.png {/if}"><span class="send_name">{$item.uname}</span><span class="send_time">{$item.add_time}</span></dt>
+                <p class="bg-text-p"><a href="javascript:;" class="gb-text">{$item.content}</a></p>
+                <dd> 
+                    <p class="img">
+						{if $item.img_01}
+                        <span class="send_img">
+                            <a href="{$item.img_01}" class="sb">
+                                <img src="{$item.img_01}">
+                            </a>
+                        </span>
+						{/if}
+						{if $item.img_02}
+                        <span class="send_img">
+                            <a href="{$item.img_02}" class="sb">
+                                <img src="{$item.img_02}">
+                            </a>
+                        </span>
+						{/if}
+						{if $item.img_03}
+                        <span class="send_img">
+                            <a href="{$item.img_03}" class="sb">
+                                <img src="{$item.img_03}">
+                            </a>
+                        </span>
+						{/if}
+                    </p>
+                </dd>
+				<dd> 
+                    <div class="square_share">
+                        <div class="show_btn">
+                        <span class="bg-zan "></span>
+                        <a href="javascript:;" onclick="return moments_zan({$item.id} , this);" class="zan">{$item.zan_num}</a>
+                        <a href="square_comment.php?act=moments_comment_list&id={$item.id}" class="show">{$item.comment_num}</a>
+                        </div>
+                    </div>
+                </dd>
+            </dl>
+            <div class="blank_bg"></div>
+        </div>
+        {/foreach}
+    </div>
+	<!--朋友圈（结束）-->
+	
+    <!--置顶 star>
+    <div class="sticky">
+        <div class="t_news">
+            <span class="tips">置顶</span>
+            <ul class="news_li">
+                <li><a href="javascript:;">顶置消息</a></li>   
+                <li><a href="javascript:;">顶置消息</a></li>     
+            </ul>
+            <ul class="swap"></ul>   
+        </div>
+    </div>
+    <div class="line"></div>
+    <置顶 end-->
+    <!--团购循环 star-->
+    <div class="square_list">
+    {foreach from=$goods_list item=goods}
+        <div class="square_list_cont">
+            <dl>
+                <dt><img src="{$goods.headimgurl}"><span class="send_name">{$goods.uname}</span><span class="send_time">{$goods.add_time}</span></dt>
+                <dd>
+                    <p class="bg-text-p">
+                        {if $goods.is_boutique eq 1}
+                        <span class="tips">精选</span>
+                        {/if}
+                        <span class="mess">{$goods.square}</span></p>
+                    {if $goods.gallery}
+                    <p class="img">
+                        {foreach from=$goods.gallery item=gallery}
+                        <span class="send_img">
+                            <a href="{$gallery.thumb_url}" class="sb">
+                                <img src="{$gallery.thumb_url}" />
+                            </a>
+                        </span>
+                        {/foreach}
+                    </p>
+                    {/if}
+                    <div class="square_buy">
+                        <div class="square_buy_img">
+                            <div class="square_goods_img">
+                                <img src="{$goods.goods_thumb}">
+                            </div>
+                            <p class="gdname">{$goods.goods_name}</p>
+                           {if $goods.team_id}
+                            <div class="square_g_core">
+                            <input name="luckdraw_id" type="hidden" id="luckdraw_id" value="{$goods.luckdraw_id}" />
+                                <a  onclick="addToCart({$goods.goods_id},0,0,5,{$goods.team_id});">
+                                    <div class="square_g_core_img"></div>
+                                    <div class="square_g_price">
+                                         <span>{$goods.team_num}人团</span> 
+                                        <span class="que_ren">缺{$goods.need}人</span>
+                                        <b class="que_mon que_monn">¥{$goods.team_price}</b>
+                                    </div>
+                                    <div class="square_g_btn">去参团</div>
+                                </a>
+                            </div>
+                            {else}
+                            <div class="square_g_core square_mall_core">
+                                <a  onclick="addToCart({$goods.goods_id});">
+                                    <div class="square_g_core_img"></div>
+                                    <div class="square_g_price">
+                                        <b class="que_mon">¥{$goods.team_price}</b>
+                                        <del class="que_del">¥{$goods.market_price}</del>
+                                    </div>
+                                    <div class="square_g_btn square_mall_btn">去购买</div>
+                                </a>
+                            </div>
+                            {/if}
+                        </div>
+                    </div>
+                    <div class="square_share">
+                    {if $goods.team_id}
+                        {if $goods.luckdraw_id}
+                         <div class="share_btn">
+                           <a href="share.php?team_sign={$goods.team_id}&uid={$goods.uid}&luckdraw_id={$goods.luckdraw_id}" class="share" >分享</a>
+                       </div>
+                       {else}
+                         <div class="share_btn">
+                           <a href="share.php?team_sign={$goods.team_id}&uid={$goods.uid}" class="share" >分享</a>
+                       </div>
+                       {/if}
+                    {/if}
+                        <div class="show_btn">
+                        <span class="bg-zan {if $goods.iszan}cur{/if}"></span>
+                        <a href="javascript:;" onclick="return zan('{$goods.goods_id}','{$goods.order_id}' , this);" class="zan">{$goods.zan_num}</a>
+                            <a  href="square_comment.php?act=comment_list&order_id={$goods.order_id}&goods_id={$goods.goods_id}"  class="show" >{$goods.comment_num}</a>
+                        </div>
+                    </div>
+                </dd>
+            </dl>
+        </div>
+        {foreachelse}
+        <div class="nothing">
+            <i class="iconfont icon-guangchang"></i>
+            <p>还没有小伙伴发布哦</p>
+        </div>
+        {/foreach}
+    </div>
+    <div class="line"></div>
+    <!--团购循环 end-->
+
+	<!--发布弹层 star-->
+	<div id="fabu">
+		<div class="choose_function">
+			<div class="function_content">
+			  <a href="user.php?act=userbuyshop" ><div class="picture_content">商品</div></a>
+			  <div class="text_content" >朋友圈</div>
+			</div>
+			<div class="clear"></div>
+			<div id="text_content">
+				<div class="fabu_page">
+					<a href="javascript:;" class="close"></a>
+					<form id="fabu_form"  name= "fabu_form" method="post"  action="square_new.php?act=add_moments_text"  enctype="multipart/form-data"> 
+						
+						<textarea id="fabu_cont" type="text" name="content" placeholder="有什么想分享给大家, 说说看~"></textarea>	    
+					</form>
+					<a href="javascript:;" class="fabu_add_btn" id="fabu_add_btn" onclick="javascript:;">发布</a>
+					<div id="zyupload" class="zyupload"></div>  
+					
+				</div>
+				<div class="photo_bg">
+					<div class="photo">
+						<ul>
+							<li>
+								<a class="pic" href="javascript:;">图片</a>
+							</li>
+							<li>
+								<a class="choose" href="javascript:;">从手机相册中选择</a>
+							</li>
+							<li>
+								<a class="camera" href="javascript:;">拍照</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- <div id="picture_content">晒单模块</div> -->
+		</div>
+	</div>
+<script type="text/javascript">
+			//朋友圈
+			$(function(){
+				// 初始化插件
+				$("#zyupload").zyUpload({
+					width            :   "92%",                 // 宽度
+					height           :   "200px",                 // 宽度
+					itemWidth        :   "50%",                 // 文件项的宽度
+					itemHeight       :   "100px",                 // 文件项的高度
+					url              :   "/square_new.php?act=add_moments_img",              // 上传文件的路径
+					fileType         :   ["jpg","png","PNG","JPEG","JPG"],// 上传文件的类型
+					fileSize         :   2048000,                // 上传文件的大小
+					multiple         :   true,                    // 是否可以多个文件上传
+					dragDrop         :   false,                   // 是否可以拖动上传文件
+					tailor           :   false,                   // 是否可以裁剪图片
+					del              :   true,                    // 是否可以删除文件
+					finishDel        :   false,  				  // 是否在上传文件完成后删除预览
+					/* 外部获得的回调接口 */
+					onSelect: function(selectFiles, allFiles){    // 选择文件的回调方法  selectFile:当前选中的文件  allFiles:还没上传的全部文件
+						console.info("当前选择了以下文件：");
+						console.info(selectFiles);
+					},
+					onDelete: function(file, files){              // 删除一个文件的回调方法 file:当前删除的文件  files:删除之后的文件
+						console.info("当前删除了此文件：");
+						console.info(file.name);
+					},
+					onSuccess: function(file, response){          // 文件上传成功的回调方法
+						
+						$("#fabu_form").append('<input type ="hidden" name="images[]" value="'+ response +'"/>');
+						
+					},
+					onFailure: function(file, response){          // 文件上传失败的回调方法
+						console.info("此文件上传失败：");
+						console.info(file.name);
+					},
+					onComplete: function(response){           	  // 上传完成的回调方法
+						
+						var target = $("#fabu_form").attr('action');
+						var query = $("#fabu_form").serialize();
+						$.post(target, query,function(data){
+							if (data.status==1) {
+								location.reload();
+							}else{
+								alert(data.info);
+							}
+					    }, "json");	
+					}
+				});
+				
+			});
+		
+</script>
+<script type="text/javascript">
+		
+        $('.fabu').click(function(){
+            $('#fabu').show();
+            $('.function_content').show();
+        });
+
+        $('.close').click(function(){
+            $('#fabu').hide();
+            $(this).parents('#text_content').hide();
+        });
+
+         $('.picture_content').click(function(){
+            $('#picture_content').show();
+            $('.function_content').hide();
+        });
+
+         $('.text_content').click(function(){
+            $('#text_content').show();
+            $('.function_content').hide();
+        });
+</script>
+<!--发布弹层 end-->
+
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script> 
+<script language="javascript" type="text/javascript">
+    wx.config({
+
+        debug: false,//这里是开启测试，如果设置为true，则打开每个步骤，都会有提示，是否成功或者失败
+
+        appId: '{$appid}',
+
+        timestamp: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+
+        nonceStr: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+
+        signature: '{$signature}',
+
+        jsApiList: [
+
+          // 所有要调用的 API 都要加到这个列表中
+
+            'onMenuShareTimeline',
+
+            'onMenuShareAppMessage',
+            'checkJsApi',
+
+            'openLocation',
+
+            'getLocation'
+
+        ]
+
+    });
+
+    
+
+    var title="{$title}";
+
+    var link= "{$link}";
+
+    var imgUrl="{$imgUrl}";
+
+    var desc= "{$desc}";
+
+    wx.ready(function () {
+
+        wx.onMenuShareTimeline({//朋友圈
+
+            title: title, // 分享标题
+
+            link: link, // 分享链接
+
+            imgUrl: imgUrl, // 分享图标
+
+            success: function () { 
+
+                // 用户确认分享后执行的回调函数
+
+                statis(2,1);
+
+            },
+
+            cancel: function () { 
+
+                // 用户取消分享后执行的回调函数
+
+                statis(2,2);
+
+            }
+
+        });
+
+        wx.onMenuShareAppMessage({//好友
+
+            title: title, // 分享标题
+
+            desc: desc, // 
+
+            link: link, // 分享链接
+
+            imgUrl: imgUrl, // 分享图标
+
+            type: '', // 分享类型,music、video或link，不填默认为link
+
+            dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+
+            success: function () { 
+
+                // 用户确认分享后执行的回调函数
+
+                statis(1,1);    
+
+            },
+
+            cancel: function () { 
+
+                // 用户取消分享后执行的回调函数
+
+                statis(1,2);
+
+            }
+
+        });
+
+    });
+
+    function statis(share_type,share_status){
+
+        $.ajax({
+
+            type:"post",//请求类型
+
+            url:"share.php",//服务器页面地址
+
+            data:"act=link&share_status="+share_status+"&share_type="+share_type+"&link_url={$link2}",
+
+            dataType:"json",//服务器返回结果类型(可有可无)
+
+            error:function(){//错误处理函数(可有可无)
+
+                //alert("ajax出错啦");
+
+            },
+            success:function(data){
+           }
+
+        });
+    }
+</script>
+
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        //弹出选框
+        $('#add_img').on('click',function(){
+            $('.photo_bg').show();
+        });
+        //点击任意处关闭选框
+        $('.photo_bg').on('click',function(){
+            $(this).hide();
+        });
+    });
+</script>
+
+
+<script type="text/javascript">
+    //消息滚动
+    /*function b(){   
+          t = parseInt(x.css('top'));
+          y.css('top','32px');  
+          x.animate({top: t - 32 + 'px'},'slow');   //32为每个li的高度
+          if(Math.abs(t) == h-32){ //32为每个li的高度
+            y.animate({top:'0px'},'slow');
+            z=x;
+            x=y;
+            y=z;
+          }
+          setTimeout(b,3000);//滚动间隔时间 现在是3秒
+        }
+        $(document).ready(function(){
+          $('.swap').html($('.news_li').html());
+          x = $('.news_li');
+          y = $('.swap');
+          h = $('.news_li li').length * 32; //32为每个li的高度
+          setTimeout(b,3000);//滚动间隔时间 现在是3秒
+          
+        });*/
+
+
+        $(function(){
+            $('.menu a').click(function(){
+                $(this).addClass('on').siblings().removeClass('on');
+            });
+        });
+</script>
+
+<script type="text/javascript">
+    //消息切换显示
+    $('.square_list_cont').attr('data', 'true');
+    //$('.footer_send_mess').attr('data', 'true');
+    $('.show').on('click',function(){
+        if($(this).parents('.square_list_cont').attr('data')==='true'){
+             $(this).parents('.square_list_cont').find('.messages').show();
+             $('.footer_send_mess').animate({bottom:"0"},500).show();
+             $('.footer').animate({bottom:'-56px'},500);
+             $(this).parents('.square_list_cont').attr('data','false');
+        }else{
+            $(this).parents('.square_list_cont').find('.messages').hide();
+            $('.footer_send_mess').animate({bottom:'-56px'},500).show();
+            $('.footer').animate({bottom:'0'},500);
+            $(this).parents('.square_list_cont').attr('data','true');
+        }
+    });
+
+    //赞
+    function zan(goods_id,order_id, obj){
+        $.ajax({   
+                type:"POST",   
+                url:"square_new.php?act=zan",  
+                dataType: 'json', 
+                data:{"goods_id":goods_id,"order_id":order_id},
+                cache:false, //不缓存此页面   
+                success:function(res){   
+                        if (res.isError == 0) {
+                            $(obj).siblings('.bg-zan').addClass('cur');
+                            $(obj).text(res.zan_num);
+                        }
+                        if(res.isError == 2 ){
+                            alert('您已经点过赞了！！');
+                        }
+                }   
+            });   
+
+        }
+
+       //公告赞
+        function announcement_zan(id,obj){
+        $.ajax({   
+                type:"POST",   
+                url:"square_new.php?act=announcement_zan",  
+                dataType: 'json', 
+                data:{"id":id},
+                cache:false, //不缓存此页面   
+                success:function(res){   
+                        if (res.isError == 0) {
+							
+                            $(obj).siblings('.bg-zan').addClass('cur');
+                            $(obj).text(res.zan_num);
+                        }
+                        if(res.isError == 2 ){
+                            alert('您已经点过赞了！！');
+                        }
+                }   
+            });   
+
+        }
+		//朋友圈赞
+        function moments_zan(id,obj){
+        $.ajax({   
+                type:"POST",   
+                url:"square_new.php?act=moments_zan",  
+                dataType: 'json', 
+                data:{"id":id},
+                cache:false, //不缓存此页面   
+                success:function(res){
+                        if (res.isError == 0) {
+                            $(obj).siblings('.bg-zan').addClass('cur');
+                            $(obj).text(res.zan_num);
+                        }
+                        if(res.isError == 2 ){
+                            alert('您已经点过赞了！！');
+                        }
+                }   
+            });   
+
+        }
+</script>
+</body>
+</html>

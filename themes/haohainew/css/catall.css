@@ -1,0 +1,66 @@
+.catall { background-color: #FFF; }
+.classification .searchbox { position: fixed; z-index: 9; left: 0; right: 0; top: 0; height: 45px; color: #555; font-size: 17px; text-align: center; line-height: 44px; background-color: #fff; transform: translateZ(0); height: 56px; }
+.classification .search { position: absolute; left: 8px; top: 8px; right: 8px; background: #fff; border-radius: 5px;  height: 40px; line-height: 40px; padding: 0 5px 0 10px; }
+
+
+.classification .search .index-search-input {
+    width: 100%;
+    padding: 0 2%;
+    height: 40px;
+    line-height: 40px;
+    background: #fff;
+    border-radius: 8px;
+    font-size: 14px;
+    border: none;
+    background-color: #EFEFEF;
+}
+.classification .search .submit {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    right: 4px;
+    top: 8px;
+    background: url(../images/top_s.png) no-repeat;
+    background-size: 70%;
+    border: none;
+    text-indent: -9999em;
+}
+.classification .leftmenu { position: fixed; left: 0; top: 55px; bottom: 56px; width: 90px; z-index: 2; overflow: auto; -webkit-overflow-scrolling: touch; background-color: #f8f8f8; }
+.classification .leftmenu li { height: 43px; padding-left: 14px; line-height: 44px; font-size: 14px; color: #666666; white-space: nowrap; border-bottom: 1px solid #e8e8e8; border-right: 1px solid #e8e8e8; background-color: #f8f8f8; text-overflow: ellipsis; overflow: hidden; }
+.classification .leftmenu li.cur { padding-left: 11px; color: #FA5343; background-color: #FFF; border-left: 3px solid #FA5343; border-right-color: #FFF; }
+.classification .content { margin-top: 54px; padding-left: 95px; padding-bottom: 70px; overflow: hidden; -webkit-overflow-scrolling: touch; }
+.classification .content dl { padding-top: 9px; }
+.classification .content dt { height: 19px; margin-bottom: 10px; margin-left: 5px; line-height: 19px; font-size: 14px; color: #666666; }
+.classification .content dt a { display:inline-block; width:71px; height:24px; line-height:24px; background-image:url(../images/dt_a.png); background-repeat:no-repeat; background-size:100%; color:#fff; padding-left:2px; }
+.classification .content dt span { float:right; }
+.classification .content dt span a { background:none; color:#666; font-size:12px; }
+.classification .content dd { margin-bottom:20px; overflow: hidden; }
+.classification .content dd a { display: block; float: left; width: 33%; margin-top: 6px; }
+.classification .content dd img { display: block; width: 94%; margin: 0 auto; background-size: 100%; background-color: #f4f4f4; }
+.classification .content dd span { display: block; width: 100%; text-align: center; font-size: 14px; color: #7d7d7d; padding: 4px 0; }
+
+.cat_nav { position: fixed; z-index: 9; left: 0; right: 0; top: 45px; height: 30px; padding: 0 10px 10px 10px; }
+.cat_nav a { float: left; width: 48%; height: 30px; line-height: 30px; text-align: center; background: #e8e8e8; font-size: 14px; border-radius: 5px; }
+.cat_nav a:nth-child(2) { margin-left: 4%; }
+.cat_nav a.cur { background: #FA5343; color: #fff; }
+.brand_list { padding: 10px; background: #fff; }
+.brand_list h3 { height: 19px; margin-top: 9px; margin-bottom: 9px; margin-left: 5px; line-height: 19px; font-size: 14px; color: #FF4339; }
+.brand_list ul { border-top: 1px solid #EDF0F2; }
+.brand_list li { float: left; width: 33%; border-bottom: 1px solid #EDF0F2; }
+.brand_list li:nth-child(3n-2) { border-left: 1px solid #EDF0F2; }
+.brand_list li:nth-child(3n-1) { border-right: 1px solid #EDF0F2; border-left: 1px solid #EDF0F2; }
+.brand_list li:nth-child(3n) { border-right: 1px solid #EDF0F2; }
+.brand_list li img { display: block; width: 100%; }
+.brand_list li p { }
+
+
+.catgoods_list { height:90px; background-color:#fff; border-bottom:#eee 1px solid; position:relative; overflow:hidden; }
+.catgoods_list .pic { width:80px; height:80px; position:absolute; left:5px; top:5px; }
+.catgoods_list .pic img { width:80px; height:80px; }
+.catgoods_list .info { height:70px; margin:10px 5px 10px 90px; }
+.catgoods_list .info .tit { height:40px; line-height:20px; overflow:hidden; margin-bottom:10px; }
+.catgoods_list .info font { color:#FA5343; font-size:14px; }
+.catgoods_list .info del { padding-left:10px; }
+
+.get_more { padding:10px; color:#666; }
+.get_more img { vertical-align:middle; }

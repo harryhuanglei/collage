@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,user.js'}
+</head>
+<body>
+<div class="container">
+    <!--{if $action eq 'address_list'} --> 
+    {insert_scripts files='utils.js,region.js,shopping_flow.js'} 
+    <script type="text/javascript">
+      region.isAdmin = false;
+      {foreach from=$lang.flow_js item=item key=key}
+      var {$key} = "{$item}";
+      {/foreach}
+      {literal}
+      onload = function() {
+        if (!document.all)
+        {
+          document.forms['theForm'].reset();
+        }
+      }
+      {/literal}
+    </script>
+    <div class="consignee">
+        <div class="address_list" id="addressList">
+		    <ul>
+                <!-- {foreach from=$consignee_list item=consignee key=sn} --> 
+                 <li>
+				    <a href="javascript:;" class="info">
+                    <h4>收货人：{$consignee.consignee|escape}　{$consignee.mobile|escape}</h4>
+                    <p><span>{$consignee.province_name}{$consignee.city_name}{$consignee.district_name}{$consignee.address}</span></p>
+                    </a>
+                    <p class="tools">
+					    <span>
+						    {if $consignee.address_id eq $address}
+							<a href="javascript:;" class="on"><em>默认地址</em></a>
+							{else}
+							<a href="user.php?act=set_address&id={$consignee.address_id}"><em>设为默认地址</em></a>
+							{/if}
+						</span>
+                        <a href="javascript:;" class="bnt"  onclick="IsSure();">删除</a>
+                        <a href="user.php?act=edit_consignee&address_id={$consignee.address_id}" class="bnt">编辑</a>
+                    </p>
+                 </li>
+				 {foreachelse}
+        <div class="nothing">
+            <i class="iconfont icon-customer-addr"></i>
+            <p>您还没有添加收货地址哦</p>
+        </div>
+				 
+                 <!-- {/foreach} -->
+			 </ul>
+         </div>
+         <div class="address_add"><a href="user.php?act=edit_consignee"><i class="fa fa-plus"></i>新增收货地址</a></div>
+         
+    </div> 
+    <script type="text/javascript">
+        function IsSure(even){
+            var mes=confirm("确定删除该收获地址吗?");
+            if(mes==true){ 
+                   window.location='{$back_url}?act=drop_consignee&id={$consignee.address_id}';
+                }
+            else{
+                return false; 
+            }
+        }
+    </script>
+    <!--{/if} --> 
+    
+        <!--{if $action eq 'edit_address'} --> 
+    
+    {insert_scripts files='utils.js,region.js,shopping_flow.js'} 
+    <script type="text/javascript">
+
+      region.isAdmin = false;
+
+      {foreach from=$lang.flow_js item=item key=key}
+
+      var {$key} = "{$item}";
+
+      {/foreach}
+
+      {literal}
+
+      onload = function() {
+
+        if (!document.all)
+
+        {
+
+          document.forms['theForm'].reset();
+
+        }
+
+      }
+
+      {/literal}
+
+    </script> 
+    
+    <!-- {foreach from=$consignee_list item=consignee key=sn} -->
+    
+    <form action="user.php" method="post" name="theForm" onsubmit="return checkConsignee(this)">
+        <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#dddddd">
+            <tr>
+                <td align="right" bgcolor="#ffffff">{$lang.consignee_name}：</td>
+                <td align="left" bgcolor="#ffffff"><input name="consignee" type="text" class="inputBg" id="consignee_{$sn}" value="{$consignee.consignee|escape}" /></td>
+            </tr>
+            <tr>
+                <td align="right" bgcolor="#ffffff">{$lang.backup_phone}：</td>
+                <td align="left" bgcolor="#ffffff"><input name="mobile" type="text" class="inputBg" id="mobile_{$sn}" value="{$consignee.mobile|escape}" /></td>
+            </tr>
+            <tr>
+                <td align="right" bgcolor="#ffffff">{$lang.country_province}：</td>
+                <td colspan="3" align="left" bgcolor="#ffffff"><select name="country" id="selCountries_{$sn}" onchange="region.changed(this, 1, 'selProvinces_{$sn}')">
+                        <option value="0">{$lang.please_select}</option>
+                        
+                        <!-- {foreach from=$country_list item=country} -->
+                        
+                        <option value="{$country.region_id}" {if $consignee.country eq $country.region_id}selected{/if}>{$country.region_name}</option>
+                        
+                        <!-- {/foreach} -->
+                        
+                    </select>
+                    <select name="province" id="selProvinces_{$sn}" onchange="region.changed(this, 2, 'selCities_{$sn}')">
+                        <option value="0">{$lang.please_select}</option>
+                        
+                        <!-- {foreach from=$province_list.$sn item=province} -->
+                        
+                        <option value="{$province.region_id}" {if $consignee.province eq $province.region_id}selected{/if}>{$province.region_name}</option>
+                        
+                        <!-- {/foreach} -->
+                        
+                    </select>
+                    <select name="city" id="selCities_{$sn}" onchange="region.changed(this, 3, 'selDistricts_{$sn}')">
+                        <option value="0">{$lang.please_select}</option>
+                        
+                        <!-- {foreach from=$city_list.$sn item=city} -->
+                        
+                        <option value="{$city.region_id}" {if $consignee.city eq $city.region_id}selected{/if}>{$city.region_name}</option>
+                        
+                        <!-- {/foreach} -->
+                        
+                    </select>
+                    <select name="district" id="selDistricts_{$sn}" {if !$district_list.$sn}style="display:none"{/if}>
+                        <option value="0">{$lang.please_select}</option>
+                        
+                        <!-- {foreach from=$district_list.$sn item=district} -->
+                        
+                        <option value="{$district.region_id}" {if $consignee.district eq $district.region_id}selected{/if}>{$district.region_name}</option>
+                        
+                        <!-- {/foreach} -->
+                        
+                    </select></td>
+            </tr>
+            <tr>
+                <td align="right" bgcolor="#ffffff">{$lang.detailed_address}：</td>
+                <td align="left" bgcolor="#ffffff"><input name="address" type="text" class="inputBg" id="address_{$sn}" value="{$consignee.address|escape}" /></td>
+            </tr>
+            <tr>
+                <td align="right" bgcolor="#ffffff">&nbsp;</td>
+                <td colspan="3" align="center" bgcolor="#ffffff"><!-- {if $consignee.consignee} -->
+                    
+                    <input type="submit" name="submit" class="bnt_blue_1" value="{$lang.confirm_edit}" />
+                    <input name="button" type="button" class="bnt_blue"  onclick="if (confirm('{$lang.confirm_drop_address}'))location.href='user.php?act=drop_consignee&id={$consignee.address_id}'" value="{$lang.drop}" />
+                    
+                    <!-- {else} -->
+                    
+                    <input type="submit" name="submit" class="bnt_blue_2"  value="{$lang.add_address}"/>
+                    
+                    <!-- {/if} -->
+                    
+                    <input type="hidden" name="act" value="act_edit_address" />
+                    <input name="address_id" type="hidden" value="{$consignee.address_id}" /></td>
+            </tr>
+        </table>
+    </form>
+    
+    <!-- {/foreach} --> 
+    
+    <!--{/if} --> 
+</div>
+<div class="blank"></div>
+
+</body>
+</html>
+

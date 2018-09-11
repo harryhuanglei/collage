@@ -1,0 +1,45 @@
+.suggestion-wrap {
+    position: relative;
+}
+.suggestion-header {
+    line-height: 45px;
+    height: 45px;
+    font-size: 16px;
+    padding-left: 5%;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    overflow: hidden;
+    background-color: #f7f7f7;
+    z-index: 100;
+}
+.suggestion-body {
+    padding-left: 4%;
+    background-color: #fff;
+    color: #000;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    overflow-y: auto;
+    z-index: 99;
+}
+.suggestion-one {
+    height: 45px;
+    line-height: 45px;
+    display: block;
+    border-bottom: 1px solid #ccc;
+    position: relative;
+}
+.suggestion-title {
+    font-size: 15px;
+}
+.suggestion-arrow {
+    position: absolute;
+    right: 2%;
+    top: 12px;
+    width: 10px;
+    height: 16px;
+}
+.suggestion-arrow img {
+    width: 100%;
+    height: 100%;
+}

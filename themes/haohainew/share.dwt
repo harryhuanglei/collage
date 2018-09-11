@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$shop_name}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/share.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,user.js'}
+</head>
+<body>
+    {if $team_info.team_status eq 1 }
+    <div class="tips">
+        <i class="tips_succ"></i>
+        {if $is_team eq 1}
+        快来入团吧就差你了
+        {else}
+        {if $order.team_first eq 1}
+        开团成功快去邀请好友加入吧
+        {else}
+        参团成功快去邀请好友加入吧
+        {/if}
+        {/if}
+        <a class="share_link" id="share_button" href="javascript:void(0);" onclick="{if $is_weixin}document.getElementById('share_img').style.display='';{else}toshare(){/if}"></a>
+    </div>
+    {/if} 
+    {if $team_info.team_status eq 2 }
+    {if $is_teammen gt 0}
+    <div class="tips">
+        <i class="tips_succ"></i>团购成功 我们会尽快为您发货
+    </div>
+    {else}
+    <div class="tips">
+        <i class="tips_err"></i>来晚了一步 此团满员啦
+    </div>
+    {/if}
+    {/if}
+    {if $team_info.team_status eq 3 or $team_info.team_status eq 4}
+    {if $is_teammen gt 0}
+    <div class="tips">
+        <i class="tips_err"></i>团购失败
+    </div>
+    {else}
+    <div class="tips">
+        <i class="tips_err"></i>来晚了一步！
+    </div>
+    {/if}
+    {/if}
+
+
+    <div id="group_detail" class="tm {if $team_info.team_status eq 1}{elseif $team_info.team_status eq 2}tm_succ{else}tm_err{/if}">
+        {foreach from=$goods_list item=goods}
+        <div class="td tuanDetailWrap">
+            <div class="td_img">
+            {if $luckdraw_id}
+            <a href="luckdraw.php?act=view&id={$luckdraw_id}"><img src="{$goods.goods_thumb}"></a>
+            {else}
+            <a href="goods.php?id={$goods.goods_id}&team_sign={$team_info.team_sign}&is_team={$is_team}"><img src="{$goods.goods_thumb}"></a>
+            {/if}
+            </div>
+            <div class="td_info">
+                <p class="td_name">
+                {if $luckdraw_id}
+                <a href="luckdraw.php?act=view&id={$luckdraw_id}">{$goods.goods_name}</a>
+               {else}
+               <a href="goods.php?id={$goods.goods_id}&team_sign={$team_info.team_sign}&is_team={$is_team}">{$goods.goods_name}</a>
+               {/if}
+                </p>
+                <p class="td_mprice"><span>{$team_info.team_num}人团</span><i>¥</i><b>{$goods.goods_price}</b></p>
+            </div>
+        </div>
+        {/foreach}
+        <a class="explain_tuan" id="share_button" href="javascript:void(0);" onclick="document.getElementById('share_tuan').style.display='';"></a>
+        <div id="share_tuan" style="display:none;" onclick="document.getElementById('share_tuan').style.display='none';"><img src="themes/haohainew/images/share-tuan.png" ></div>
+    </div>
+    <div class="spec">
+        <form action="javascript:addToCart({$team_info.extension_id},0,0,5,{$team_info.team_sign},{$team_info.shared_by});" method="post" name="HHS_FORMBUY" id="HHS_FORMBUY">
+        {foreach from=$specification item=spec key=spec_key}
+        <dl>
+            <dt>{$spec.name}：</dt>
+            <dd>
+                {foreach from=$spec.values item=value key=key}
+                <a {if $key eq 0}class="cattsel"{/if} onclick="changeAtt(this)" href="javascript:;" name="{$value.id}" title="[{if $value.price gt 0}{$lang.plus}{elseif $value.price lt 0}{$lang.minus}{/if} {$value.format_price|abs}]">{$value.label}<input style="display:none" id="spec_value_{$value.id}" type="radio" name="spec_{$spec_key}" value="{$value.id}" {if $key eq 0}checked{/if} /></a>
+                {/foreach}
+            </dd>
+            <input type="hidden" name="spec_list" value="{$key}" />
+        </dl>
+        {/foreach}
+        </form>
+    </div>
+    <div class="pp">
+        <div class="pp_users" id="pp_users"> 
+            {foreach from=$team_mem item=item}
+            <p class="pp_users_item pp_users_normal"><img src="{if $item.headimgurl}{$item.headimgurl}{else}themes/haohainew/images/mr_head.png{/if}"></p> 
+            {/foreach}
+            {foreach from=$d_num_arr item=item}
+            {if $team_info.is_luck neq 1}<p class="pp_users_item pp_users_blank"><img src="themes/haohainew/images/avatar_4_64.png"></p>{/if} 
+            {/foreach}
+        </div>
+    </div>
+    <div class="pp_box">
+        {if $team_info.team_status eq 2}
+        <div class="pp_tips" id="flag_1_a" >对于诸位大侠的相助，团长感激涕零</div>
+        {else}
+        <div class="pp_tips" id="flag_1_a" >{$group_share_ads}</div>
+        {/if}
+        {if $team_info.team_status eq 1}
+        <div class="pp_tips" id="flag_0_a" >还差{if $team_info.is_luck eq 1}<b>{$db_num}</b>份{else}<b>{$d_num}</b>人{/if}，盼你如南方人盼暖气~</div>
+        <div class="pp_state" id="flag_0_b" >
+            <div class="pp_time"> 剩余<font id="time"></font>结束 </div>
+        </div>
+        {/if}
+    </div>
+    
+    <div class="pp_list">
+        <div id="showYaoheList"> 
+            {foreach from=$team_mem item=item name=name}
+            {if $item.team_first eq 1}
+            <div class="pp_list_item"> <img class="pp_list_avatar" alt="" src="{if $item.headimgurl}{$item.headimgurl}{else}themes/haohainew/images/mr_head.png{/if}">
+                <div class="pp_list_info" id="pp_list_info"> <span class="pp_list_name">团长<b>{$item.uname}</b></span> <span class="pp_list_time">{$item.date} 开团 {if $item.is_lucker eq 1} <font color="red">幸运者</font>{/if}</span> </div>
+            </div>
+            {else}
+            <div class="pp_list_item"> <img class="pp_list_avatar" alt="" src="{$item.headimgurl}">
+                <div class="pp_list_info" id="pp_list_info"> <span class="pp_list_name"><b>{$item.uname}</b></span> <span class="pp_list_time">{$item.date} 参团 {if $item.is_lucker eq 1} <font color="red">幸运者</font>{/if}</span> </div>
+            </div>
+            {/if}
+            {/foreach}
+        </div>
+        {if $team_info.team_status eq 1}
+        <div id="chamemeber" class="pp_list_blank" > 还差
+            {if $team_info.is_luck eq 1}<span>{$db_num}</span>份{else}<span>{$d_num}</span>人{/if}，让小伙伴们都来{if $team_info.is_luck eq 1}夺宝{else}组团{/if}吧！ </div>
+        {/if}
+    </div>
+
+    {if $stores_info.suppliers_id}
+    <div class="mall_goods">
+        <a href="store.php?id={$stores_info.suppliers_id}">
+            <div class="mall_img"><img src="{$stores_info.supp_logo}"></div>
+            <div class="mall_sub">
+                <h3>{$stores_info.suppliers_name}</h3>
+                <p>商品:{$stores_info.goods_num}  销量:{$stores_info.sales_num}</p>
+                 </div>
+            <div class="enter_button"> <span><img src="themes/haohainew/images/mall_icon.png"></span> <em>进入店铺</em> </div>
+        </a>
+    </div>
+    {/if}  
+    <div class="step">
+        <div class="step_hd"> 拼团玩法<a class="step_more" href="tuan_rule.php">查看详情</a> </div>
+        <div id="footItem" class="step_list">
+            <div class="step_item">
+                <div class="step_num">1</div>
+                <div class="step_detail">
+                    <p class="step_tit">选择 <br>
+                        心仪商品</p>
+                </div>
+            </div>
+            <div class="step_item">
+                <div class="step_num">2</div>
+                <div class="step_detail">
+                    <p class="step_tit">支付开团 <br>
+                        或参团</p>
+                </div>
+            </div>
+            <div class="step_item {if $team_info.team_status eq 1} step_item_on{/if}">
+                <div class="step_num">3</div>
+                <div class="step_detail">
+                    <p class="step_tit">等待好友 <br>
+                        参团支付</p>
+                </div>
+            </div>
+            <div class="step_item {if $team_info.team_status eq 2}step_item_on{/if}" >
+                <div class="step_num">4</div>
+                <div class="step_detail">
+                    <p class="step_tit">达到人数 <br>
+                        团购成功</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="recommend_grid_wrap" style="padding-bottom:60px;">
+        <div id="recommend" class="grid">
+            <div class="recommend_head">你可能还喜欢</div>
+            <div class="bd">
+                <ul>
+                    {foreach from=$rands_goods item = goods}
+                    <li>
+                        <div class="recommend_img"><a href="goods.php?id={$goods.goods_id}"><img  src="{if $goods.goods_img}{$goods.goods_img}{else}images/no_picture.gif{/if}"></a></div>
+                        <div class="recommend_title"><a href="goods.php?id={$goods.goods_id}">{$goods.goods_name}</a></div>
+                        <div class="recommend_price">￥<span>{$goods.goods_price}</span></div>
+                        {if $goods.rec_id gt 0}
+                        <div class="like_click"> <a href="javascript:;" class="recommend_like liked"></a> </div>
+                        {else}
+                        <div class="like_click"> <a href="javascript:collect({$goods.goods_id})" class="recommend_like"></a> </div>
+                        {/if}
+                    </li>
+                    {/foreach}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixopt">  
+        {if $team_info.team_status eq 2 ||  $team_info.team_status eq 3 ||  $team_info.team_status eq 4}
+        <div class="fixopt_item">
+            {if $luckdraw_id} 
+                    <a class="fixopt_btn bottomBtn" href="luckdraw.php">我也要参加抽奖，点击回抽奖池</a>
+             {else}
+                    <a class="fixopt_btn bottomBtn" href="goods.php?id={$team_info.goods_id}">我也开个团，点击回商品详情</a>
+             {/if}
+              </div>
+        {else}
+        {if $is_team eq 1 }
+        {if $luckdraw_id}
+        <input type="hidden" name="luckdraw_id" id="luckdraw_id" value={$luckdraw_id} />
+        {/if}
+        <div class="fixopt_item fixopt_item1"> <a class="fixopt_home" href="index.php" ></a> <a class="fixopt_share" id="share_button" href="javascript:void(0);" onclick="document.getElementById('share_img').style.display='';"></a> <a class="fixopt_btn" href="javascript:void(0);" onclick="addToCart({$team_info.extension_id},0,0,5,{$team_info.team_sign});">我也要参团</a> </div>
+        {else}
+        <div class="fixopt_item fixopt_item2"> <a class="fixopt_home" href="index.php" ></a> <a class="fixopt_btn"  id="share_button" href="javascript:void(0);" onclick="{if $is_weixin}document.getElementById('share_img').style.display='';{else}toshare(){/if}">还差{if $team_info.is_luck eq 1}{$db_num}份{else}{$d_num}人{/if}{if $team_info.is_luck eq 1}夺宝{else}组团{/if}成功</a> </div>
+        {/if}
+        {/if}
+    </div>
+
+    <div id="share_img" class="share_img"{if $is_team eq 1 or $team_info.team_status neq 1 or !$is_weixin} style="display:none;"{/if} onclick="document.getElementById('share_img').style.display='none';">
+        <p><img class="arrow" src="themes/haohainew/images/share.png" ></p>
+        <p style="margin-top:20px; margin-right:50px;">点击右上角，</p>
+        <p style="margin-right:50px;">将它分享给好友</p>
+        <p style=" text-align:center; font-size:30px; line-height:80px;">{if $team_info.is_luck eq 1}夺宝{else}参团{/if}人数+1</p>
+        <p align="center">还差{if $team_info.is_luck eq 1}{$db_num}份{else}{$d_num}人{/if}就能{if $team_info.is_luck eq 1}夺宝{else}组团{/if}成功</p>
+        <p align="center">快邀请小伙伴{if $team_info.is_luck eq 1}夺宝{else}参团{/if}吧</p>
+    </div>
+	
+<div class="am-share">
+  <h3 class="am-share-title">分享到</h3>
+  <div class="bdsharebuttonbox" data-tag="share_1">
+	
+	<li><a class="bds_qzone" data-cmd="qzone"></a></li>
+	<li><a class="bds_tqq" data-cmd="tqq"></a></li>
+	<li><a class="bds_tsina" data-cmd="tsina"></a></li>
+	<li><a class="bds_weixin" data-cmd="weixin"></a></li>
+  </div>
+  <div class="am-share-footer"><button class="share_btn">取消</button></div>
+</div>
+<style>
+.bdshare-button-style0-32 a { margin:0 auto; float:none; }
+</style>
+</body>
+<script type="text/javascript">
+{foreach from=$lang.clips_js item=item key=key}
+var {$key} = "{$item}";
+{/foreach}
+{if $team_info.team_status eq 1 and $team_info.is_luck neq 1 }
+var daysms = 24 * 60 * 60 * 1000;
+var hoursms = 60 * 60 * 1000;
+var Secondms = 60 * 1000;
+var microsecond = 1000;
+var DifferHour = 0;
+var DifferMinute = 0;
+var DifferSecond = 0;
+var systime={$systime};
+var team_start={$team_start}*1000;
+var team_end={$team_start}*1000+{$team_suc_time}*24*3600*1000;
+setInterval("systime_clock()",1000);
+function systime_clock(){
+	systime++;
+}
+function clock()
+{	
+  var time = new Date();
+  time.setTime(systime*1000);
+  var Diffms = team_end - time.getTime();
+  var Diffms1=Diffms;
+  var a='';
+  var b='';
+  var c='';
+  var d='';
+  DifferHour = Math.floor(Diffms / daysms);
+  Diffms -= DifferHour * daysms;
+  DifferMinute = Math.floor(Diffms / hoursms);
+  Diffms -= DifferMinute * hoursms;
+  DifferSecond = Math.floor(Diffms / Secondms);
+  Diffms -= DifferSecond * Secondms;
+  var dShhs = Math.floor(Diffms / microsecond);
+  if(Diffms1>=0){
+	   a="还剩<strong class='tcd-h'>"+DifferHour+"</strong>天";
+	   b="<span >"+DifferMinute+"</span>时";
+	   c="<span >"+DifferSecond+"</span>分";
+	   d="<span>"+dShhs+"</span>秒";
+	  document.getElementById('time').innerHTML =a+b+c+d;
+  }else{
+	  window.location.reload();
+  }
+}
+window.setInterval("clock()", 1000); 
+{/if}
+
+function changeAtt(t) {
+    t.lastChild.checked='checked';
+    for (var i = 0; i<t.parentNode.childNodes.length;i++) {
+        if (t.parentNode.childNodes[i].className == 'cattsel') {
+            t.parentNode.childNodes[i].className = '';
+        }
+    }
+    t.className = "cattsel";
+}
+function toshare(){
+	$(".am-share").addClass("am-modal-active");	
+	if($(".sharebg").length>0){
+		$(".sharebg").addClass("sharebg-active");
+	}else{
+		$("body").append('<div class="sharebg"></div>');
+		$(".sharebg").addClass("sharebg-active");
+	}
+	$(".sharebg-active,.share_btn").click(function(){
+		$(".am-share").removeClass("am-modal-active");	
+		setTimeout(function(){
+			$(".sharebg-active").removeClass("sharebg-active");	
+			$(".sharebg").remove();	
+		},300);
+	})
+}
+</script>
+
+<script>
+	window._bd_share_config = {
+		common : {
+			bdText : '{$title}',	
+			bdDesc : '{$desc}',	
+			bdUrl : '{$link}', 	
+			bdPic : '{$imgUrl}'
+		},
+		share : [{
+			"bdSize" : 32
+		}]
+	}
+	with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script language="javascript" type="text/javascript">
+	wx.config({
+	    debug: false,//这里是开启测试，如果设置为true，则打开每个步骤，都会有提示，是否成功或者失败
+	    appId: '{$appid}',
+	    timestamp: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+	    nonceStr: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+	    signature: '{$signature}',
+	    jsApiList: [
+	      // 所有要调用的 API 都要加到这个列表中
+	        'onMenuShareTimeline',
+	        'onMenuShareAppMessage',
+	        'onMenuShareQQ',
+	        'onMenuShareWeibo'
+	    ]
+	});
+	var title="{$title}";
+	var link= "{$link}";
+	var imgUrl="{$imgUrl}";
+	var desc= "{$desc}";
+	wx.ready(function () {
+	    wx.onMenuShareTimeline({//朋友圈
+	        title: title, // 分享标题
+	        link: link, // 分享链接
+	        imgUrl: imgUrl, // 分享图标
+	        success: function () { 
+	            // 用户确认分享后执行的回调函数
+	        	statis(2,1);
+	        },
+	        cancel: function () { 
+	            // 用户取消分享后执行的回调函数
+	        	statis(2,2);
+	        }
+	    });
+	    wx.onMenuShareAppMessage({//好友
+	        title: title, // 分享标题
+	        desc: desc, // 
+	        link: link, // 分享链接
+	        imgUrl: imgUrl, // 分享图标
+	        type: '', // 分享类型,music、video或link，不填默认为link
+	        dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+	        success: function () { 
+	        	// 用户确认分享后执行的回调函数
+	            statis(1,1);    
+	        },
+	        cancel: function () { 
+	            // 用户取消分享后执行的回调函数
+	        	statis(1,2);
+	        }
+	    });
+	    wx.onMenuShareQQ({
+	        title: title, // 分享标题
+	        desc: desc, // 分享描述
+	        link: link, // 分享链接
+	        imgUrl: imgUrl, // 分享图标
+	        success: function () { 
+	           // 用户确认分享后执行的回调函数
+	        	statis(4,1);
+	        },
+	        cancel: function () { 
+	           // 用户取消分享后执行的回调函数
+	        	statis(4,2);
+	        }
+	    });
+	    wx.onMenuShareWeibo({
+	        title: title, // 分享标题
+	        desc: desc, // 分享描述
+	        link: link, // 分享链接
+	        imgUrl: imgUrl, // 分享图标
+	        success: function () { 
+	           // 用户确认分享后执行的回调函数
+	        	statis(3,1);
+	        },
+	        cancel: function () { 
+	            // 用户取消分享后执行的回调函数
+	        	statis(3,2);
+	        }
+	    });
+	});
+	function statis(share_type,share_status){
+		$.ajax({
+            type:"post",//请求类型
+            url:"share.php",//服务器页面地址
+            data:"act=link&share_status="+share_status+"&share_type="+share_type+"&link_url={$link2}",
+            dataType:"json",//服务器返回结果类型(可有可无)
+            error:function(){//错误处理函数(可有可无)
+                //alert("ajax出错啦");
+            },
+            success:function(data){
+            }
+        });
+	}
+</script>
+
+<script type="text/javascript">
+        $(document).ready(function(){
+            //添加分享动画
+            $('.explain_tuan').addClass('tremble');
+        });
+    </script>
+</html>

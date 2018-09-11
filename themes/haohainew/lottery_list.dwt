@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/haohaios.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/lottery_list.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js'}
+</head>
+<body>
+        <div class="container">
+            <div class="lottery_specific_goods">
+                <div class="lottery_specific_img"><img src="{$goods.goods_img}"></div>
+                <div class="lottery_specific_goods_info">
+                    <div class="lottery_specific_goods_name">{$goods.goods_name}</div>
+                    <div class="lottery_specific_sale_price">¥{$goods.goods_price}</div>
+                    <div class="lottery_specific_market_price">¥{$goods.market_price}</div>
+                    <div class="lottery_specific_status">
+		            <!--{if $goods.promote_end_date lt $now}-->
+		                <span>已开奖</span>
+		            <!-- {else} -->
+		                <span onclick="addToCart({$goods.goods_id},0,0,5);">我也要抽奖</span>
+		                <!-- <span>等待开奖</span> -->
+		            <!-- {/if} -->
+                    </div>
+                </div>    
+            </div>
+            <div class="lottery_specific_bg">
+            </div>
+            <div class="lottery_specific_result">
+                <div class="lottery_result_title">
+                    <img src="images/lottery_reward_pic-75ef7bfc6e.png" class="lottery_reward_pic">
+                    <div class="lottery_reward_list">中奖名单</div>
+                    <div class="lottery_coupons" ms-click="to_see_coupons"><a href="/user.php?act=bonus">点击查看优惠券</a></div>
+                </div>
+                <div class="lottery_result_info">
+                    <div class="lottery_lucky_guy">幸运儿</div>
+                    <div class="lottery_order_id">订单编号</div>
+                    <div class="lottery_tel_num">电话</div>
+                </div>
+                <div class="lottery_pp_list">
+                    <div class="lottery_showYaoheList">
+                    	<!-- {foreach from=$team_mem item=item} -->
+                        <div class="lottery_pp_list_item">
+                            <img class="lottery_pp_list_avatar" src="{$item.headimgurl}">
+                            <div class="lottery_pp_list_info">
+                                <div class="lottery_pp_list_name"><b>{if $item.is_lucker} <font color="red">[幸]</font>{/if}{$item.uname}</b></div>
+                                <div class="lottery_pp_list_order">{$item.order_sn}</div>
+                                <div class="lottery_pp_list_mobile">{$item.mobile}</div>
+                            </div>
+                        </div>
+                        <!-- {/foreach} -->
+                        
+                        <!-- <div class="lottery_pp_list_item">
+                            <div class="pp_list_name_hide" click="showNextLuckyGuys()">隐藏了110位小伙伴，点击显示</div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div> 
+
+ 
+ 
+</body>
+</html>

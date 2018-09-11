@@ -1,0 +1,859 @@
+{if $full_page}
+
+
+{include file="pageheader.htm"}
+
+
+{insert_scripts files="../js/utils.js,listtable.js,../js/region.js"}
+
+
+<script language="javascript" type="text/javascript" src="../js/DatePicker/WdatePicker.js"></script>
+
+
+<!-- 订单列表 -->
+<div class="form-div">
+	<form action="javascript:searchOrder()" name="searchForm">
+	    <img src="images/icon_search.gif" width="26" height="22" border="0" alt="SEARCH" />
+	 		团购编号<input name="team_sign" type="text" id="team_sign" size="25">
+	        商品名称<input name="goods_name" type="text" id="goods_name" size="15">
+			商品编号<input name="extension_id" type="text" id="extension_id" size="15">
+	   		开团状态
+	    <select name="team_status" id="team_status">
+	         <option value="-1" >{$lang.select_please}</option>
+	            {html_options options=$lang.team_status}
+			<!--  <option value="1" >正在进行</option>
+			 <option value="2" >成功</option>
+			 <option value="3" >失败</option>
+			 <option value="4" >待付款</option> -->
+	    </select>
+		缺少人数<input name="team_lack_num" type="text" id="team_lack_num" size="15">
+	    起止时间
+	    <input class="Wdate" type="text" name="start_time" readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-M-d HH:mm'})"/>
+	      ~       
+	    <input class="Wdate" type="text" name="end_time" readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-M-d HH:mm'})"/>
+	
+	    <input type="submit" value="{$lang.button_search}" class="button" />
+	
+	  </form>
+ </div>
+
+<form method="post" action="luck.php?act=luck_start" name="listForm" >
+
+
+  <div class="list-div" id="listDiv">
+  <!-- &operation=refund -->
+
+
+{/if}
+
+
+<table cellpadding="3" cellspacing="1">
+
+
+  <tr>
+
+
+    <th>
+
+
+      <input onclick='listTable.selectAll(this, "checkboxes")' type="checkbox" /><a href="javascript:listTable.sort('team_sign', 'DESC'); ">{$lang.team_sign}</a>{$sort_team_sign}
+
+
+    </th>
+
+
+    <th><a href="javascript:listTable.sort('extension_id', 'DESC'); ">商品名称</a>{$sort_extension_id}</th>
+
+
+    <th>商品编号</th>
+
+
+    <th><a href="javascript:listTable.sort('team_status', 'DESC'); ">开团状态</a>{$sort_team_status}</th>
+
+
+    <th>所需人数</th>
+
+
+    <th>缺少人数</th>
+
+
+    <th>开团时间</th>
+
+
+    <th>到期时间</th>
+
+
+    <th>用户名</th>
+
+
+    <th>授权ID</th>
+
+
+    <th>{$lang.handler}</th>
+
+
+  <tr>
+
+
+  {foreach from=$order_list item=order key=okey}
+
+
+  <tr>
+
+
+    <td valign="top" nowrap="nowrap"><input type="checkbox" name="checkboxes[]" value="{$order.team_sign}" />{$order.team_sign}<input type="hidden"  name="team_sign[]"  value="{$order.team_sign}" /></td>
+
+
+    <td>{$order.goods_name}</td>
+
+
+    <td align="left" valign="top">{$order.extension_id|escape}</td>
+
+
+    <td align="center" valign="top" nowrap="nowrap">{$lang.team_status[$order.team_status]}</td>
+
+
+    <td align="right" valign="top" nowrap="nowrap">{$order.team_num}</td>
+
+
+    <td align="right" valign="top" nowrap="nowrap">{$order.team_lack_num}</td>
+
+
+    <td align="center" valign="top" nowrap="nowrap">{if $order.team_start_date}{$order.team_start_date}{else}暂无{/if}</td>
+
+
+    <td align="center" valign="top" nowrap="nowrap">{if $order.team_end_date}{$order.team_end_date}{else}暂无{/if}</td>
+
+
+  <td align="center" valign="top" nowrap="nowrap">{$order.uname}</td>
+
+
+  <td align="center" valign="top" nowrap="nowrap">{$order.openid}</td>
+
+
+
+
+
+    <td align="center" valign="top"  nowrap="nowrap">
+	
+	
+
+     <a href="order.php?act=teammem_list&team_sign={$order.team_sign}">查看团购详情</a>
+
+
+     <!-- 
+
+
+     {if $order.can_refund gt 0}<a href="refund.php?team_sign={$order.team_sign}" onclick="if(confirm('确定要退款吗')) return true;else return false;">退款</a>{/if}
+
+
+ -->
+
+
+    </td>
+
+
+  </tr>
+
+
+  {/foreach}
+
+
+</table>
+
+
+
+
+
+<!-- 分页 -->
+
+
+<table id="page-table" cellspacing="0">
+
+
+  <tr>
+
+
+    <td align="right" nowrap="true">
+
+
+    {include file="page.htm"}
+
+
+    </td>
+
+
+  </tr>
+
+
+</table>
+
+
+{if $full_page}
+
+
+  </div>
+
+
+  <div>
+<input type="hidden"  name="luck_id"  value="{$luck_id}" />
+
+  {if $can_luck}
+	{if $luck_status eq 1}
+	<!--  <input type="button" id="btnSubmit1" value="查看中奖名单"  class="button" onclick="window.location='luck.php?act=luck_start&luck_id={$luck_id}'; "  /> -->
+	<input type="submit"   value="查看中奖名单"   />
+	{else}
+		<!-- {if $team_status_log eq 1}
+    
+    
+    <input name="refund" type="submit" id="btnSubmit" value="批量结束正在进行中的团" class="button" disabled="true" onclick="this.form.target = '_self';if(confirm('确定要执行此操作吗')) return true;else return false;" /><h1><font color="#FF0000">抽奖之前请先批量结束正在进行中的团</font></h1>
+    {elseif $team_status_log eq 2}
+		
+			<b>没有参加活动的团</b>
+		{else} -->
+      		{if $start_status eq 1}
+      		  <input type="submit"   value="开始抽奖" id="start" onclick="return hid();"   />
+      		{/if}
+		{/if}
+	{/if}	
+
+  {/if}
+  <script type="text/javascript">
+ function hid(){
+    document.getElementById('start').style.display = 'none';
+ }
+ </script>
+
+  </div>
+
+
+</form>
+
+
+<script language="JavaScript">
+
+
+listTable.recordCount = {$record_count};
+
+
+listTable.pageCount = {$page_count};
+
+
+region.isAdmin = true;
+
+
+{foreach from=$filter item=item key=key}
+
+
+listTable.filter.{$key} = '{$item}';
+
+
+{/foreach}
+
+
+{literal}
+
+
+listTable.query = "team_query";
+
+
+    onload = function()
+    {
+        // 开始检查订单
+        startCheckOrder();
+    }
+
+
+    /**
+     * 搜索订单
+     */
+
+
+    function searchOrder()
+    {
+        listTable.filter['team_sign'] = document.forms['searchForm'].elements['team_sign'].value;
+
+
+        listTable.filter['goods_name'] = document.forms['searchForm'].elements['goods_name'].value;
+
+
+        listTable.filter['extension_id'] = document.forms['searchForm'].elements['extension_id'].value;
+
+
+	    listTable.filter['team_status'] = document.forms['searchForm'].elements['team_status'].value;
+	
+
+	    listTable.filter['team_lack_num'] = document.forms['searchForm'].elements['team_lack_num'].value;
+	
+
+	    listTable.filter['start_time']       = document.forms['searchForm'].elements['start_time'].value;
+	
+	    listTable.filter['end_time']         = document.forms['searchForm'].elements['end_time'].value;
+
+
+        listTable.filter['page'] = 1;
+
+
+        listTable.loadList();
+    }
+
+
+    function check()
+
+
+    {
+
+
+      var snArray = new Array();
+
+
+      var eles = document.forms['listForm'].elements;
+
+
+      for (var i=0; i<eles.length; i++)
+
+
+      {
+
+
+        if (eles[i].tagName == 'INPUT' && eles[i].type == 'checkbox' && eles[i].checked && eles[i].value != 'on')
+
+
+        {
+
+
+          snArray.push(eles[i].value);
+
+
+        }
+
+
+      }
+
+
+      if (snArray.length == 0)
+
+
+      {
+
+
+        return false;
+
+
+      }
+
+
+      else
+
+
+      {
+
+
+        eles['order_id'].value = snArray.toString();
+
+
+        return true;
+
+
+      }
+
+
+    }
+
+
+    /**
+
+
+     * 显示订单商品及缩图
+
+
+     */
+
+
+    var show_goods_layer = 'order_goods_layer';
+
+
+    var goods_hash_table = new Object;
+
+
+    var timer = new Object;
+
+
+
+
+
+    /**
+
+
+     * 绑定订单号事件
+
+
+     *
+
+
+     * @return void
+
+
+     */
+
+
+    function bind_order_event()
+
+
+    {
+
+
+        var order_seq = 0;
+
+
+        while(true)
+
+
+        {
+
+
+            var order_sn = Utils.$('order_'+order_seq);
+
+
+            if (order_sn)
+
+
+            {
+
+
+                order_sn.onmouseover = function(e)
+
+
+                {
+
+
+                    try
+
+
+                    {
+
+
+                        window.clearTimeout(timer);
+
+
+                    }
+
+
+                    catch(e)
+
+
+                    {
+
+
+                    }
+
+
+                    var order_id = Utils.request(this.href, 'order_id');
+
+
+                    show_order_goods(e, order_id, show_goods_layer);
+
+
+                }
+
+
+                order_sn.onmouseout = function(e)
+
+
+                {
+
+
+                    hide_order_goods(show_goods_layer)
+
+
+                }
+
+
+                order_seq++;
+
+
+            }
+
+
+            else
+
+
+            {
+
+
+                break;
+
+
+            }
+
+
+        }
+
+
+    }
+
+
+    listTable.listCallback = function(result, txt) 
+
+
+    {
+
+
+        if (result.error > 0) 
+
+
+        {
+
+
+            alert(result.message);
+
+
+        }
+
+
+        else 
+
+
+        {
+
+
+            try 
+
+
+            {
+
+
+                document.getElementById('listDiv').innerHTML = result.content;
+
+
+                bind_order_event();
+
+
+                if (typeof result.filter == "object") 
+
+
+                {
+
+
+                    listTable.filter = result.filter;
+
+
+                }
+
+
+                listTable.pageCount = result.page_count;
+
+
+            }
+
+
+            catch(e)
+
+
+            {
+
+
+                alert(e.message);
+
+
+            }
+
+
+        }
+
+
+    }
+
+
+    /**
+
+
+     * 浏览器兼容式绑定Onload事件
+
+
+     *
+
+
+     */
+
+
+    if (Browser.isIE)
+
+
+    {
+
+
+        window.attachEvent("onload", bind_order_event);
+
+
+    }
+
+
+    else
+
+
+    {
+
+
+        window.addEventListener("load", bind_order_event, false);
+
+
+    }
+
+
+
+
+
+    /**
+
+
+     * 建立订单商品显示层
+
+
+     *
+
+
+     * @return void
+
+
+     */
+
+
+    function create_goods_layer(id)
+
+
+    {
+
+
+        if (!Utils.$(id))
+
+
+        {
+
+
+            var n_div = document.createElement('DIV');
+
+
+            n_div.id = id;
+
+
+            n_div.className = 'order-goods';
+
+
+            document.body.appendChild(n_div);
+
+
+            Utils.$(id).onmouseover = function()
+
+
+            {
+
+
+                window.clearTimeout(window.timer);
+
+
+            }
+
+
+            Utils.$(id).onmouseout = function()
+
+
+            {
+
+
+                hide_order_goods(id);
+
+
+            }
+
+
+        }
+
+
+        else
+
+
+        {
+
+
+            Utils.$(id).style.display = '';
+
+
+        }
+
+
+    }
+
+
+
+
+
+    /**
+
+
+     * 显示订单商品数据
+
+
+     *
+
+
+     * @return void
+
+
+     */
+
+
+    function show_order_goods(e, order_id, layer_id)
+
+
+    {
+
+
+        create_goods_layer(layer_id);
+
+
+        $layer_id = Utils.$(layer_id);
+
+
+        $layer_id.style.top = (Utils.y(e) + 12) + 'px';
+
+
+        $layer_id.style.left = (Utils.x(e) + 12) + 'px';
+
+
+        if (typeof(goods_hash_table[order_id]) == 'object')
+
+
+        {
+
+
+            response_goods_info(goods_hash_table[order_id]);
+
+
+        }
+
+
+        else
+
+
+        {
+
+
+            $layer_id.innerHTML = loading;
+
+
+            Ajax.call('luck.php?is_ajax=1&act=get_goods_info&order_id='+order_id, '', response_goods_info , 'POST', 'JSON');
+
+
+        }
+
+
+    }
+
+
+
+
+
+    /**
+
+
+     * 隐藏订单商品
+
+
+     *
+
+
+     * @return void
+
+
+     */
+
+
+    function hide_order_goods(layer_id)
+
+
+    {
+
+
+        $layer_id = Utils.$(layer_id);
+
+
+        window.timer = window.setTimeout('$layer_id.style.display = "none"', 500);
+
+
+    }
+
+
+
+
+
+    /**
+
+
+     * 处理订单商品的Callback
+
+
+     *
+
+
+     * @return void
+
+
+     */
+
+
+    function response_goods_info(result)
+
+
+    {
+
+
+        if (result.error > 0)
+
+
+        {
+
+
+            alert(result.message);
+
+
+            hide_order_goods(show_goods_layer);
+
+
+            return;
+
+
+        }
+
+
+        if (typeof(goods_hash_table[result.content[0].order_id]) == 'undefined')
+
+
+        {
+
+
+            goods_hash_table[result.content[0].order_id] = result;
+
+
+        }
+
+
+        Utils.$(show_goods_layer).innerHTML = result.content[0].str;
+
+
+    }
+
+
+</script>
+
+
+{/literal}
+
+
+
+
+
+{include file="pagefooter.htm"}
+
+
+{/if}

@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+</head>
+<body >
+<div class="container">
+    <iframe src="toalipay.php?order_id={$order_id}" width="99%" height="98%" frameborder="0" scrolling="yes"></iframe>
+</div>
+</body>
+</html>

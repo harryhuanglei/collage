@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+	<meta name="Keywords" content="{$keywords}" />
+	<meta name="Description" content="{$description}" />
+	<meta name="format-detection" content="telephone=no">
+	<title>专属二维码</title>
+	<script src="/js/jquery.js"></script>
+	<style>
+	body { margin:0; padding:0; }
+	#share { }
+	#share img { width:100%; }
+	.share_form { padding:10px; }
+	.share_form p { margin-bottom:10px; }
+	.share_form .text { width:98%; height:40px; line-height:40px; border:#ddd 1px solid; border-radius:5px; padding:0 1%; }
+	.share_form .button { width:100%; height:40px; line-height:40px; text-align:center; background:#FF4339; border-radius:5px; color:#fff; font-size:16px; font-weight:700; border:none;}
+	</style>
+</head>
+<body>
+<div id="share">
+	<img src="{if $exist eq 1}{$file_name}{else}{/if}" alt="">
+</div>
+<div class="share_form">
+	<p>长按图片保存</p>
+<form id="form">
+	<p><input type="text" name="text" class="text" placeholder="专属标语"></p>
+	<p><input type="radio" name="force" value="1">是
+	<input type="radio" name="force" value="0" checked>否</p>
+	<p><input type="button" value="重新生成海报" id="post" class="button"></p>
+</form>
+</div>
+<script>
+	$(function() {
+		$("#post").click(function(event) {
+			/* Act on the event */
+			$.ajax({
+				url: 'sharecode.php?act=show',
+				type: 'POST',
+				dataType: 'json',
+				data: $("#form").serialize(),
+				success:function(res){
+					if (res.error > 0) {
+						alert(res.message);
+					}
+					else{
+						$("#share img").attr('src', res.content+'?t='+Math.random());
+						window.location.reload();
+					}
+				}
+			})			
+		});
+	});
+</script>
+</body>
+</html>

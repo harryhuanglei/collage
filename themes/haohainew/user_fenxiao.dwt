@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>分销中心</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,user.js'}
+</head>
+<body>
+<div class="container">
+<!-- {if $action eq 'fenxiao'} -->
+    <div class="my">
+            <div class="my_head_pic">
+                <img class="my_head_img" width="130" height="130" src="{$info.headimgurl}">
+            </div>
+            <div class="my_head_info">
+                <h3>{if $info2.uname}{$info2.uname}{else}{$info2.username}{/if}</h4>
+                <p>账户余额：{$surplus_amount}元</p>
+                <p>积分：{$points}分</p>
+            </div>
+    </div>
+    <div class="my_nav">
+        <ul>
+            <li><a href="user.php?act=collection_list" class="fx_sc"><i></i>收藏</a></li>
+            <li><a href="user.php?act=account_log" class="fx_qb"><i></i>钱包</a></li>
+            <li><a href="javascript:registration({$smarty.session.user_id})" class="fx_qd"><i></i>签到</a></li>
+        </ul>
+    </div>
+    <div class="fx_nav">
+        <dl>
+            <dt><a href="sharecode.php"><i class="fx_i"></i>分销推广海报</a></dt>
+        </dl>
+        <dl>
+            <dt><a href="user.php?act=level&level=1"><i class="my_i"></i>我的盟友</a></dt>
+            <dd>
+                <span onclick="window.location='user.php?act=level&level=1';">一级盟友<br/><b>{$level1_nums}</b></span>
+                <span onclick="window.location='user.php?act=level&level=2';">二级盟友<br/><b>{$level2_nums}</b></span>
+                <span onclick="window.location='user.php?act=level&level=3';">三级盟友<br/><b>{$level3_nums}</b></span>
+            </dd>
+        </dl>
+        <dl>
+            <dt><a href="user.php?act=moneycheck"><i class="jj_i"></i>我的佣金<span>¥{$checkedAmount}</span></a></dt>
+            <dd>
+                <p onclick="window.location='user.php?act=money';">分销订单</p>
+                <p onclick="window.location='user.php?act=moneycheck';">佣金明细</p>
+            </dd>
+        </dl>
+    </div>
+</div>
+<div class="blank"></div>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+<!-- {/if} -->
+<div id="qr_code" class="qr_code" style="display:none;" onclick="document.getElementById('qr_code').style.display='none';">
+    <div class="qrcode_bg"></div>
+    <div class="qrcode"><img src="qrcode.php"></div>
+</div>
+
+<script>
+function showCode(){
+    document.getElementById('qr_code').style.display='';
+}
+
+    	//会员签到
+        function registration(user_id)
+		{
+			Ajax.call('./user_registration.php', 'act=registration&user_id='+user_id, registration_res, 'GET', 'JSON');
+		}
+			   
+		function registration_res(result)
+		{	 
+			  		if(result.error==3)
+					{
+						layer.open({
+						    content: '签到活动已关闭，敬请期待。',
+							btn: ['确定']
+						});
+
+						return false;
+					}
+					else if(result.error==1)
+					{
+						alert('签到成功，获得'+result.qiandao_integral+'积分。');
+						layer.open({
+						    content: '签到成功，获得'+result.qiandao_integral+'积分。',
+							btn: ['确定']
+						});
+						
+						document.getElementById('pay_points').innerHTML  = result.pay_points;
+						//alert(result.content);
+						return false;
+					}
+					else if(result.error==2)
+					{
+						layer.open({
+						    content: '已签到，请明天再来吧!',
+							btn: ['确定']
+						});
+						return false;
+					}
+					else if(result.error==4)
+					{
+						location.href = './user.php';
+					}
+			}
+			
+    </script>
+</body>
+</html>
+

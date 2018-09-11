@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,user.js'}
+</head>
+<body>
+<div class="container">
+    <!--{if $action eq "account_raply" || $action eq "account_log" || $action eq "account_deposit" || $action eq "account_detail" || $action eq "integral_details"} --> 
+    <script type="text/javascript">
+          {foreach from=$lang.account_js item=item key=key}
+            var {$key} = "{$item}";
+          {/foreach}
+    </script>
+    <div class="account_top">
+        <p><a href="user.php?act=account_log">可用资金：{$surplus_amount}</a> <span><a href="user.php?act=integral_details">可用积分：{$points}</span></a></p>
+    </div>
+    <div class="nav_fixed nav_spike" style="top:40px;"> 
+        <a href="user.php?act=account_detail"{if $action eq 'account_detail'} class="cur"{/if}><span>账目明细</span></a>
+        <a href="user.php?act=account_raply"{if $action eq 'account_raply'} class="cur"{/if}><span>提现</span></a>
+		<a href="user.php?act=account_deposit"{if $action eq 'account_deposit'} class="cur"{/if}><span>充值</span></a>
+        <a href="user.php?act=account_log"{if $action eq 'account_log'} class="cur"{/if}><span>申请记录</span></a>
+		
+    </div>
+    <!-- {/if} -->
+    <div class="account_box"> 
+        <!-- {if $action eq "account_raply"} -->
+        <form name="formSurplus" method="post" action="user.php" onSubmit="return submitSurplus()">
+            <div class="account_deposit">
+                <h3>每次提现金额在￥1～￥200以内</h3>
+                <ul>
+                    <li>
+                        <input type="text" name="amount" value="{$order.amount|escape}" class="inp" placeholder="{$lang.repay_money}" />
+                    </li>
+                    <li>
+                        <textarea name="user_note" class="tex" placeholder="{$lang.process_notic}">{$order.user_note|escape}</textarea>
+                    </li>
+                    <li>
+                        <input type="hidden" name="surplus_type" value="1" />
+                        <input type="hidden" name="act" value="act_account" />
+                        <input type="submit" name="submit" onclick="done();"  class="bnt" value="{$lang.submit_request}" />
+                    </li>
+                </ul>
+            </div>
+        </form>
+        <!-- {/if} --> 
+        <!-- {if $action eq "account_deposit"} -->
+        <!--<form name="formSurplus" method="post" action="user.php" onSubmit="return submitSurplus()">-->
+            <div class="account_deposit">
+                <ul>
+                    <li>
+                        <input type="text" name="amount" id="inp_pay" class="inp" value="{$order.amount|escape}" placeholder="{$lang.deposit_money}" />
+                    </li>
+                    <li>
+                        <textarea name="user_note" id="tex_pay" class="tex" placeholder="{$lang.process_notic}">{$order.user_note|escape}</textarea>
+                    </li>
+                    <li>
+                        {foreach from=$payment item=list}
+						<div class="pay-box">
+                        <input type="radio" name="payment_id" id="payment_{$list.pay_id}" value="{$list.pay_id}">
+                        <label for="payment_{$list.pay_id}" class="label-btn"></label>
+                        <label for="payment_{$list.pay_id}"><i class="ico_{$list.pay_code}"></i>{$list.pay_name}</label>
+                        </div>
+                        {/foreach}
+					</li>
+                    <li>
+                        <input type="hidden" name="surplus_type" value="0" />
+                        <input type="hidden" name="rec_id" id="rec_id" value="{$order.id}" />
+                        <input type="hidden" name="act" value="act_account" />
+                        <input type="submit" id="J_btn" class="bnt" name="submit" value="{$lang.submit_request}" />
+                    </li>
+                </ul>
+            </div>
+        <!--</form>-->
+        <!-- {/if} --> 
+        
+        <!-- {if $action eq "act_account"} -->
+        <table width="100%" class="list_table" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td width="25%" align="right">{$lang.surplus_amount}</td>
+                <td width="80%">{$amount}</td>
+            </tr>
+            <tr>
+                <td align="right">{$lang.payment_name}</td>
+                <td>{$payment.pay_name}</td>
+            </tr>
+            <tr>
+                <td align="right">{$lang.payment_fee}</td>
+                <td>{$pay_fee}</td>
+            </tr>
+            <tr>
+                <td align="right">{$lang.payment_desc}</td>
+                <td bgcolor="#ffffff">{$payment.pay_desc}</td>
+            </tr>
+            <tr>
+                <td colspan="2">{$payment.pay_button}</td>
+            </tr>
+        </table>
+        <!-- {/if} --> 
+        
+        <!-- {if $action eq "account_detail"} -->
+        <div class="account_detail">
+            <table width="100%" class="list_table" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td width="80" style="padding-left:5px;">{$lang.process_time}</td>
+                    <td width="40">{$lang.surplus_pro_type}</td>
+                    <td width="70">{$lang.money}</td>
+                    <td>{$lang.change_desc}</td>
+                </tr>
+                
+                <!--{foreach from=$account_log item=item}-->
+                
+                <tr>
+                    <td width="80" style="padding-left:5px;">{$item.change_time}</td>
+                    <td>{$item.type}</td>
+                    <td >{$item.amount}</td>
+                    <td title="{$item.change_desc}">{$item.short_change_desc}</td>
+                </tr>
+                
+                <!--{/foreach}-->
+                
+            </table>
+        </div>
+        <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+        <!-- {/if} -->
+		
+		
+		<!-- {if $action eq "integral_details"} -->
+        <div class="account_detail">
+            <table width="100%" class="list_table" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td width="80" style="padding-left:5px;">日期</td>
+                    <td width="60">积分</td>
+                    <td>变化原因</td>
+                </tr>
+                
+                <!--{foreach from=$my_points item=item}-->
+                
+                <tr>
+                    <td width="80" style="padding-left:5px;">{$item.change_time}</td>
+                    <td>{$item.pay_points}</td>
+                    <td>{$item.change_desc}</td>
+                </tr>
+                
+                <!--{/foreach}-->
+                
+            </table>
+        </div>
+        <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+        <!-- {/if} --> 
+        
+        <!-- {if $action eq "account_log"} -->
+        <div class="account_log">
+            <table width="100%" class="list_table" border="0" cellspacing="0" cellpadding="0">
+            
+                <tr align="center">
+                    <td width="80">{$lang.process_time}</td>
+                    <td>{$lang.surplus_pro_type}</td>
+                    <td>{$lang.money}</td>
+                    <td>{$lang.is_paid}</td>
+                    <td width="90">{$lang.handle}</td>
+                </tr>
+                
+                <!--{foreach from=$account_log item=item}-->
+                
+                <tr>
+                    <td align="center">{$item.add_time}</td>
+                    <td align="center">{$item.type}</td>
+                    <td align="center">{$item.amount}</td>
+                    <td align="center">{$item.pay_status}</td>
+                    <td align="center">{$item.handle} 
+                        
+                        <!-- {if ($item.is_paid eq 0 && $item.process_type eq 1) || $item.handle} --> 
+                        
+                        <a href="user.php?act=cancel&id={$item.id}" onclick="if (!confirm('{$lang.confirm_remove_account}')) return false;">{$lang.is_cancel}</a> 
+                        
+                        <!-- {else} -->
+                        已完成
+                        <!--{/if}-->
+                        
+                        </td>
+                </tr>
+                
+                <!--{/foreach}-->
+                
+            </table>
+        </div>
+        <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+        <!-- {/if} -->
+    </div>
+</div>
+<div class="blank"></div>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script>
+$(function(){
+        
+      $('#J_btn').click(function(){
+         var money = $('#inp_pay').val();
+         
+         var intro = $('#tex_pay').val(); 
+		 var rec_id = $('#rec_id').val(); 
+         var pay_type =$('[name=payment_id]:checked').val();
+          if(isNaN(money) || money==''){
+            alert('请填写充值金额,必须是数字');
+            return false;
+          }
+          if(intro==''){
+            alert('请填写备注信息');
+            return false;
+          }
+          if(isNaN(pay_type)) {
+             alert('请选择支付方式');
+             return false;
+          }     
+          $(this).val('正在支付...');
+           
+            $.ajax({
+              type: "POST",
+              dataType: 'JSON',
+              url: "user.php?act=pay_lib",
+              data:{pay_type:pay_type,money:money,intro:intro,rec_id:rec_id},
+              success: function(result){
+                if(result.error==0){
+            		if(result.pay_code=='wxpay'){
+						
+            			callpay(result.content.jsApiParameters,result.url);
+            		}
+            		else if(result.pay_code=='alipay'){
+            			window.location='toalipay_chong.php?op={$op}&m='+result.m+'&order_sn='+result.order_sn;
+            		}
+            	}
+              }
+           });
+      })
+      
+      function jsApiCall(code,returnrul){
+    	WeixinJSBridge.invoke('getBrandWCPayRequest',code,function(res){
+    			WeixinJSBridge.log(res.err_msg);
+    			//alert(res.err_code+'调试信息：'+res.err_desc+res.err_msg);		
+    			if(res.err_msg.indexOf('ok')>0){
+    				window.location.href=returnrul;
+    			}else{
+    				window.location.href=returnrul;
+    			}
+    		});
+    }
+    		function callpay(code,returnrul)
+    		{
+    			if (typeof WeixinJSBridge == "undefined"){
+    			    if( document.addEventListener ){
+    			        document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+    			    }else if (document.attachEvent){
+    			        document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+    			        document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+    			    }
+    			}else{
+    			    jsApiCall(code,returnrul);
+    			}
+    		}
+    		
+    function done_response(result){
+        //console.log(result);return;
+    	if(result.error==0){
+    		if(result.pay_code=='wxpay'){
+    			callpay(result.content.jsApiParameters,result.content.returnrul);
+    		}
+    		else if(result.pay_code=='alipay'){
+    			window.location='toalipay.php?order_id='+result.order_id;
+    		}
+        else if(result.pay_code=='balance'){
+          window.location=result.url;
+        }
+    	}else if(result.error==1){
+        //console.log(result);return;
+    	 setTimeout(function(){
+            	window.location=result.url;
+             },150);
+    	}else if(result.error==2){
+    		alert(result.message);
+    		$('#btn_pay_now').val('立即支付');
+    	}
+    	
+    }
+})
+     
+            
+     
+</script>
+</body>
+</html>
+

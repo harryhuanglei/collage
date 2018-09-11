@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,jquery.lazyload.js,tab_style.js'}
+</head>
+<body id="tuan">
+<div class="container">
+    <div class="top_search">
+        <form id="searchForm" name="searchForm" method="get" action="search.php" onSubmit="return checkSearchForm()">
+            <input name="keywords" id="keyword" type="text" class="text" value="{$search_keywords|escape}" placeholder="请输入查找的商品">
+            <input type="submit" value="搜索" class="submit" />
+            <input type="hidden" name="search_type" value="is_team">
+        </form>
+        <a href="javascript:;" id="menu-tab" onclick="tabStyle(this);"></a>
+    </div>
+    <div class="top_nav">
+		<ul id="top_nav">
+            {if $sub_cat}
+			{if $pid}
+			<li class="cur"><a href="tuan.php?cid={$cat_id}&sort=sort_order&uid={$uid}">全部</span></a></li>
+			{else}
+			<li class="cur"><a href="tuan.php?cid={$cat_id}&sort=sort_order&uid={$uid}">全部</span></a></li>
+			{/if}
+			{else}
+			{if $pid}
+			<li><a href="tuan.php?cid={$pid}&sort=sort_order&uid={$uid}">全部</span></a></li>
+			{else}
+			<li class="cur"><a href="tuan.php?sort=sort_order&uid={$uid}">全部</span></a></li>
+			{/if}
+			{/if}
+			{foreach from=$cat_children item=child_data}
+			<li{if $cat_id==$child_data.id} class="cur"{/if}><a href="tuan.php?cid={$child_data.id}&sort={$sort}&uid={$uid}">{$child_data.name}</span></a></li>
+			{/foreach}
+            {if 0}
+            <li{if $cat_id eq 0} class="cur"{/if}><a href="tuan.php?sort=sort_order&uid={$uid}">全部分类</a></li>
+            {foreach from=$categories item=cat}
+            <li{if $cat_id eq $cat.id} class="cur"{/if}><a href="tuan.php?sort={$sort}&cid={$cat.id}&uid={$uid}">{$cat.name}</a></li>
+            {/foreach}
+            {/if}
+		</ul>
+    </div>
+    <div class="good_list">
+        <div class="tuan_list" style="padding-top:10px;">
+        {foreach from=$goods_list item=goods}
+        <div class="tuan_g">
+                <div class="tuan_g_img">
+                    <a href="{$goods.url}&uid={$uid}">
+                    <img data-original="{$goods.little_img}" src="images/loading640x350.gif" class="lazy">
+                    </a>
+                    {if $uid}
+                        {if $goods.collect}
+                        <div class="like_click_button" data-id="{$goods.goods_id}">
+                            <img src="images/is_liked.png" data-isLiked="1">
+                        </div>
+                        {else}
+                        <div class="like_click_button" data-id="{$goods.goods_id}">
+                            <img src="images/no_liked.png" data-isLiked="0">
+                        </div>
+                        {/if}
+                    {/if}
+                    {if $goods.goods_number lt 1}
+                       <span class="sell_f"></span>
+                    {elseif  $goods.is_miao=1  and $goods.promote_end_date lt $nowtime and $goods.promote_end_date}
+                       <span class="sell_o"></span>
+                    {/if}
+					
+						{if $goods.ts_a || $goods.ts_b ||$goods.ts_c}
+                        <div class="tuan_g_img_text">
+                            {if $goods.ts_a}
+                            <div class="tuan_g_img_item">
+                                <div class="tuan_g_img_round"></div>
+                                <div class="tuan_img_text_border"><span>{$goods.ts_a}</span></div>
+                            </div>
+                            {/if}
+                            {if $goods.ts_b}
+                            <div class="tuan_g_img_item">
+                                <div class="tuan_g_img_round"></div>
+                                <div class="tuan_img_text_border"><span>{$goods.ts_b}</span></div>
+                            </div>
+                            {/if}
+                            {if $goods.ts_c}
+                            <div class="tuan_g_img_item">
+                                <div class="tuan_g_img_round"></div>
+                                <div class="tuan_img_text_border"><span>{$goods.ts_c}</span></div>
+                            </div>
+                            {/if}
+                        </div>
+                        {/if}
+					
+                </div>
+                <div class="tuan_g_info">
+                    <p class="tuan_g_name">{$goods.goods_name}</p>
+					<p class="tuan_g_cx">{$goods.goods_brief}</p>
+                </div>
+                <div class="tuan_g_core">
+                     <p class="tuan_g_num">{$goods.team_num}人团</p>
+                     <div class="line"></div>
+                    <div class="tuan_g_price"><i>¥</i>{$goods.team_price}</div>
+                    <del class="tuan_g_mprice"><i>￥</i>{$goods.shop_price}</del>
+                    <a href="{$goods.url}&uid={$uid}">
+                    <div class="tuan_g_btn">立即开团</div>
+                    </a>
+                </div>
+            <div class="clear"></div>
+        </div>
+		{foreachelse}
+			<div class="nothing">
+                <i class="iconfont icon-shangpin"></i>
+    		    <p>此分类下暂无商品</p>
+            </div>
+        {/foreach}
+        </div>
+    </div>
+    <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+</div>
+<div class="blank"></div>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+<script>
+var wa = $(window).width(); //获取浏览器显示区域（可视区域）的宽度
+var wb = $("#top_nav .cur").width(); //获取或设置元素的宽度
+var wc = $("#top_nav .cur").offset().left; //当前元素左侧距离
+if(wc+wb > wa){
+	$("#top_nav").scrollLeft(wc-wa+wb+wb); //设置滚动条到左边的宽度
+}
+	window.onload=function(){
+		$("img.lazy").lazyload({
+                effect: "fadeIn",
+                threshold : 200
+        });
+        $("img.lazy:eq(0)").attr('src',$("img.lazy:eq(0)").attr('data-original'));
+		var user_id = {$uid};
+
+        $(".like_click_button").on("click", function(e) {
+        e.preventDefault();
+        var goodsId = $(this).attr("data-id");
+        var img = $(this).find("img");
+        if (img.attr("data-isLiked") == 1) {
+            $.get('user.php', {
+                act: "del_collection",
+                collection_id: goodsId,
+                user_id: user_id
+            }).done(function(e) {
+                img.attr("src", "themes/haohainew/images/no_liked.png");
+                img.attr("data-isLiked", 0)
+            })
+        } else {
+            $.get('user.php', {
+                act: "collect",
+                id: goodsId,
+                user_id: user_id
+            }).done(function(e) {
+                img.attr("src", "themes/haohainew/images/is_liked.png");
+                img.attr("data-isLiked", 1)
+            })
+
+        }
+        })
+	}
+</script>
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script> 
+<script language="javascript" type="text/javascript">
+    wx.config({
+
+        debug: false,//这里是开启测试，如果设置为true，则打开每个步骤，都会有提示，是否成功或者失败
+
+        appId: '{$appid}',
+
+        timestamp: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+
+        nonceStr: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+
+        signature: '{$signature}',
+
+        jsApiList: [
+
+          // 所有要调用的 API 都要加到这个列表中
+
+            'onMenuShareTimeline',
+
+            'onMenuShareAppMessage',
+
+            'onMenuShareQQ',
+
+            'onMenuShareWeibo',
+
+            'checkJsApi',
+
+            'openLocation',
+
+            'getLocation'
+
+        ]
+
+    });
+
+    
+
+    var title="{$title}";
+
+    var link= "{$link}";
+
+    var imgUrl="{$imgUrl}";
+
+    var desc= "{$desc}";
+
+    wx.ready(function () {
+
+        wx.onMenuShareTimeline({//朋友圈
+
+            title: title, // 分享标题
+
+            link: link, // 分享链接
+
+            imgUrl: imgUrl, // 分享图标
+
+            success: function () { 
+
+                // 用户确认分享后执行的回调函数
+
+                statis(2,1);
+
+            },
+
+            cancel: function () { 
+
+                // 用户取消分享后执行的回调函数
+
+                statis(2,2);
+
+            }
+
+        });
+
+        wx.onMenuShareAppMessage({//好友
+
+            title: title, // 分享标题
+
+            desc: desc, // 
+
+            link: link, // 分享链接
+
+            imgUrl: imgUrl, // 分享图标
+
+            type: '', // 分享类型,music、video或link，不填默认为link
+
+            dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+
+            success: function () { 
+
+                // 用户确认分享后执行的回调函数
+
+                statis(1,1);    
+
+            },
+
+            cancel: function () { 
+
+                // 用户取消分享后执行的回调函数
+
+                statis(1,2);
+
+            }
+
+        });
+
+      
+
+        wx.onMenuShareQQ({
+
+            title: title, // 分享标题
+
+            desc: desc, // 分享描述
+
+            link: link, // 分享链接
+
+            imgUrl: imgUrl, // 分享图标
+
+            success: function () { 
+
+               // 用户确认分享后执行的回调函数
+
+                statis(4,1);
+
+            },
+
+            cancel: function () { 
+
+               // 用户取消分享后执行的回调函数
+
+                statis(4,2);
+
+            }
+
+        });
+
+        wx.onMenuShareWeibo({
+
+            title: title, // 分享标题
+
+            desc: desc, // 分享描述
+
+            link: link, // 分享链接
+
+            imgUrl: imgUrl, // 分享图标
+
+            success: function () { 
+
+               // 用户确认分享后执行的回调函数
+
+                statis(3,1);
+
+            },
+
+            cancel: function () { 
+
+                // 用户取消分享后执行的回调函数
+
+                statis(3,2);
+
+            }
+
+        });      
+
+    });
+
+    function statis(share_type,share_status){
+
+        $.ajax({
+
+            type:"post",//请求类型
+
+            url:"share.php",//服务器页面地址
+
+            data:"act=link&share_status="+share_status+"&share_type="+share_type+"&link_url={$link2}",
+
+            dataType:"json",//服务器返回结果类型(可有可无)
+
+            error:function(){//错误处理函数(可有可无)
+
+                //alert("ajax出错啦");
+
+            },
+
+            success:function(data){
+
+                
+
+            }
+
+        });
+
+    }
+</script>
+
+
+</body>
+</html>
+

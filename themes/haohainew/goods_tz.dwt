@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/flexslider.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,jquery.flexslider-min.js'}
+</head>
+<body>
+<div class="container">
+    <div class="flexslider">
+        <ul class="slides" >
+            <!-- {foreach from=$pictures item=picture name=ptab}-->
+            <li><img src="{$picture.img_url}"/></li>
+            <!--{/foreach}-->
+        </ul>
+    </div>
+    <script type="text/javascript">
+        $(function() {
+            $('.flexslider').flexslider({
+                animation: "slide",
+                slideDirection: "horizontal"
+            });
+        });
+    </script>
+    <div class="tuan_info">
+        <form action="javascript:addToCart({$goods.goods_id})" method="post" name="HHS_FORMBUY" id="HHS_FORMBUY" >
+        <div class="g_name">{$goods.goods_name}</div>
+        <div class="g_brief">{$goods.goods_brief}</div>
+        <div class="blank"></div>
+        <div class="line"></div>
+        <div class="g_price">市场价：¥{$goods.market_price} <span>已售：{$buy_num}{if $goods.guige}{$goods.guige}{else}件{/if}</span></div>
+        <div class="g_tip">支付开团并邀请<span>{$d_team_num}</span>人参团，人数不足自动退款，详见下方【拼团玩法】</div>
+        <div class="blank"></div>
+        <div class="kt which_one">
+            {if $is_team eq 1}       
+            <a class="kt_item kt_item1" href="javascript:addToCart({$goods.goods_id},0,0,5,{$team_sign})">
+                <span>立即参团</span>
+                <div class="kt_height"><b>{$goods.team_price}</b><i> / </i>件</div>
+            </a>
+            {else}
+			<a class="kt_item kt_item1" href="share.php?team_sign={$team_sign}">
+                 <span>邀请好友参团</span>
+                 <div class="kt_height"><b>{$goods.team_price}</b><i> / </i>件</div>
+            </a>
+            {/if}
+        </div>
+        <input name="number" type="hidden" value="1" />
+        </form>
+    </div>
+     <div class="pro_detial">
+        <h3><i></i>图文详情</h3>
+        <div class="pro_con">
+            {$goods.goods_desc}
+        </div>
+    </div>
+    <div class="step">
+        <div class="step_hd">
+            拼团玩法<a class="step_more" href="tuan_rule.php">查看详情</a>
+        </div>
+        <div id="footItem" class="step_list">
+            <div class="step_item step_item_on">
+                <div class="step_num">1</div>
+                <div class="step_detail">
+                    <p class="step_tit">选择
+                        <br>心仪商品</p>
+                </div>
+            </div>
+            <div class="step_item ">
+                <div class="step_num">2</div>
+                <div class="step_detail">
+                    <p class="step_tit">支付开团
+                        <br>或参团</p>
+                </div>
+            </div>
+            <div class="step_item ">
+                <div class="step_num">3</div>
+                <div class="step_detail">
+                    <p class="step_tit">等待好友
+                        <br>参团支付</p>
+                </div>
+            </div>
+            <div class="step_item">
+                <div class="step_num">4</div>
+                <div class="step_detail">
+                    <p class="step_tit">达到人数
+                        <br>团购成功</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="blank"></div>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+
+</body>
+
+<script type="text/javascript">
+
+var goods_id = {$goods_id};
+
+var goodsattr_style = {$cfg.goodsattr_style|default:1};
+
+var gmt_end_time = {$promote_end_time|default:0};
+
+{foreach from=$lang.goods_js item=item key=key}
+
+var {$key} = "{$item}";
+
+{/foreach}
+
+var goodsId = {$goods_id};
+
+var now_time = {$now_time};
+
+
+
+</script>
+
+
+
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+
+<script language="javascript" type="text/javascript">
+
+
+
+	wx.config({
+
+	    debug: false,//这里是开启测试，如果设置为true，则打开每个步骤，都会有提示，是否成功或者失败
+
+	    appId: '{$appid}',
+
+	    timestamp: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+
+	    nonceStr: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+
+	    signature: '{$signature}',
+
+	    jsApiList: [
+
+	      // 所有要调用的 API 都要加到这个列表中
+
+	        'onMenuShareTimeline',
+
+	        'onMenuShareAppMessage',
+
+	        'onMenuShareQQ',
+
+	        'onMenuShareWeibo',
+
+	        'checkJsApi',
+
+	        'openLocation',
+
+	        'getLocation'
+
+	    ]
+
+	});
+
+	
+
+	var title="{$title}";
+
+	var link= "{$link}";
+
+	var imgUrl="{$imgUrl}";
+
+	var desc= "{$desc}";
+
+	wx.ready(function () {
+
+	    wx.onMenuShareTimeline({//朋友圈
+
+	        title: title, // 分享标题
+
+	        link: link, // 分享链接
+
+	        imgUrl: imgUrl, // 分享图标
+
+	        success: function () { 
+
+	            // 用户确认分享后执行的回调函数
+
+	        	statis(2,1);
+
+	        },
+
+	        cancel: function () { 
+
+	            // 用户取消分享后执行的回调函数
+
+	        	statis(2,2);
+
+	        }
+
+	    });
+
+	    wx.onMenuShareAppMessage({//好友
+
+	        title: title, // 分享标题
+
+	        desc: desc, // 
+
+	        link: link, // 分享链接
+
+	        imgUrl: imgUrl, // 分享图标
+
+	        type: '', // 分享类型,music、video或link，不填默认为link
+
+	        dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+
+	        success: function () { 
+
+	        	// 用户确认分享后执行的回调函数
+
+	            statis(1,1);    
+
+	        },
+
+	        cancel: function () { 
+
+	            // 用户取消分享后执行的回调函数
+
+	        	statis(1,2);
+
+	        }
+
+	    });
+
+	  
+
+	    wx.onMenuShareQQ({
+
+	        title: title, // 分享标题
+
+	        desc: desc, // 分享描述
+
+	        link: link, // 分享链接
+
+	        imgUrl: imgUrl, // 分享图标
+
+	        success: function () { 
+
+	           // 用户确认分享后执行的回调函数
+
+	        	statis(4,1);
+
+	        },
+
+	        cancel: function () { 
+
+	           // 用户取消分享后执行的回调函数
+
+	        	statis(4,2);
+
+	        }
+
+	    });
+
+	    wx.onMenuShareWeibo({
+
+	        title: title, // 分享标题
+
+	        desc: desc, // 分享描述
+
+	        link: link, // 分享链接
+
+	        imgUrl: imgUrl, // 分享图标
+
+	        success: function () { 
+
+	           // 用户确认分享后执行的回调函数
+
+	        	statis(3,1);
+
+	        },
+
+	        cancel: function () { 
+
+	            // 用户取消分享后执行的回调函数
+
+	        	statis(3,2);
+
+	        }
+
+	    });
+
+	    {if $goods.is_nearby }
+
+	    wx.checkJsApi({
+
+	    	
+
+	        jsApiList: [
+
+	            'getLocation'
+
+	        ],
+
+	        success: function (res) {
+
+	             //alert(JSON.stringify(res));
+
+	            // alert(JSON.stringify(res.checkResult.getLocation));
+
+	            if (res.checkResult.getLocation == false) {
+
+	                alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
+
+	                return;
+
+	            }
+
+	        }
+
+	    });
+
+	    wx.getLocation({
+
+	        success: function (res) {
+
+	            var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+
+	            var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+
+	            var speed = res.speed; // 速度，以米/每秒计
+
+	            var accuracy = res.accuracy; // 位置精度
+
+	            $.ajax({
+
+	                type:"post",//请求类型
+
+	                url:"goods.php",//服务器页面地址
+
+	                data:"act=save_location&lat="+latitude+"&lng="+longitude,
+
+	                dataType:"json",//服务器返回结果类型(可有可无)
+
+	                error:function(){//错误处理函数(可有可无)
+
+	                    //alert("ajax出错啦");
+
+	                },
+
+	                success:function(data){
+
+	                	
+
+	                    if(data.error==1){
+
+	                        //alert('错误'+data.message);
+
+	                    }else{
+
+	                    	//document.getElementById('loading').style.display='none';
+
+	                		
+
+	                    }
+
+	                }
+
+	            });
+
+	        },
+
+	        cancel: function (res) {
+
+	            alert('用户拒绝授权获取地理位置');
+
+	        }
+
+	    });
+
+	    {/if}	
+
+	    
+
+	});
+
+	
+
+	function statis(share_type,share_status){
+
+		$.ajax({
+
+            type:"post",//请求类型
+
+            url:"share.php",//服务器页面地址
+
+            data:"act=link&share_status="+share_status+"&share_type="+share_type+"&link_url={$link2}",
+
+            dataType:"json",//服务器返回结果类型(可有可无)
+
+            error:function(){//错误处理函数(可有可无)
+
+                //alert("ajax出错啦");
+
+            },
+
+            success:function(data){
+
+                
+
+            }
+
+        });
+
+	}
+
+
+
+</script>
+
+</html>
+

@@ -1,0 +1,44 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<div class="tcity_tit"> <i class="fa fa-map-marker"></i><a href="javascript:void(0);"><b>{$site_name}</b> <img src="images/city_choose.png" width="7" height="4"></a> </div>
+<div class="city">
+    <div class="city-title">
+        <p class="city_tit_l"><b>选择地区</b></p>
+        <p class="city_tit_r"><a href="javascript:void(0);" class="close-city"><img src="images/city_close.gif"></a></p>
+    </div>
+    <div class="city-content">
+        {foreach from=$site_list item=site name=site}
+        <dl>
+            <dt><a href="?cid={$site.city_id}"{if $site.city_id eq $cid} class="cur"{/if}>{$site.region_name}</a></dt>
+            <dd>
+                {foreach from=$site.dis item=dis name=dis}
+                <a href="?cid={$dis.region_id}"{if $dis.region_id eq $cid} class="cur"{/if}>{$dis.region_name}</a>
+                {/foreach}
+            </dd>
+        </dl>
+        {/foreach}
+    </div>
+</div>
+<div class="city-bg"></div>
+<script>
+$(function () {
+    H_login = {};
+    H_login.openLogin = function(){
+        $('.tcity_tit a').click(function(){
+            $('.city').show();
+            $('.city-bg').show();
+        });
+    };
+    H_login.closeLogin = function(){
+        $('.close-city').click(function(){
+            $('.city').hide();
+            $('.city-bg').hide();
+        });
+    };
+    H_login.run = function () {
+        this.closeLogin();
+        this.openLogin();
+        this.loginForm();
+    };
+    H_login.run();
+});
+</script>

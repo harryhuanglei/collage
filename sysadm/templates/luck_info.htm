@@ -1,0 +1,129 @@
+<!-- $Id: bonus_type_info.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+<script language="javascript" type="text/javascript" src="../js/DatePicker/WdatePicker.js"></script>
+{include file="pageheader.htm"}
+<div class="main-div">
+<form action="luckmoney.php" method="post" name="theForm" enctype="multipart/form-data" onsubmit="return validate()">
+<table width="100%">
+  <tr>
+    <td class="label">活动名：</td>
+    <td>
+      <input type='text' name='name' maxlength="30" value="" size='20' /></td>
+  </tr>
+  <tr>
+    <td class="label">总金额：</td>
+    <td>
+    <input type="text" name="money" value="1000" size="20" />元
+     <span class="notice-span">请确保商户号有这么多余额</span>    </td>
+  </tr>
+  <tr>
+    <td class="label">发放红包个数：</td>
+    <td>
+    	<input type="text" value="100" name="num"  >个
+       <span class="notice-span">请确保每个红包金额不小于￥1.00</span>
+    </td>
+  </tr>
+  <tr>
+    <td class="label">每人可参与次数：</td>
+    <td>
+      <input type="text" value="1" name="limit_times"  >次
+    </td>
+  </tr>  
+  <tr>
+    <td class="label">活动开始时间：</td>
+    <td>
+      <input class="Wdate" name="start_at" type="text" size="20" value='{$start_at}' readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-M-d HH:mm'})"/></td>
+  </tr>
+  <tr>
+    <td class="label">活动截止时间：</td>
+    <td>
+      <input class="Wdate" name="end_at" type="text" size="20" value='{$end_at}' readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-M-d HH:mm'})"/></td>
+  </tr>
+  <tr>
+    <td class="label">&nbsp;</td>
+    <td>
+      <input type="submit" value="{$lang.button_submit}" class="button" />
+      <input type="reset" value="{$lang.button_reset}" class="button" />
+      <input type="hidden" name="act" value="{$form_act}" />
+    </td>
+  </tr>
+</table>
+</form>
+</div>
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="javascript">
+<!--
+document.forms['theForm'].elements['type_name'].focus();
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+  validator = new Validator("theForm");
+  
+  validator.required("type_name",      type_name_empty);
+  validator.required("type_money",     type_money_empty);
+  if(document.forms['theForm'].elements['is_share'].value==1){
+	  validator.isInt("type_money",  "优惠券金额必须是整数", true);
+	  if(document.forms['theForm'].elements['type_money'].value<=0){
+		  validator.addErrorMsg('优惠券金额必须大于0');
+	  }
+  }else{
+	  validator.isNumber("type_money",     type_money_isnumber, true);
+  }
+  
+  if(document.forms['theForm'].elements['is_share'].value==1){
+	  validator.required("number",     "优惠券发放数量不能为空");
+	  validator.isNumber("number",  "优惠券发放数量必须是数值", true);
+  }
+ 
+  validator.islt('send_start_date', 'send_end_date', send_start_lt_end);
+  validator.islt('use_start_date', 'use_end_date', use_start_lt_end);
+  if (document.getElementById(1).style.display == "")
+  {
+    var minAmount = parseFloat(document.forms['theForm'].elements['min_amount'].value);
+    if (isNaN(minAmount) || minAmount <= 0)
+    {
+	  validator.addErrorMsg(invalid_min_amount);
+    }	
+  }
+  
+  return validator.passed();
+}
+onload = function()
+{
+  {/literal}
+  get_value = '{$bonus_arr.send_type}';
+  {literal}
+
+  showunit(get_value)
+  // 开始检查订单
+  startCheckOrder();
+}
+/* 优惠劵类型按订单金额发放时才填写 */
+function gObj(obj)
+{
+  var theObj;
+  if (document.getElementById)
+  {
+    if (typeof obj=="string") {
+      return document.getElementById(obj);
+    } else {
+      return obj.style;
+    }
+  }
+  return null;
+}
+
+function showunit(get_value)
+{
+  gObj("1").style.display =  (get_value == 2) ? "" : "none";
+  document.forms['theForm'].elements['selbtn1'].disabled  = (get_value != 1 && get_value != 2);
+  document.forms['theForm'].elements['selbtn2'].disabled  = (get_value != 1 && get_value != 2);
+
+  return;
+}
+//-->
+</script>
+{/literal}
+{include file="pagefooter.htm"}

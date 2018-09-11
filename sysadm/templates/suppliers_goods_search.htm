@@ -1,0 +1,93 @@
+<!-- $Id: goods_search.htm 16790 2009-11-10 08:56:15Z wangleisvn $ -->
+{insert_scripts files="../js/region.js"}
+
+<div class="form-div">
+  <form action="javascript:searchGoods()" name="searchForm">
+    <img src="images/icon_search.gif" width="26" height="22" border="0" alt="SEARCH" />
+    {if $smarty.get.act neq "trash"}
+    <!-- 分类 -->
+    <select name="cat_id"><option value="0">{$lang.goods_cat}</option>{$cat_list}</select>
+   
+    <!-- 推荐 -->
+      区域选择
+     <select name="city_id" id="selCities"  onchange="region.changed(this, 3, 'selDistricts')">
+
+          <option value=''>请选择</option>
+
+            {foreach from=$cities item=region}
+
+              <option value="{$region.region_id}" {if $region.region_id eq $goods.city_id}selected="selected"{/if}>{$region.region_name}</option>
+
+            {/foreach}
+
+        </select>
+         <select name="district_id" id="selDistricts">
+
+				<option value="0">请选择</option>
+
+				{foreach from=$district_list item=district}
+
+				<option value="{$district.region_id}" {if $district.region_id eq $goods.district_id}selected="selected"{/if}  >{$district.region_name}</option>
+
+				{/foreach}
+
+		</select> 
+     {if $suppliers_exists eq 1}    
+      <!-- 供货商 -->
+      <select name="suppliers_id"><option value="0">商家</option>{html_options options=$suppliers_list_name selected=$smarty.get.suppliers_id}</select>
+      {/if}
+
+         <select name="goods_sale_type">
+     <option value=''>类型</option>
+     <option value="is_team">拼团</option>
+      <option value="is_mall">商城</option>
+     <option value="is_tejia">特价</option>
+     <option value="is_miao">秒杀</option>
+     <option value="is_zero">0元</option>
+      <option value="is_fresh">新人</option>
+     <option value="allow_fenxiao">分销</option>
+     </select>
+      <!-- 上架 -->
+      <select name="is_on_sale"><option value=''>{$lang.intro_type}</option><option value="1">{$lang.on_sale}</option><option value="0">{$lang.not_on_sale}</option></select>
+    {/if}
+    <!-- 关键字 -->
+    {$lang.keyword} <input type="text" name="keyword" size="15" />
+    审核状态
+    <select name="is_check" id="is_check">
+      <option value="">请选择</option>
+      <option value="0">审核中</option>
+      <option value="1">审核通过</option>
+      <option value="2">审核未过</option>
+    </select>
+    <input type="submit" value="{$lang.button_search}" class="button" />
+  </form>
+</div>
+
+{literal}
+<script language="JavaScript">
+region.isAdmin = true;
+
+    function searchGoods()
+    {
+{/literal}
+        {if $smarty.get.act neq "trash"}
+        listTable.filter['cat_id'] = document.forms['searchForm'].elements['cat_id'].value;
+        listTable.filter['is_check'] = document.forms['searchForm'].elements['is_check'].value;
+        //listTable.filter['brand_id'] = document.forms['searchForm'].elements['brand_id'].value;
+   
+		listTable.filter['city_id'] = document.forms['searchForm'].elements['city_id'].value;
+		listTable.filter['district_id'] = document.forms['searchForm'].elements['district_id'].value;
+        listTable.filter['is_on_sale'] = document.forms['searchForm'].elements['is_on_sale'].value;
+        listTable.filter['suppliers_id'] = document.forms['searchForm'].elements['suppliers_id'].value;
+		listTable.filter['goods_sale_type'] = document.forms['searchForm'].elements['goods_sale_type'].value;
+
+        
+        {/if}
+{literal}
+        listTable.filter['keyword'] = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+        listTable.filter['page'] = 1;
+
+        listTable.loadList();
+    }
+</script>
+{/literal}

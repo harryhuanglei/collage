@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/user_lottery.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,user.js'}
+</head>
+<body>
+<div class="container" style="padding-top:40px;"> 
+<!-- {if $action eq 'luckdraw'} -->
+    <div class="nav_fixed nav_spike">
+        <a href="user.php?act=luckdraw"{if $composite_status eq ''} class="cur"{/if}><span>全部</span></a>
+        <a href="user.php?act=luckdraw&composite_status=100"{if $composite_status eq 100 } class="cur"{/if}><span>进行中</span></a>
+		<a href="user.php?act=luckdraw&composite_status=101"{if $composite_status eq 101 } class="cur"{/if}><span>待抽奖</span></a>
+        <a href="user.php?act=luckdraw&composite_status=102"{if $composite_status eq 102 } class="cur"{/if}><span>已抽奖</span></a>
+    </div>
+    <!--{foreach from=$orders item=item}-->
+    <div class="cj_list" onclick="window.location='user.php?act=order_detail&order_id={$item.order_id}';">
+            {if $item.luck_status eq 1} 
+            {if $item.is_luckdraw eq 1}
+            <div class="zj"></div>
+            {else}
+            <div class="wzj"></div>
+            {/if}
+            {/if}
+		<div class="cj_hd"> {if $item.suppliers_name}<img src="{$item.supp_logo}">{$item.suppliers_name}{else}<img src="images/logo.gif">{$shop_name}自营店{/if} <span>{$item.order_sn}</span></div>
+        
+        <div class="cj_l">
+            <img src="{$item.goods_list.0.goods_thumb}">
+            <em></em>
+            <span>{if $item.luck_status eq 0}{if $item.start eq 1}进行中{elseif $item.team_status eq 1}不符合{else}待抽奖{/if}{else}已抽奖{/if}</span>
+        </div>
+        <div class="cj_r">
+            <h3>{$item.goods_list.0.goods_name}</h3>
+            <p>{$item.title}</p>
+			{if $item.luck_status neq 0}
+			<a href="luckdraw.php?act=drawn&id={$item.luckdraw_id}">查看中奖名单</a>
+			{/if}
+        </div>
+    </div>
+    <!-- {/foreach} -->
+	<!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem --> 
+<!--{/if}-->
+</div>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+</html>

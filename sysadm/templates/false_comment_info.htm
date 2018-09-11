@@ -1,0 +1,107 @@
+<!-- $Id: bonus_type_info.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+<script language="javascript" type="text/javascript" src="../js/DatePicker/WdatePicker.js"></script>
+{include file="pageheader.htm"}
+<div class="main-div">
+<form action="comments_manage.php" method="post" name="theForm" enctype="multipart/form-data" onsubmit="return validate();">
+<table width="100%" id="general-table">
+  <tr>
+    <td class="label">会员名：</td>
+    <td>
+       <select name="user_id">			{foreach from=$user_list item=item}            <option value="{$item.user_id}" >{$item.uname} {$item.province} {if $item.province eq $item.city}{else}{$item.city}{/if} {if $item.sex eq 1}女{else}男{/if}</option>            {/foreach}        </select>	</td>
+  
+  <tr>
+      <td align="right">关键字：</td>
+      <td><input type="text" name="keywords" size="30" />
+      <input type="button" value="搜索" class="button" onclick="searchGoods()"></td>
+    </tr>
+   <tr>
+    <td class="label">商品名称：</td>
+    <td>
+    	  <select name="goods_id" id="goods_name"><!--onchange="goodsAttr(this.value)"-->
+        {$goods.option}
+        </select>
+    </td>
+  </tr>  </tr>	<tr id="user_info_box" style="display:none;">		<td class="label">会员信息：</td>		<td id="user_info"></td>	</tr>		</tr>	<tr>		<td class="label">星级：</td>		<td>			<input type="radio" name="comment_rank" value="1">一星			<input type="radio" name="comment_rank" value="2" checked="checked">二星			<input type="radio" name="comment_rank" value="3">三星			<input type="radio" name="comment_rank" value="4">四星			<input type="radio" name="comment_rank" value="5">五星		</td>	</tr>
+  <tr>
+    <td class="label">评论内容：</td>
+    <td>
+    
+    
+<textarea name="content" cols="50" rows="5"></textarea>      
+      
+      </td>
+  </tr>    <tr>    <td class="label">&nbsp;</td>    <td>      <input type="submit" value="确定" class="button" />      <input type="reset" value="重置" class="button" />      <input type="hidden" name="act" value="{$form_action}" />    </td>  </tr>
+</table>
+</form>
+</div>
+{insert_scripts files="../js/utils.js,validator.js,transport.js"}
+{literal}
+<script language="javascript">
+<!--
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+  var goods_name = document.forms['theForm'].elements['goods_id'].value;
+  var content = document.forms['theForm'].elements['content'].value;
+  if(goods_name == 0)
+  {
+    alert('请选择评论商品');
+    return false;
+  }
+  if(content == '')
+  {
+    alert('请选择评论内容');
+    return false;
+  }
+  return true;
+}
+function searchGoods()
+{
+    var filter = new Object;
+    filter.keyword = document.forms['theForm'].elements['keywords'].value;    filter.is_on_sale = 1;
+    filter.is_delete = 0;
+    Ajax.call('comments_manage.php?act=search_goods', filter, searchGoodsResponse, 'GET', 'JSON')
+}
+
+function searchGoodsResponse(result)
+{
+  var frm = document.forms['theForm'];
+  var sel = frm.elements['goods_id'];
+
+  if (result.error == 0)
+  {
+    /* 清除 options */
+    sel.length = 0;
+
+    /* 创建 options */
+    var goods = result.content;
+    if (goods)
+    {		var opt = document.createElement("OPTION");        opt.value = -1;        opt.text  = '请选择';        sel.options.add(opt);		
+        for (i = 0; i < goods.length; i++)
+        {
+            var opt = document.createElement("OPTION");
+            opt.value = goods[i].goods_id;
+            opt.text  = goods[i].goods_name;
+            sel.options.add(opt);
+        }
+    }
+    else
+    {
+        var opt = document.createElement("OPTION");
+        opt.value = 0;
+        opt.text  = search_is_null;
+        sel.options.add(opt);
+    }
+  }
+
+  if (result.message.length > 0)
+  {
+    alert(result.message);
+  }
+}
+//-->function goodsAttr(goods_id){	if(goods_id > 0)	{			Ajax.call('comments_manage.php?is_ajax=1&act=goodsAttr', 'id='+goods_id, searchGoodsAttrResponse, 'GET', 'JSON')		}}function searchGoodsAttrResponse(result){	if(result)	{		alert(result.length);		str1='';		str2 = '<td><select>';		for(var i in result)		{						if(result[i].attr_name)			{							str1+='<td>'+result[i].attr_name+'</td>';				for(j = 0; j < result[i].attr_values.length; j++)				{									str2 += '<option value='+result[i].attr_values[j]+'>'+result[i].attr_values[j]+'</option>';								}			}					}		str2 += '</select></td>';					alert(str2);			}	}
+</script>
+{/literal}
+{include file="pagefooter.htm"}

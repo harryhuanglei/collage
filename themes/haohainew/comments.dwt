@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{* 包含脚本文件 *}
+{insert_scripts files='jquery.js,haohaios.js,jquery.more.js'}
+</head>
+<body>
+<div class="container">
+    <section class="main-view">
+
+        <div class="detail-comments-container" style="margin-top:0;">
+            <div class="detail-comments-title">
+                <div class="detail-comments-all">全部评价</div>
+            </div>
+			<div id="J_ItemList">
+                <div class="comments_list single_item"></div>
+			    <a href="javascript:;" class="get_more"  style="text-align:center;">
+				<img src='images/loader.gif' width="12" height="12" >
+			</div>
+        </div>
+
+
+
+    </section>
+<script type="text/javascript">
+var url = 'comments.php?act=ajax&id={$goods_id}';
+$(function(){
+	$('#J_ItemList').more({'address': url});
+});
+
+</script>
+</div>
+</body>
+
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script language="javascript" type="text/javascript">
+
+	wx.config({
+	    debug: false,//这里是开启测试，如果设置为true，则打开每个步骤，都会有提示，是否成功或者失败
+	    appId: '{$appid}',
+	    timestamp: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+	    nonceStr: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+	    signature: '{$signature}',
+	    jsApiList: [
+	      // 所有要调用的 API 都要加到这个列表中
+	        'onMenuShareTimeline',
+	        'onMenuShareAppMessage',
+	        'onMenuShareQQ',
+	        'onMenuShareWeibo',
+	        'checkJsApi',
+	        'openLocation',
+	        'getLocation'
+	    ]
+	});
+	
+	var title="{$title}";
+	var link= "{$link}";
+	var imgUrl="{$imgUrl}";
+	var desc= "{$desc}";
+	wx.ready(function () {
+	    wx.onMenuShareTimeline({//朋友圈
+	        title: title, // 分享标题
+	        link: link, // 分享链接
+	        imgUrl: imgUrl, // 分享图标
+	        success: function () { 
+	            // 用户确认分享后执行的回调函数
+	        	statis(2,1);
+	        },
+	        cancel: function () { 
+	            // 用户取消分享后执行的回调函数
+	        	statis(2,2);
+	        }
+	    });
+	    wx.onMenuShareAppMessage({//好友
+	        title: title, // 分享标题
+	        desc: desc, // 
+	        link: link, // 分享链接
+	        imgUrl: imgUrl, // 分享图标
+	        type: '', // 分享类型,music、video或link，不填默认为link
+	        dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+	        success: function () { 
+	        	// 用户确认分享后执行的回调函数
+	            statis(1,1);    
+	        },
+	        cancel: function () { 
+	            // 用户取消分享后执行的回调函数
+	        	statis(1,2);
+	        }
+	    });
+	  
+	    wx.onMenuShareQQ({
+	        title: title, // 分享标题
+	        desc: desc, // 分享描述
+	        link: link, // 分享链接
+	        imgUrl: imgUrl, // 分享图标
+	        success: function () { 
+	           // 用户确认分享后执行的回调函数
+	        	statis(4,1);
+	        },
+	        cancel: function () { 
+	           // 用户取消分享后执行的回调函数
+	        	statis(4,2);
+	        }
+	    });
+	    wx.onMenuShareWeibo({
+	        title: title, // 分享标题
+	        desc: desc, // 分享描述
+	        link: link, // 分享链接
+	        imgUrl: imgUrl, // 分享图标
+	        success: function () { 
+	           // 用户确认分享后执行的回调函数
+	        	statis(3,1);
+	        },
+	        cancel: function () { 
+	            // 用户取消分享后执行的回调函数
+	        	statis(3,2);
+	        }
+	    });
+	    {if $goods.is_nearby }
+	    wx.checkJsApi({
+	    	
+	        jsApiList: [
+	            'getLocation'
+	        ],
+	        success: function (res) {
+	             //alert(JSON.stringify(res));
+	            // alert(JSON.stringify(res.checkResult.getLocation));
+	            if (res.checkResult.getLocation == false) {
+	                alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
+	                return;
+	            }
+	        }
+	    });
+	    wx.getLocation({
+	        success: function (res) {
+	            var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+	            var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+	            var speed = res.speed; // 速度，以米/每秒计
+	            var accuracy = res.accuracy; // 位置精度
+	            $.ajax({
+	                type:"post",//请求类型
+	                url:"goods.php",//服务器页面地址
+	                data:"act=save_location&lat="+latitude+"&lng="+longitude,
+	                dataType:"json",//服务器返回结果类型(可有可无)
+	                error:function(){//错误处理函数(可有可无)
+	                    //alert("ajax出错啦");
+	                },
+	                success:function(data){
+	                    if(data.error==1){
+	                        //alert('错误'+data.message);
+	                    }else{
+	                    	//document.getElementById('loading').style.display='none';
+	                		
+	                    }
+	                }
+	            });
+	        },
+	        cancel: function (res) {
+	            alert('用户拒绝授权获取地理位置');
+	        }
+	    });
+	    {/if}	
+	    
+	});
+	
+	function statis(share_type,share_status){
+		$.ajax({
+            type:"post",//请求类型
+            url:"share.php",//服务器页面地址
+            data:"act=link&share_status="+share_status+"&share_type="+share_type+"&link_url={$link2}",
+            dataType:"json",//服务器返回结果类型(可有可无)
+            error:function(){//错误处理函数(可有可无)
+                //alert("ajax出错啦");
+            },
+            success:function(data){
+                
+            }
+        });
+	}
+
+</script>
+</html>

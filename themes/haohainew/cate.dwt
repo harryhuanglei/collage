@@ -1,0 +1,88 @@
+
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+  <title>{$shop_name}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/pc.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="header">
+    <div class="container">
+      <a href="javascript:;" class="js-hover logo" data-target="js-shop-info">{$shop_name}<span class="icon-wxv"></span></a>
+      <ul class="nav">
+        <li><a href="default.php">首页</a></li>
+		<!--{foreach from=$categories item=cat}-->
+        <li{if $cat.id eq $category} class="cur"{/if}><a href="cate.php?id={$cat.id}">{$cat.name|escape:html}</a></li>
+	    <!--{/foreach}-->
+      </ul>
+    </div>
+    <!-- 浮层店铺信息 -->
+    <div class="shop-info shop-info-fixed js-shop-info">
+      <div class="container clearfix" style="height: 220px;">
+        <img class="shop-qrcode pull-left" src="{$qr_code}">
+        <div class="shop-desc pull-left" style="margin-left: 50px;">
+          <dl>
+            <dt>{$shop_name}</dt>
+            <dd></dd>
+            <dt>微信扫描二维码，访问我们的微信店铺</dt>
+			<dd>您可以使用微信联系我们，随时随地的购物、客服咨询、查询订单和物流...</dd>
+           </dl>
+        </div>
+        <span class="arrow"></span>
+      </div>
+    </div>
+  </div>
+  <div class="container main clearfix">
+    <ul class="goods-list clearfix">
+	<!--{foreach from=$goods_list item=goods}-->
+  	<li>
+      <a href="pcgoods.php?id={$goods.goods_id}" target="_blank">
+        <div class="image"><img data-original="{$goods.goods_thumb}" src="images/loading.gif" class="lazy"></div>
+        <div class="title">{$goods.goods_name}</div>
+        <span class="price">￥ {if $goods.team_price gt 0 && $goods.is_team eq 1}{$goods.team_price}{else}{$goods.shop_price}{/if}</span>
+        </a>
+    </li>
+	<!--{/foreach}-->
+    </ul>
+	
+<form name="selectPageForm" action="{$smarty.server.PHP_SELF}" method="get">
+ <div id="pager" class="pagination">
+  <span>{$lang.pager_1}<b>{$pager.record_count}</b> {$lang.pager_2}</span>
+  <!-- {if $pager.page_first} --><a class="pagination-prev" href="{$pager.page_first}">{$lang.page_first}</a><!-- {/if} -->
+  <!-- {if $pager.page_prev} --><a class="pagination-prev" href="{$pager.page_prev}">{$lang.page_prev}</a><!-- {/if} -->
+  <!-- {if $pager.page_count neq 1} -->
+    <!--{foreach from=$pager.page_number key=key item=item}-->
+      <!-- {if $pager.page eq $key} -->
+      <span class="pagination-num active">{$key}</span>
+      <!-- {else} -->
+      <a class="pagination-num" href="{$item}">{$key}</a>
+      <!-- {/if} -->
+    <!--{/foreach}-->
+  <!-- {/if} -->
+
+  <!-- {if $pager.page_next} --><a class="pagination-next" href="{$pager.page_next}">{$lang.page_next}</a><!-- {/if} -->
+  <!-- {if $pager.page_last} --><a class="pagination-next" href="{$pager.page_last}">{$lang.page_last}</a><!-- {/if} -->
+</div>
+</form>
+</div>
+{insert_scripts files='jquery.js,pc_min.js,jquery.lazyload.js'}
+
+  
+ <script>
+	window.onload=function(){
+	    $('.js-hover').hover();
+		$("img.lazy").lazyload({
+                effect: "fadeIn",
+                threshold : 200
+        });
+        $("img.lazy:eq(0)").attr('src',$("img.lazy:eq(0)").attr('data-original'));
+	}
+
+  </script>
+</body>
+</html>

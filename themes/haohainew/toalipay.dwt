@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$shop_name}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/haohaios.css" rel="stylesheet" />
+{* 包含脚本文件 *}
+{insert_scripts files='jquery.js,haohaios.js,user.js'}
+</head>
+<body>
+<style>
+body { background:#F3F4F8; text-align:center; }
+.toalipay img { max-width:100%; }
+.toalipay a { font-size:16px; padding:8px 15px; background:#eee; border:#ddd 1px solid; }
+</style>
+<div class="toalipay">
+{if $phone_type eq 2}
+    <img src="themes/haohaios/images/ios.jpg">
+{else}
+    <img src="themes/haohaios/images/and.jpg">
+{/if}
+    <a href="share.php?act=toalipay&order_id={$order_id}" style="margin-right:50px;">已完成支付</a>
+    <a href="user.php?act=order_detail&order_id={$order_id}&xaphp_sopenid={$xaphp_sopenid}">取消并返回</a>
+</div>
+</body>
+
+</html>

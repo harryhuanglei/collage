@@ -1,0 +1,1084 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/haohaios.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,user.js,shopping_flow.js,region.js'}
+<script type="text/javascript">
+		//调用微信JS api 支付
+	  function jsApiCall(code,returnrul,is_check,team_sign){
+            if(is_check==1){
+                $.ajax({
+                    type:"post",//请求类型
+                    url:"team_info.php",//服务器页面地址
+                    data:"team_sign="+team_sign,
+                    dataType:"json",
+                    error:function(){
+                        //alert("ajax出错啦");
+                    },
+                    success:function(data){
+                        if(data.error==0){
+                            WeixinJSBridge.invoke('getBrandWCPayRequest',code,function(res){
+            					WeixinJSBridge.log(res.err_msg);
+            					if(res.err_msg.indexOf('ok')>0){
+            						window.location.href=returnrul;
+            					}
+            				});
+	                    }else{
+	                       window.location=data.url;
+	                    }
+                    }
+                });
+	        }else{
+                WeixinJSBridge.invoke('getBrandWCPayRequest',code,function(res){
+					WeixinJSBridge.log(res.err_msg);
+					//alert(res.err_code+'调试信息：'+res.err_desc+res.err_msg);
+					if(res.err_msg.indexOf('ok')>0){
+						window.location.href=returnrul;
+					}
+				});
+	        }
+		}
+		function callpay(code,returnrul,is_check,team_sign)
+		{
+			 if (typeof WeixinJSBridge == "undefined"){
+			    if( document.addEventListener ){
+			        document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+			    }else if (document.attachEvent){
+			        document.attachEvent('WeixinJSBridgeReady', jsApiCall); 
+			        document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+			    }
+			}else{
+			    jsApiCall(code,returnrul,is_check,team_sign);
+			} 
+		}
+	</script>
+</head>
+<body>
+<div class="container"> 
+    <!-- {if $action eq 'order_list'} -->
+    <div class="nav_fixed">
+        <a href="user.php?act=order_list"{if $composite_status eq ''} class="cur"{/if}>全部订单</a>
+        <a href="user.php?act=order_list&composite_status=100"{if $composite_status eq 100 } class="cur"{/if}>待付款</a>
+        <a href="user.php?act=order_list&composite_status=120"{if $composite_status eq 120 } class="cur"{/if}>待收货</a>
+    </div>
+    
+    <div id="dealliststatus1" > 
+        
+        <!--{foreach from=$orders item=item}-->
+        
+        <div class="order">
+            <div class="order_hd"> {if $item.suppliers_name}商家:{$item.suppliers_name}{else}自营{/if} 订单编号:{$item.order_sn}　成交时间:{$item.order_time} </div>
+            <div class="order_bd">
+                <div class="order_glist"> {foreach from=$item.goods_list name="foreach_goods_list" item=goods}
+                    <div class="order_goods" onclick="window.location='user.php?act=order_detail&order_id={$item.order_id}';">
+                        <div class="order_goods_img"> <img alt="{$goods.goods_name}" src="{$goods.goods_thumb}"> </div>
+                        <div class="order_goods_info">
+                            <div class="order_goods_name">{$goods.goods_name}</div>
+                            <div class="order_goods_attr">
+                                <div class="order_goods_attr_item">
+                                    <div class="order_goods_price"><i>¥</i>{$goods.goods_price_fmt}<i>/件</i></div>
+                                    数量：{$goods.goods_number} </div>
+                                <p class="order_goods_attr_item">{$goods.goods_attr}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {/foreach}
+                    <div class="order_ft">
+                        <div class="order_total"> <span class="order_total_info">共1件商品 ，免运费</span> <span class="order_price">总金额：<b>¥{$item.total_fee}</b></span> <span class="coupon_icon" ms-if="order.coupons.length>0"></span> </div>
+                        <div class="order_opt"> <span class="order_status">{$item.order_status}</span>
+                            <div class="order_btn"> 
+                                
+                                <!-- 
+
+                                <a href="user.php?act=order_detail&order_id={$item.order_id}">查看详情</a>
+
+                                --> 
+                                
+                                {$item.handler} 
+                                
+                                <!--a class="order_btn_buy" click="orderBuy(order.order_id)">去支付</a>
+
+                                <a click="orderCancel(order.order_id)">取消订单</a>
+
+                                <a class="order_btn_receive" ms-click="expressShow(order.order_id)">查看物流</a>
+
+                                <a class="order_btn_receive" ms-click="orderReceive(order.order_id)">确认收货</a--> 
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!--{/foreach}--> 
+        
+        <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem --> 
+        
+        <!-- 
+
+        <div class="list" id="invoice" style="display:none;">
+
+            <h3>物流跟踪</h3>
+
+            <div id="retData"></div>
+
+        </div>
+
+       --> 
+        
+    </div>
+    <div class="express_box" id="invoice" style="display:none;"> </div>
+    
+    <!-- 二维码 code --> 
+    
+    <!-- 仅需对下面的div设置样式就好了，触发showCode的时候显示 -->
+    
+    <div id="hexiao_img" class="hexiao_img" style="display:none;" onclick="document.getElementById('hexiao_img').style.display='none';">
+        <div class="qrcode" id="qrcode"></div>
+    </div>
+    <script src="/js/qrcode.js"></script> 
+    <script>
+
+    var root = 'http://{$root}';
+
+    var qrcode = new QRCode(document.getElementById("qrcode"), '');
+
+    function showCode(order_id){
+
+        document.getElementById('hexiao_img').style.display='';
+
+        qrcode.clear();
+
+        qrcode.makeCode(root+"/handle.php?order_id="+parseInt(order_id));
+
+    }
+
+    </script> 
+    
+    <!-- code end --> 
+    
+    <!--{/if}--> 
+    
+    <!-- {if $action eq 'team_list'} -->
+    
+    <div class="con">
+        <div class="mt_order"> 
+            
+            <!-- {if $orders} --> 
+            
+            <!--{foreach from=$orders item=item}-->
+            
+            <div class="groups_line"></div>
+            <div class="mt_g"> {foreach from=$item.goods_list name="foreach_goods_list" item=goods}
+                <div class="mt_g_img" > <a href="goods.php?id={$goods.goods_id}"><img src="{$goods.goods_thumb}"></a> </div>
+                <div class="mt_g_info" >
+                    <p class="mt_g_name">{$goods.goods_name}</p>
+                    <p class="mt_g_price">成团价：<span><b>¥{$goods.goods_price_fmt}</b>/件 </span><i></i></p>
+                </div>
+                {/foreach} </div>
+            <div class="mt_status"> <span class="mt_status_txt">{$item.team_status}</span> <a class ="mt_status_lk1" href="user.php?act=order_detail&order_id={$item.order_id}"> 查看订单详情 </a> <a class ="mt_status_lk1 marg_right" href="share.php?team_sign={$item.team_sign}&uid={$uid}"> 查看团详情 </a> </div>
+            
+            <!--{/foreach}--> 
+            
+            <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem --> 
+            
+            <!-- {else} --> 
+            
+            <a href="index.php">
+            <div class="mt_nogroups">
+                <h4>您还没有参加过任何团哦，赶快去首页火拼吧！</h4>
+            </div>
+            </a> 
+            
+            <!--{/if}--> 
+            
+        </div>
+    </div>
+    <div style="height:58px;visibility:hidden "></div>
+    
+    <!--{/if}--> 
+    
+    <!--{if $action eq order_detail} -->
+    
+    <div class="mod_container"   id="dealliststatus1">
+        <div id="detailCon" class="wx_wrap">
+            <div class="{if $order.shipping_status_cy eq 2}state state_3{elseif $order.shipping_status_cy eq 1}state state_2{elseif $order.pay_status_cy eq 2 }state state_1{/if}">
+                <div class="state_step">
+                    <ul>
+                        <li class="state_step_1"></li>
+                        <li class="state_step_2"></li>
+                        <li class="state_step_3"></li>
+                    </ul>
+                    <span class="state_arrow"> <i class="state_arrow_i"></i> <i class="state_arrow_o"></i> </span> </div>
+                <div class="address">
+                    <div class="address_row">
+                        <div class="address_tit">订单状态：</div>
+                        <div class="address_cnt"> <b>{$order.order_status}</b> </div>
+                    </div>
+                    
+                    <!-- 
+
+                    <div class="address_row">
+
+                        <div class="address_tit">支付状态：</div>
+
+                        <div class="address_cnt">
+
+                            <b>{$order.pay_status}</b>
+
+                        </div>
+
+                    </div>
+
+                    <div class="address_row">
+
+                        <div class="address_tit">配送状态：</div>
+
+                        <div class="address_cnt">
+
+                            <b>{$order.shipping_status}</b>
+
+                        </div>
+
+                    </div> -->
+                    
+                    <div class="address_row">
+                        <div class="address_tit">总 额：</div>
+                        <div class="address_cnt"> <span class="address_price">{$order.formated_total_fee}</span> <span class="address_paytype">（{$order.pay_name}）</span> </div>
+                    </div>
+                    <div class="address_row">
+                        <div class="address_tit">订单编号：</div>
+                        <div class="address_cnt">{$order.order_sn}</div>
+                    </div>
+                    <div class="address_row">
+                        <div class="address_tit">下单时间：</div>
+                        <div class="address_cnt">{$order.add_time}</div>
+                    </div>
+                    
+                    <!-- {if $order.shipping_id neq $notExpress} -->
+                    
+                    <div class="address_row">
+                        <div class="address_tit">送 至：</div>
+                        <div class="address_cnt">{$order.province|escape} {$order.city|escape} {$order.district|escape} {$order.address}</div>
+                    </div>
+                    <div class="address_row">
+                        <div class="address_tit">收 货 人：</div>
+                        <div class="address_cnt">{$order.consignee|escape} {$order.mobile|escape}</div>
+                    </div>
+                    <div class="address_row">
+                        <div class="address_tit">配送方式：</div>
+                        <div class="address_cnt">{$order.shipping_name}<br>
+                            {$order.invoice_no}</div>
+                    </div>
+                    
+                    <!-- {/if} --> 
+                    
+                    <!-- {if $order.shipping_id eq $notExpress} -->
+                    
+                    <div class="address_row">
+                        <div class="address_tit">取货地址：</div>
+                        <div class="address_cnt">{$order.shipping_point}</div>
+                    </div>
+                    
+                    <!-- {/if} --> 
+                    
+                </div>
+                
+                <!--{if 1} -->
+                
+                <div class="state_btn"> {$order.handler} </div>
+                <div class="state_btn"> </div>
+                
+                <!-- {/if} --> 
+                
+            </div>
+            <div class="ptit">商品信息 </div>
+            <div class="order order_height">
+                <div class="order_bd">
+                    <div class="order_glist">
+                        <div class="order_item"> 
+                            
+                            <!-- {foreach from=$goods_list item=goods} --> 
+                            
+                            <a href="goods.php?id={$goods.goods_id}" class="order_goods" style="float:left;border-bottom:none;">
+                            <div class="order_goods_img"> <img src="{$goods.little_img}"> </div>
+                            </a>
+                            <div class="order_goods_info"> <a class="order_goods" href="goods.php?id={$goods.goods_id}">
+                                <div class="order_goods_name">{$goods.goods_name}</div>
+                                <div class="order_goods_attr">
+                                    <div class="order_goods_attr_item">数量：{$goods.goods_number}
+                                        <div class="order_goods_price"><i>¥</i>{$goods.goods_price}<i>/件</i></div>
+                                    </div>
+                                    <p class="order_goods_attr_item">{$goods.goods_attr|nl2br}</p>
+                                </div>
+                                </a> </div>
+                            
+                            <!-- {/foreach} --> 
+                            
+                        </div>
+                    </div>
+                    <div> 
+                        
+                        <!-- {if $order.team_sign && $order.team_status neq 0} --> 
+                        
+                        <a class ="mt_status_lk1 marg_right" href="share.php?team_sign={$order.team_sign}&uid={$uid}">查看团详情 </a> 
+                        
+                        <!-- {/if} --> 
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="express_box" id="invoice" style="display:none;"> 
+        
+        <!-- 
+
+        <h3>物流跟踪</h3>
+
+        <ul>
+
+         <div id="retData"></div> 
+
+         </ul>--> 
+        
+    </div>
+    
+    <!--{/if} --> 
+    
+    <!--{if $action eq team_detail} -->
+    
+    <div class="mod_container">
+        <div id="detailCon" class="wx_wrap">
+            <div class="ptit">商品信息 </div>
+            <div class="order order_height">
+                <div class="order_bd">
+                    <div class="order_glist">
+                        <div class="order_item"> 
+                            
+                            <!-- {foreach from=$goods_list item=goods} --> 
+                            
+                            <a href="goods.php?id={$goods.goods_id}" class="order_goods" style="float:left;border-bottom:none;">
+                            <div class="order_goods_img"> <img src="{$goods.little_img}"> </div>
+                            </a>
+                            <div class="order_goods_info"> <a class="order_goods" href="goods.php?id={$goods.goods_id}">
+                                <div class="order_goods_name">{$goods.goods_name}</div>
+                                <div class="order_goods_attr"> <br>
+                                    <div class="order_goods_attr_item">数量：{$goods.goods_number}
+                                        <div class="order_goods_price"><i>¥</i>{$goods.goods_price}<i>/件</i></div>
+                                    </div>
+                                </div>
+                                </a> </div>
+                            
+                            <!-- {/foreach} --> 
+                            
+                        </div>
+                    </div>
+                    <div> 
+                        
+                        <!-- {foreach from=$team_mem item=item} -->
+                        
+                        <div class="my_head" style="float:left;">
+                            <div class="my_head_pic"> <img class="my_head_img" width="130" height="130" src="{$item.headimgurl}"> </div>
+                        </div>
+                        
+                        <!-- {/foreach} --> 
+                        
+                    </div>
+                    <div style="clear:both;"></div>
+                    <div> <span id="time"></span> </div>
+                    <div> 
+                        
+                        <!-- {foreach from=$team_mem item=item} --> 
+                        
+                        <!-- {if $smarty.foreach.name.index eq 0} --> 
+                        
+                        团长：{$item.user_name} 	开团时间：{$item.date} 
+                        
+                        <!-- {else} --> 
+                        
+                        {$item.user_name} 	参团时间：{$item.date} 
+                        
+                        <!-- {/if} --> 
+                        
+                        <!-- {/foreach} --> 
+                        
+                    </div>
+                    
+                    <!-- {if $order.team_status eq 1} --> 
+                    
+                    正在进行 
+                    
+                    <!-- {elseif $order.team_status eq 2} --> 
+                    
+                    成功 
+                    
+                    <!-- {elseif $order.team_status eq 3} --> 
+                    
+                    失败待退款 
+                    
+                    <!-- {elseif $order.team_status eq 4} --> 
+                    
+                    失败退款成功 
+                    
+                    <!-- {/if} -->
+                    
+                    <div id="handler"> 
+                        
+                        <!-- {if $order.team_status eq 1} -->
+                        
+                        <button onclick="window.location='share.php?team_sign={$order.team_sign}';">分享给朋友</button>
+                        
+                        <!-- {else } -->
+                        
+                        <button type="button" onclick="window.location='index.php';">我也要开个团，点此到商品列表</button>
+                        
+                        <!-- {/if} --> 
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+
+
+
+    var daysms = 24 * 60 * 60 * 1000;
+
+    var hoursms = 60 * 60 * 1000;
+
+    var Secondms = 60 * 1000;
+
+    var microsecond = 1000;
+
+    var DifferHour = 0;
+
+    var DifferMinute = 0;
+
+    var DifferSecond = 0;
+
+    	
+
+    var systime={$systime};
+
+    var team_start={$team_start}*1000;
+
+    var team_end={$team_start}*1000+{$team_suc_time}*24*3600*1000;
+
+    setInterval("systime_clock()",1000);
+
+    function systime_clock(){
+
+    	systime++;
+
+    }
+
+
+
+    function clock()
+
+    {	
+
+    	//当前时间
+
+      var time = new Date();
+
+      time.setTime(systime*1000);
+
+
+
+      var Diffms = team_end - time.getTime();
+
+      var Diffms1=Diffms;
+
+      var a='';
+
+      var b='';
+
+      var c='';
+
+      var d='';
+
+      DifferHour = Math.floor(Diffms / daysms);
+
+      Diffms -= DifferHour * daysms;
+
+      DifferMinute = Math.floor(Diffms / hoursms);
+
+      Diffms -= DifferMinute * hoursms;
+
+      DifferSecond = Math.floor(Diffms / Secondms);
+
+      Diffms -= DifferSecond * Secondms;
+
+      var dShhs = Math.floor(Diffms / microsecond);
+
+      if(Diffms1>=0){
+
+    	   //a="还剩<strong class='tcd-h'>"+DifferHour+"</strong>天;";
+
+    	   b="还剩<strong >"+DifferMinute+"</strong>时";
+
+    	   c="<strong >"+DifferSecond+"</strong>分";
+
+    	   d="<strong >"+dShhs+"</strong>秒";
+
+    	  document.getElementById('time').innerHTML =b+c+d;
+
+    	 
+
+      }else{//已结束
+
+    	  document.getElementById('handler').innerHTML="<button type='button' onclick='window.location=\'index.php\';'>我也要开个团，点此到商品列表</button>";
+
+    	   document.getElementById('time').innerHTML ="<strong style='color:#999;'>已结束</strong>"
+
+      }
+
+    }
+
+     
+
+    window.setInterval("clock()", 1000);
+
+    </script> 
+    
+    <!--{/if} --> 
+    
+    <!--{if $action eq 'address_list'} --> 
+    
+    {insert_scripts files='utils.js,region.js,shopping_flow.js'} 
+    <script type="text/javascript">
+
+      region.isAdmin = false;
+
+      {foreach from=$lang.flow_js item=item key=key}
+
+      var {$key} = "{$item}";
+
+      {/foreach}
+
+      {literal}
+
+      onload = function() {
+
+        if (!document.all)
+
+        {
+
+          document.forms['theForm'].reset();
+
+        }
+
+      }
+
+      {/literal}
+
+    </script>
+    <div class="wx_bar">
+        <div class="wx_bar_back"> <a id="listPageback" href="javascript:void(0);"></a> </div>
+        <div class="wx_bar_act"> <a href="javascript:void(0);" class="wx_bar_new" style="display: none;" id="_new"></a> </div>
+    </div>
+    <div class="wx_wrap">
+        <div class="address_list" id="addressList">
+            <div class="address"> 
+                
+                <!-- {foreach from=$consignee_list item=consignee key=sn} --> 
+                
+                <!--ul class="selected"默认地址-->
+                
+                <ul {if $consignee.address_id eq $default_address_id}class="selected"{/if} >
+                    <li><span>{$consignee.address|escape}</span></li>
+                    <li><strong>{$consignee.consignee|escape}</strong>{$consignee.mobile|escape}</li>
+                    <li ><a class="edit" href="user.php?act=edit_consignee&address_id={$consignee.address_id}" >编辑</a></li>
+                </ul>
+                
+                <!-- {/foreach} --> 
+                
+            </div>
+            <div class="address_list_link"> <a href="user.php?act=edit_consignee" class="item item_new">新增收货地址</a> </div>
+            <div class="margin_footer"></div>
+        </div>
+    </div>
+    
+    <!--{/if} --> 
+    
+    <!--{if $action eq 'edit_address'} --> 
+    
+    {insert_scripts files='utils.js,region.js,shopping_flow.js'} 
+    <script type="text/javascript">
+
+      region.isAdmin = false;
+
+      {foreach from=$lang.flow_js item=item key=key}
+
+      var {$key} = "{$item}";
+
+      {/foreach}
+
+      {literal}
+
+      onload = function() {
+
+        if (!document.all)
+
+        {
+
+          document.forms['theForm'].reset();
+
+        }
+
+      }
+
+      {/literal}
+
+    </script> 
+    
+    <!-- {foreach from=$consignee_list item=consignee key=sn} -->
+    
+    <form action="user.php" method="post" name="theForm" onsubmit="return checkConsignee(this)">
+        <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#dddddd">
+            <tr>
+                <td align="right" bgcolor="#ffffff">{$lang.consignee_name}：</td>
+                <td align="left" bgcolor="#ffffff"><input name="consignee" type="text" class="inputBg" id="consignee_{$sn}" value="{$consignee.consignee|escape}" /></td>
+            </tr>
+            <tr>
+                <td align="right" bgcolor="#ffffff">{$lang.backup_phone}：</td>
+                <td align="left" bgcolor="#ffffff"><input name="mobile" type="text" class="inputBg" id="mobile_{$sn}" value="{$consignee.mobile|escape}" /></td>
+            </tr>
+            <tr>
+                <td align="right" bgcolor="#ffffff">{$lang.country_province}：</td>
+                <td colspan="3" align="left" bgcolor="#ffffff"><select name="country" id="selCountries_{$sn}" onchange="region.changed(this, 1, 'selProvinces_{$sn}')">
+                        <option value="0">{$lang.please_select}</option>
+                        
+                        <!-- {foreach from=$country_list item=country} -->
+                        
+                        <option value="{$country.region_id}" {if $consignee.country eq $country.region_id}selected{/if}>{$country.region_name}</option>
+                        
+                        <!-- {/foreach} -->
+                        
+                    </select>
+                    <select name="province" id="selProvinces_{$sn}" onchange="region.changed(this, 2, 'selCities_{$sn}')">
+                        <option value="0">{$lang.please_select}</option>
+                        
+                        <!-- {foreach from=$province_list.$sn item=province} -->
+                        
+                        <option value="{$province.region_id}" {if $consignee.province eq $province.region_id}selected{/if}>{$province.region_name}</option>
+                        
+                        <!-- {/foreach} -->
+                        
+                    </select>
+                    <select name="city" id="selCities_{$sn}" onchange="region.changed(this, 3, 'selDistricts_{$sn}')">
+                        <option value="0">{$lang.please_select}</option>
+                        
+                        <!-- {foreach from=$city_list.$sn item=city} -->
+                        
+                        <option value="{$city.region_id}" {if $consignee.city eq $city.region_id}selected{/if}>{$city.region_name}</option>
+                        
+                        <!-- {/foreach} -->
+                        
+                    </select>
+                    <select name="district" id="selDistricts_{$sn}" {if !$district_list.$sn}style="display:none"{/if}>
+                        <option value="0">{$lang.please_select}</option>
+                        
+                        <!-- {foreach from=$district_list.$sn item=district} -->
+                        
+                        <option value="{$district.region_id}" {if $consignee.district eq $district.region_id}selected{/if}>{$district.region_name}</option>
+                        
+                        <!-- {/foreach} -->
+                        
+                    </select></td>
+            </tr>
+            <tr>
+                <td align="right" bgcolor="#ffffff">{$lang.detailed_address}：</td>
+                <td align="left" bgcolor="#ffffff"><input name="address" type="text" class="inputBg" id="address_{$sn}" value="{$consignee.address|escape}" /></td>
+            </tr>
+            <tr>
+                <td align="right" bgcolor="#ffffff">&nbsp;</td>
+                <td colspan="3" align="center" bgcolor="#ffffff"><!-- {if $consignee.consignee} -->
+                    
+                    <input type="submit" name="submit" class="bnt_blue_1" value="{$lang.confirm_edit}" />
+                    <input name="button" type="button" class="bnt_blue"  onclick="if (confirm('{$lang.confirm_drop_address}'))location.href='user.php?act=drop_consignee&id={$consignee.address_id}'" value="{$lang.drop}" />
+                    
+                    <!-- {else} -->
+                    
+                    <input type="submit" name="submit" class="bnt_blue_2"  value="{$lang.add_address}"/>
+                    
+                    <!-- {/if} -->
+                    
+                    <input type="hidden" name="act" value="act_edit_address" />
+                    <input name="address_id" type="hidden" value="{$consignee.address_id}" /></td>
+            </tr>
+        </table>
+    </form>
+    
+    <!-- {/foreach} --> 
+    
+    <!--{/if} --> 
+    
+    <!-- {if $action eq 'bonus'} 用户的优惠劵列表 start--> 
+    
+    <script type="text/javascript">
+
+        {foreach from=$lang.profile_js item=item key=key}
+
+          var {$key} = "{$item}";
+
+        {/foreach}
+
+      </script>
+    <div class="nav_fixed"> <a href="user.php?act=bonus" class="fixed_nav_item  {if $status eq '' }nav_cur{/if}"><span class="nav_txt">优惠券</span></a> <a href="user.php?act=bonus&status=not_start" class="fixed_nav_item {if $status eq 'not_start' }nav_cur{/if} "><span class="nav_txt nav_payment">未激活</span></a> <a href="user.php?act=bonus&status=overdue" class="fixed_nav_item {if $status eq 'overdue' }nav_cur{/if}"><span class="nav_txt nav_receiving">已过期</span></a> </div>
+    <div class="wrapper_coupons" > 
+        
+        <!-- {if $bonus.using} -->
+        
+        <div class="curr_used_coupons" style="display:block;"> <b class="can_use">使用中：</b> 
+            
+            <!--{foreach from=$bonus.using item=item}-->
+            
+            <div class="coup_one slide_width slideleft" onclick="toggle(this);">
+                <div class="half_width"> <img src="images/yellow_bd15f0c.png" class="coup_img">
+                    <div>
+                        <p class="pin martop"></p>
+                    </div>
+                    <div> <b class="pin1">{$item.suppliers_name}</b> </div>
+                    <div class="coup_text_left left_next">
+                        <p>{$item.type_money}元优惠劵</p>
+                        <div class="text_copus_desc">{$bonus_ad}</div>
+                    </div>
+                    <div class="coup_time_right"> <b>有效期</b> <br>
+                        <div class="text_copus_time"> {$item.use_startdate} ~ <br>
+                            {$item.use_enddate}</div>
+                    </div>
+                </div>
+                <div class="ordre_posi">
+                    <div class="coup_order"> <span class="unbind"><a href="user.php?act=cancel_order&order_id={$item.order_id}" onclick="if(confirm('确定要取消吗？') ) return true;else return false;">取消订单</a></span>
+                        <div class="order_item"> <a href="user.php?act=order_detail&order_id={$item.order_id}" class="coup_order_goods_img"> <img src="{$item.goods.goods_thumb}"> </a>
+                            <div class="coup_order_info">
+                                <div class="coup_order_goods">
+                                    <div class="order_goods_name">{$item.goods.goods_name}</div>
+                                    <div class="order_goods_attr">
+                                        <div class="order_goods_attr_item">
+                                            <div class="coup_goods_price"><i>¥</i>{$item.goods.total_fee}<i>元</i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="coup_order" ms-if="coupon.order_goods.length==0">
+                        <div class="center err_ord"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- {/foreach} --> 
+            
+        </div>
+        
+        <!-- {/if} --> 
+        
+        <!-- {if $bonus.ok} -->
+        
+        <div class="curr_used_coupons" style="display:block;"> <b class="can_use">当前可用：</b> 
+            
+            <!--{foreach from=$bonus.ok item=item}-->
+            
+            <div class="coup_one">
+                <div> <img src="images/yellow_bd15f0c.png" class="coup_img">
+                    <div> <b class="pin"></b> </div>
+                    <div> <b class="pin1">{$item.suppliers_name}</b> </div>
+                    <div class="coup_text_left ">
+                        <p>{$item.type_money}元优惠劵</p>
+                       <div class="text_copus_desc">{$bonus_ad}</div>
+                    </div>
+                    <div class="coup_time_right add_right"> <b>有效期</b> <br>
+                        <div class="text_copus_time"> {$item.use_startdate} ~ <br>
+                            {$item.use_enddate}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- {/foreach} --> 
+            
+        </div>
+        
+        <!-- {/if} -->
+        
+        <div> 
+            
+            <!-- {if $bonus.used} --> 
+            
+            <b class="can_use">已使用：</b> 
+            
+            <!--{foreach from=$bonus.used item=item}-->
+            
+            <div class="coup_one">
+                <div> <img src="images/gray_010a283.png" class="coup_img"> <img src="images/used_b0be89f.png" class="seal">
+                    <div> <b class="pin"></b> </div>
+                    <div> <b class="pin1">{$item.suppliers_name}</b> </div>
+                    <div class="coup_text_left">
+                        <p class="used">{$item.type_money}元优惠劵</p>
+                        <div class="text_copus_desc">{$bonus_ad}</div>
+                    </div>
+                    <div class="coup_time_right"> <b class="userd">使用时间</b> <br>
+                        <div class="text_copus_time">{$item.used_date}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- {/foreach} --> 
+            
+            <!-- {/if} --> 
+            
+            <!-- {if $bonus.not_start} --> 
+            
+            <b class="can_use">未激活：</b> 
+            
+            <!--{foreach from=$bonus.not_start item=item}-->
+            
+            <div class="coup_one">
+                <div> <img src="images/gray_010a283.png" class="coup_img"> <img src="images/frozen_b2e18e4.png" class="seal">
+                    <div> <b class="pin"></b> </div>
+                    <div> <b class="pin1">{$item.suppliers_name}</b> </div>
+                    <div class="coup_text_left">
+                        <p class="used">{$item.type_money}元优惠劵</p>
+                        <div class="text_copus_desc">{$bonus_ad}</div>
+                    </div>
+                    <div class="coup_time_right" ms-class="add_right:status==0"> <b class="userd">有效期</b> <br>
+                        <div class="text_copus_time">{$item.use_startdate} ~ <br>
+                            {$item.use_enddate}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- {/foreach} --> 
+            
+            <!-- {/if} --> 
+            
+            <!-- {if $bonus.overdue} --> 
+            
+            <b class="can_use">已过期：</b> 
+            
+            <!--{foreach from=$bonus.overdue item=item}-->
+            
+            <div class="coup_one">
+                <div> <img src="images/gray_010a283.png" class="coup_img"> <img src="images/expired_9a12150.png" class="seal">
+                    <div> <b class="pin"></b> </div>
+                    <div> <b class="pin1">{$item.suppliers_name}</b> </div>
+                    <div class="coup_text_left">
+                        <p class="used">{$item.type_money}元优惠劵</p>
+                        <div class="text_copus_desc">{$bonus_ad}</div>
+                    </div>
+                    <div class="coup_time_right" ms-class="add_right:status==0"> <b class="userd">有效期</b> <br>
+                        <div class="text_copus_time">{$item.use_startdate} ~ <br>
+                            {$item.use_enddate}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- {/foreach} --> 
+            
+            <!-- {/if} -->
+            
+            <div class="addBouns">
+                <form name="addBouns" action="user.php" method="post" onSubmit="return addBonus()">
+                    <input name="bonus_sn" type="text" size="30" class="inp" placeholder="{$lang.bonus_number}" />
+                    <input type="hidden" name="act" value="act_add_bonus" class="inp" />
+                    <input type="submit" class="bnt" style="border:none;" value="绑定优惠券" />
+                </form>
+            </div>
+        </div>
+        <div ms-if="!all_coupons.length">
+            <div ms-if="net_err" class="center  margintop"> </div>
+            <div ms-if="no_coupons" class="center margintop" ms-html="no_coupons_text"> </div>
+        </div>
+    </div>
+    
+    <!-- {/if} --> 
+    
+    <!--用户优惠劵结束--> 
+    
+    <!--#会员余额 start--> 
+    
+ 
+        
+    </div>
+    
+    <!--#会员余额 end--> 
+    
+</div>
+
+<div class="footer">
+
+    <ul>
+
+        <li><a href="index.php" class="nav-controller"><i class="ico_index"></i>首页</a></li>
+        
+        <li><a href="tuan.php" class="nav-controller"><i class="ico_tuan"></i>拼团</a></li>
+
+		<li><a href="mall.php" class="nav-controller"><i class="ico_mall"></i>商城</a></li>
+
+        <li><a href="square.php"><i class="ico_square"></i>广场</a></li>
+
+        <li><a href="user.php" class="nav-controller active"><i class="ico_user"></i>个人中心</a></li>
+
+    </ul>
+
+</div>
+</body>
+<script type="text/javascript">
+
+{foreach from=$lang.clips_js item=item key=key}
+
+var {$key} = "{$item}";
+
+{/foreach}
+
+function toggle(thisObj){
+
+	if(thisObj.className.indexOf('slideleft')!==-1){
+
+		thisObj.className='coup_one slide_width ';
+
+	}else{
+
+		thisObj.className="coup_one slide_width slideleft";
+
+	}
+
+}
+
+</script>
+<script language="javascript">
+
+	function cancel_invoice(){
+
+		document.body.style.overflow = "";
+
+		document.getElementById('invoice').style.display='none';
+
+		document.getElementById('dealliststatus1').style.display='';
+
+		document.getElementById("dealliststatus1").style.backgroundColor="";
+
+		document.getElementById("dealliststatus1").style.opacity = '';
+
+	}
+
+    function get_invoice(expressid,expressno){	
+
+    	document.getElementById("invoice").style.display="";
+
+    	document.getElementById("invoice").innerHTML="<center>正在查询物流信息，请稍后...</center>";
+
+    	if(document.getElementById("dealliststatus1")){
+
+    		//document.getElementById("dealliststatus1").style.display="none";
+
+    		
+
+    		document.body.style.overflow = "hidden";
+
+    		document.getElementById("dealliststatus1").style.backgroundColor="#EEEEEE";
+
+    		document.getElementById("dealliststatus1").style.opacity = 50/100;
+
+    		/**/
+
+    	}
+
+    	
+
+    	/*
+
+    	var expressid = document.getElementById("shipping_name").innerHTML;
+
+    	var expressno = document.getElementById("invoice_no").innerHTML;
+
+    	
+
+    	var expressid="{$order.shipping_name}";
+
+    	var expressno="{$order.invoice_no}"; 
+
+    	*/ 
+
+
+
+    	Ajax.call('/plugins/juhe/kuaidi.php?com='+ expressid+'&nu=' + expressno,'showtest=showtest', 
+
+    			get_invoice_reponse, 'GET', 'JSON');
+
+    }
+
+	function get_invoice_reponse(result){ 
+
+		/*
+
+		  {"message":"ok","status":"1","state":"3","data":
+
+            [{"time":"2012-07-07 13:35:14","context":"客户已签收"},
+
+             {"time":"2012-07-07 09:10:10","context":"离开 [北京石景山营业厅] 派送中，递送员[温]，电话[]"},
+
+             {"time":"2012-07-06 19:46:38","context":"到达 [北京石景山营业厅]"},
+
+             {"time":"2012-07-06 15:22:32","context":"离开 [北京石景山营业厅] 派送中，递送员[温]，电话[]"},
+
+             {"time":"2012-07-06 15:05:00","context":"到达 [北京石景山营业厅]"},
+
+             {"time":"2012-07-06 13:37:52","context":"离开 [北京_同城中转站] 发往 [北京石景山营业厅]"},
+
+             {"time":"2012-07-06 12:54:41","context":"到达 [北京_同城中转站]"},
+
+             {"time":"2012-07-06 11:11:03","context":"离开 [北京运转中心驻站班组] 发往 [北京_同城中转站]"},
+
+             {"time":"2012-07-06 10:43:21","context":"到达 [北京运转中心驻站班组]"},
+
+             {"time":"2012-07-05 21:18:53","context":"离开 [福建_厦门支公司] 发往 [北京运转中心_航空]"},
+
+             {"time":"2012-07-05 20:07:27","context":"已取件，到达 [福建_厦门支公司]"}
+
+            ]} 
+
+		*/
+
+/*
+
+		if((result.status==0||result.status==3||result.status==5)&&result.message=='ok'){
+
+			var str="";
+
+			$.each(result.data,function(i,e){
+
+				str+=e.context+"	".e.time;
+
+			})
+
+			document.getElementById("retData").innerHTML=str;
+
+		}else{
+
+			document.getElementById("retData").innerHTML=result.message;
+
+		}*/
+
+		
+
+		document.getElementById("invoice").innerHTML=result;
+
+	}
+
+</script>
+</html>

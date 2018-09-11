@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>商家管理平台</title>
+<link href="templates/css/layout.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../../js/jquery.js"></script>
+<script type="text/javascript" src="../../js/haohaios.js"></script>
+<script type="text/javascript" src="../../js/user.js"></script>
+<script type="text/javascript" src="../../js/region.js"></script>
+<script type="text/javascript" src="../../js/utils.js"></script>
+<script type="text/javascript" src="templates/js/main.js"></script>
+<script type="text/javascript" src="templates/js/supp.js"></script>
+<script type="text/javascript" src="../../{$admin_path}/js/listtable.js"></script>
+<script type="text/javascript" src="../../{$admin_path}/js/tab.js"></script>
+<script language="javascript" type="text/javascript" src="../../js/DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="templates/js/public_tab.js"></script>
+<script>
+var process_request = "{$lang.process_request}";
+</script>
+</head>
+
+<body onload="pageheight()">
+<!-- #BeginLibraryItem "/library/lift_menu.lbi" --><!-- #EndLibraryItem -->
+<!--{if $action eq 'sale_order'}-->
+
+<div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_goods.png" /><span>统计报表</span>
+		</div>
+        <div class="maincon">
+			<div class="contitlelist">
+            	<span>销售排行</span>
+                <div class="searchdiv">
+
+ <form name="TimeInterval"  action="index.php" style="margin:0px">
+
+    <input  class="Wdate" name="start_date" type="text" value='{$start_date}' readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-M-d',maxDate:'%y-%M-%d'})"/>&nbsp;&nbsp;
+    &nbsp;&nbsp;
+    <input  class="Wdate" name="end_date" type="text" value='{$end_date}' readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-M-d',maxDate:'%y-%M-%d'})"/>&nbsp;&nbsp;
+    <input name="act" type="hidden" value="sale_order" />
+    <input name="op" type="hidden" value="statistical" />
+    <input type="submit" name="submit" value="{$lang.query}" class="btn" />
+  </form>
+
+                 </div>
+                 <div class="titleright"><a href="?op=statistical&act=sale_order_download&start_date={$fstart_date}&end_date={$fend_date}">统计报表下载</a></div>
+
+            </div>
+		  <div class="conbox">
+<table width="100%" cellspacing="1" cellpadding="3" class="listtable">
+     <tr>
+      <th>{$lang.order_by}</th>
+      <th>{$lang.goods_name}</th>
+      <th>{$lang.goods_sn}</th>
+      <th>{$lang.sell_amount}</th>
+      <th>{$lang.sell_sum}</th>
+      <th>{$lang.percent_count}</th>
+    </tr>
+  {foreach from=$goods_order_data item=list name=val}
+    <tr align="center">
+      <td>{$smarty.foreach.val.iteration}</td>
+      <td align="left"><a href="javascript:;" target="_blank" style="cursor:default">{$list.goods_name}</a></td>
+      <td>{$list.goods_sn}</td>
+      <td>{$list.goods_num}</td>
+      <td>{$list.turnover}</td>
+      <td>{$list.wvera_price}</td>
+    </tr>
+  {foreachelse}
+    <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+  {/foreach}
+  </table>
+
+
+        </div>
+        
+            <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem --> 
+        
+  </div>
+       </div>
+
+<!--{/if}-->
+<!--{if $action eq 'sale_list'}-->
+<div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_goods.png" /><span>统计报表</span>
+		</div>
+        <div class="maincon">
+			<div class="contitlelist">
+            	<span>销售明细</span>
+                <div class="searchdiv">
+
+ <form name="TimeInterval"  action="index.php" style="margin:0px">
+
+    <input  class="Wdate" name="start_date" type="text" value='{$start_date}' readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-M-d',maxDate:'%y-%M-%d'})"/>&nbsp;&nbsp;
+    &nbsp;&nbsp;
+    <input  class="Wdate" name="end_date" type="text" value='{$end_date}' readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-M-d',maxDate:'%y-%M-%d'})"/>&nbsp;&nbsp;
+    <input name="act" type="hidden" value="sale_list" />
+    <input name="op" type="hidden" value="statistical" />
+    <input type="submit" name="submit" value="{$lang.query}" class="btn" />
+  </form>
+
+                 </div>
+                 <div class="titleright"><a href="?op=statistical&act=sale_list_download&start_date={$fstart_date}&end_date={$fend_date}">统计报表下载</a></div>
+
+            </div>
+		  <div class="conbox">
+
+<table width="100%" cellspacing="1" cellpadding="3" class="listtable">
+     <tr>
+      <th>{$lang.goods_name}</th>
+      <th>{$lang.order_sn}</th>
+      <th>{$lang.amount}</th>
+      <th>{$lang.sell_price}</th>
+      <th>{$lang.sell_date}</th>
+    </tr>
+  {foreach from=$goods_sales_list item=list}
+    <tr align="center">
+      <td align="left"><a href="../goods.php?id={$list.goods_id}" target="_blank">{$list.goods_name}</a></td>
+      <td><a href="index.php?op=order&act=order_info&order_id={$list.order_id}">{$list.order_sn}</a></td>
+      <td align="center">{$list.goods_num}</td>
+      <td align="center">{$list.sales_price}</td>
+      <td align="center">{$list.sales_time}</td>
+    </tr>
+  {foreachelse}
+    <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+  {/foreach}
+  </table>
+
+        </div>
+        
+            <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem --> 
+        
+  </div>
+       </div>
+
+<!--{/if}-->
+<!--{if $action eq 'order_stats'}-->
+  <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_goods.png" /><span>报表统计</span>
+		</div>
+        <div class="maincon">
+			<div class="contitlelist">
+            	<span>订单统计</span>
+                 <div class="searchdiv">
+<form action="index.php" method="get" id="selectForm" name="selectForm">
+    <input class="Wdate" name="start_date" value="{$start_date}" onfocus="WdatePicker({dateFmt:'yyyy-M-d',maxDate:'%y-%M-%d'})"/>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <input class="Wdate" name="end_date" value="{$end_date}" onfocus="WdatePicker({dateFmt:'yyyy-M-d',minDate:'%y-%M-%d'})"/>
+   <input name="act" type="hidden" value="order_stats" />
+    <input name="op" type="hidden" value="statistical" />
+    <input type="submit" name="submit" value="查询" class="btn" />
+  </form>
+                 </div>
+                 <div class="titleright"><a href="?op=statistical&act=order_stats_download&start_date={$fstart_date}&end_date={$fend_date}">统计报表下载</a></div>
+            </div>
+		  <div class="conbox">
+   <div>
+  <p style="margin: 10px">
+    <strong>有效订单总金额</strong>:&nbsp;&nbsp;{$total_turnover}&nbsp;&nbsp;&nbsp;
+  </p>
+
+  
+    <ul class="listtab">
+				<li id='nav1'class="act" class="act"><a href="javascript:;" onclick="show_html(1,2);">{$lang.order_circs}</a></li>
+                <li id='nav2'><a href="javascript:;" onclick="show_html(2,2);">{$lang.pay_method}</a></li>
+	</ul>
+  <div class="conbox" style="display:block;" id="show_html1">
+  <table width="90%" cellspacing="0" cellpadding="3">
+      <tr>
+        <td align="center">
+        {if $is_multi eq '0'}
+        <OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"  codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" WIDTH="650" HEIGHT="400" id="OrderGeneral" ALIGN="middle">
+          <PARAM NAME="FlashVars" value="&dataXML={$order_general_xml}">
+          <PARAM NAME="movie" VALUE="templates/images/charts/pie3d.swf?chartWidth=650&chartHeight=400">
+          <PARAM NAME="quality" VALUE="high">
+          <PARAM NAME=bgcolor VALUE="#FFFFFF">
+          <param name="wmode" value="opaque" />
+          <EMBED src="templates/images/charts/pie3d.swf?chartWidth=650&chartHeight=400" FlashVars="&dataXML={$order_general_xml}" quality="high" bgcolor="#FFFFFF" WIDTH="650" HEIGHT="400" wmode="opaque" NAME="OrderGeneral" ALIGN="middle" TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/go/getflashplayer"></EMBED>
+          </OBJECT>
+        {else}
+        <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+              codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0"
+              width="565" height="420" id="FCColumn2" align="middle">
+              <PARAM NAME="FlashVars" value="&dataXML={$order_general_xml}">
+              <PARAM NAME=movie VALUE="templates/images/charts/MSColumn3D.swf?chartWidth=650&chartHeight=400">
+              <param NAME="quality" VALUE="high">
+              <param NAME="bgcolor" VALUE="#FFFFFF">
+              <param name="wmode" value="opaque" />
+              <embed src="templates/images/charts/MSColumn3D.swf?chartWidth=650&chartHeight=400" FlashVars="&dataXML={$order_general_xml}" quality="high" bgcolor="#FFFFFF"  width="650" height="400" name="FCColumn2" wmode="opaque" align="middle" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer">
+            </object>
+    {/if}
+        </td>
+      </tr>
+    </table>
+  </div>
+   <div class="conbox" style="display:none;" id="show_html2">
+ <table width="90%" cellspacing="0" cellpadding="3">
+      <tr>
+        <td align="center">
+        {if $is_multi eq '0'}
+          <OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"  codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" WIDTH="650" HEIGHT="400" id="PayMethod" ALIGN="middle">
+          <PARAM NAME="FlashVars" value="&dataXML={$pay_xml}">
+          <PARAM NAME="movie" VALUE="templates/images/charts/pie3d.swf?chartWidth=650&chartHeight=400">
+          <PARAM NAME="quality" VALUE="high">
+          <PARAM NAME="bgcolor" VALUE="#FFFFFF">
+          <param name="wmode" value="opaque" />
+          <EMBED src="templates/images/charts/pie3d.swf?chartWidth=650&chartHeight=400" FlashVars="&dataXML={$pay_xml}" quality="high" bgcolor="#FFFFFF" WIDTH="650" HEIGHT="400" NAME="PayMethod" wmode="opaque" ALIGN="middle" TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/go/getflashplayer"></EMBED>
+        </OBJECT>
+    {else}
+    <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0"
+              width="565" height="420" id="FCColumn2" align="middle">
+              <PARAM NAME="FlashVars" value="&dataXML={$pay_xml}">
+              <PARAM NAME=movie VALUE="templates/images/charts/MSColumn3D.swf?chartWidth=650&chartHeight=400">
+              <param NAME="quality" VALUE="high">
+              <param NAME="bgcolor" VALUE="#FFFFFF">
+              <param name="wmode" value="opaque" />
+              <embed src="templates/images/charts/MSColumn3D.swf?chartWidth=650&chartHeight=400" FlashVars="&dataXML={$pay_xml}" quality="high" bgcolor="#FFFFFF"  width="650" height="400" name="FCColumn2" wmode="opaque" align="middle" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer"></object>
+    {/if}
+        </td>
+      </tr>
+    </table>
+   	</div>  
+         
+ </div>
+</div>
+</div>           
+<!--{/if}-->
+</body>
+</html>

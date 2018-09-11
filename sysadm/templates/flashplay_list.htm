@@ -1,0 +1,59 @@
+{include file="pageheader.htm"}
+<div class="tab-div">
+  <!-- body -->
+  <div class="tab-body">
+  <div class="list-div list-div-ad" id="listDiv">
+  <table cellspacing='1' cellpadding='3' id='list-table' width="70%">
+    <tr>
+      <th width="400px">{$lang.schp_imgsrc}</th>
+    <th>{$lang.schp_imgurl}</th>
+      <th>{$lang.schp_imgdesc}</th>
+      <th>{$lang.schp_sort}</th>
+    <th width="70px">{$lang.handler}</th>
+    </tr>
+    {foreach from=$playerdb item=item key=key}
+    <tr>
+      <td align="center"><a href="{$item.src}" target="_blank"><img src="{$item.src}" width="300" height="60" /></a></td>
+    <td align="center"><a href="{$item.url}" target="_blank">{$item.url}</a></td>
+      <td align="center">{$item.text}</td>
+      <td align="center">{$item.sort}</td>
+    <td align="center">
+        <a href="flashplay.php?act=edit&id={$key}" title="{$lang.edit}"><img src="images/icon_edit.gif" width="16" height="16" border="0" /></a>
+        <a href="flashplay.php?act=del&id={$key}" onclick="return check_del();" title="{$lang.trash_img}"><img src="images/icon_drop.gif" width="16" height="16" border="0" /></a>
+      </td>
+    </tr>
+    {/foreach}
+  </table>
+  <table cellspacing="0">
+    <tr>
+      <td>
+        <input name="add" type="submit" id="btnSubmit" value="{$action_link_special.text}" onclick="location.href='{$action_link_special.href}';" class="button"/>
+      </td>
+    </tr>
+  </table>
+  </div>
+  </div>
+
+</div>
+<script language="JavaScript">
+<!--
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+function check_del()
+{
+  if (confirm('{$lang.trash_img_confirm}'))
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+//-->
+</script>
+
+{include file="pagefooter.htm"}

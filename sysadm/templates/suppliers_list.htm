@@ -1,0 +1,425 @@
+<!-- $Id: agency_list.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+
+
+
+{if $full_page}
+
+{include file="pageheader.htm"}
+
+{insert_scripts files="../js/utils.js,listtable.js,../js/region.js"}
+
+<div class="form-div">
+
+  <form action="javascript:search_supp()" name="searchForm">
+
+    <img src="images/icon_search.gif" width="26" height="22" border="0" alt="SEARCH" />
+
+    关键字： <input type="text" name="suppliers_name" id='suppliers_name' size="15" />
+
+   
+
+    审核状态：
+
+    <select name="is_check" id='is_check'>
+
+    <option value="">请选择</option>
+
+    <option value="0">未通过</option>
+
+    <option value="1">已审核</option>
+
+    <option value="2">审核中</option>
+
+    </select>
+
+    
+
+    <input type="submit" value="{$lang.button_search}" class="button" />
+
+    
+
+    <input type="button" value="导出"  onclick="export_supp();"class="button" />
+
+  </form>
+
+</div>
+
+
+
+
+
+<form method="post" action="" name="listForm" onsubmit="return confirm(batch_drop_confirm);">
+
+
+
+<div class="list-div" id="listDiv">
+
+
+
+{/if}
+
+  <table cellpadding="3" cellspacing="1">
+
+    <tr>
+
+      <th> <input onclick='listTable.selectAll(this, "checkboxes")' type="checkbox" />
+
+          <a href="javascript:listTable.sort('suppliers_id'); ">{$lang.record_id}</a>{$sort_suppliers_id} </th>
+
+      <th><a href="javascript:listTable.sort('suppliers_name'); ">{$lang.suppliers_name}</a>{$sort_suppliers_name}</th>
+
+
+
+     
+
+      <th>电话</th>
+
+      <th>注册日期</th>
+
+      <!-- 
+
+      <th>推荐显示</th>
+
+      <th>商城一楼</th>
+
+      <th>商城二楼</th> -->
+
+      <th>审核状态</th>
+
+      <!-- 
+
+      <th><a href="javascript:listTable.sort('comprehensive_score'); ">综合(分)</a>不超5分</th>
+
+      <th><a href="javascript:listTable.sort('description_score'); ">描述（分）</a></th>
+
+      <th><a href="javascript:listTable.sort('service_score'); ">服务（分）</a></th>
+
+      <th><a href="javascript:listTable.sort('delivery_score'); ">发货（分）</a></th>
+
+       -->
+
+      <th><a href="javascript:listTable.sort('sort_order'); ">排序</a></th>
+
+      <th>{$lang.handler}</th>
+
+    </tr>
+
+    {foreach from=$suppliers_list item=suppliers}
+
+    <tr>
+
+      <td align="center"><input type="checkbox" name="checkboxes[]" value="{$suppliers.suppliers_id}" />
+
+        {$suppliers.suppliers_id}</td>
+
+      <td align="center" class="first-cell">
+
+        <span onclick="javascript:listTable.edit(this, 'edit_suppliers_name', {$suppliers.suppliers_id})">{$suppliers.suppliers_name|escape:html}      </span></td>
+
+   
+
+      <td align="center" >{$suppliers.phone}</td>
+
+      <td align="center" >{if $suppliers.add_date}{$suppliers.add_date}{else}暂无{/if}</td>
+
+      <!-- 
+
+      <td align="center" ><img src="images/{if $suppliers.is_top}yes{else}no{/if}.gif" onclick="listTable.toggle(this, 'toggle_top', {$suppliers.suppliers_id})" /></td>
+
+      <td align="center" ><img src="images/{if $suppliers.is_oneshow}yes{else}no{/if}.gif" onclick="listTable.toggle(this, 'toggle_oneshow', {$suppliers.suppliers_id})" /></td>
+
+      <td align="center" ><img src="images/{if $suppliers.is_twoshow}yes{else}no{/if}.gif" onclick="listTable.toggle(this, 'toggle_twoshow', {$suppliers.suppliers_id})" /></td>
+
+     -->
+
+        
+
+      <td align="center">
+
+      {if $suppliers.is_check eq 1}已审核&nbsp;&nbsp;<a href="suppliers.php?act=check&id={$suppliers.suppliers_id}&is_check=1&page={$filter.page}">取消审核</a>{/if}
+
+      {if $suppliers.is_check eq 2}审核中&nbsp;&nbsp;<a href="suppliers.php?act=check&id={$suppliers.suppliers_id}&is_check=2&page={$filter.page}">立即审核</a>{/if}
+
+      {if $suppliers.is_check eq 0}未通过&nbsp;&nbsp;<a href="suppliers.php?act=check&id={$suppliers.suppliers_id}&is_check=-1&page={$filter.page}">继续审核</a>{/if}
+
+      </td>
+
+      <!-- 
+
+      <td align="center">&nbsp;<span onclick="javascript:listTable.edit(this, 'edit_comprehensive_score', {$suppliers.suppliers_id})">{$suppliers.comprehensive_score}&nbsp;&nbsp; </span></td>
+
+      <td align="center">&nbsp;<span onclick="javascript:listTable.edit(this, 'edit_description_score', {$suppliers.suppliers_id})">{$suppliers.description_score}&nbsp;&nbsp; </span></td>
+
+      <td align="center">&nbsp;<span onclick="javascript:listTable.edit(this, 'edit_service_score', {$suppliers.suppliers_id})">{$suppliers.service_score}&nbsp;&nbsp; </td>
+
+      <td align="center">&nbsp;<span onclick="javascript:listTable.edit(this, 'edit_delivery_score', {$suppliers.suppliers_id})">{$suppliers.delivery_score}&nbsp;&nbsp; </td>
+
+       -->
+
+      <td align="center">
+
+      <span onclick="javascript:listTable.edit(this, 'edit_suppliers_sort_order', {$suppliers.suppliers_id})">{$suppliers.sort_order}&nbsp;&nbsp; </span>
+
+      
+
+      
+
+      </td>
+
+      <td width="280" class="bnt_a">
+
+{if $suppliers.is_check eq 1}
+
+        <a href="suppliers_goods.php?act=list&suppliers_id={$suppliers.suppliers_id}" title="{$lang.edit}">商品</a>
+
+        <a href="suppliers.php?act=edit&id={$suppliers.suppliers_id}&page={$filter.page}" title="{$lang.edit}">详情</a>
+
+        <!-- 
+
+        <a href="suppliers.php?act=factoryauthorized&id={$suppliers.suppliers_id}&page={$filter.page}" title="授权">授权</a>
+
+        <a href="suppliers.php?act=trademark&id={$suppliers.suppliers_id}" title="商标">商标</a>
+
+         -->
+
+        <a href="javascript:void(0);" onclick="listTable.remove({$suppliers.suppliers_id}, '{$lang.drop_confirm}')" title="{$lang.remove}">{$lang.remove}</a> 
+
+        <a href="suppliers.php?act=suppliers_accounts&suppliers_id={$suppliers.suppliers_id}" title="{$lang.edit}">结算</a>
+
+        <a href="suppliers.php?act=ad&suppliers_id={$suppliers.suppliers_id}" title="查看">广告</a>
+
+{else}        
+
+        <a href="suppliers.php?act=edit&id={$suppliers.suppliers_id}&page={$filter.page}" title="{$lang.edit}">详情</a>
+
+{/if}
+
+             </td>
+
+
+
+    </tr>
+
+
+
+    {foreachelse}
+
+
+
+    <tr><td class="no-records" colspan="21">{$lang.no_records}</td></tr>
+
+
+
+    {/foreach}
+
+
+
+  </table>
+
+
+
+<table id="page-table" cellspacing="0">
+
+
+
+  <tr>
+
+
+
+    <td>
+
+
+
+      <input name="remove" type="submit" id="btnSubmit" value="{$lang.drop}" class="button" disabled="true" />
+
+
+
+      <input name="act" type="hidden" value="batch" />
+
+
+
+    </td>
+
+
+
+    <td align="right" nowrap="true">
+
+
+
+    {include file="page.htm"}
+
+
+
+    </td>
+
+
+
+  </tr>
+
+
+
+</table>
+
+
+
+
+
+
+
+{if $full_page}
+
+
+
+</div>
+
+
+
+</form>
+
+
+
+
+
+<script language="JavaScript">
+
+    function search_supp()
+
+    {
+
+        listTable.filter['suppliers_name'] = Utils.trim(document.forms['searchForm'].elements['suppliers_name'].value);
+
+	
+
+		//listTable.filter['recommend_type_name'] = Utils.trim(document.forms['searchForm'].elements['recommend_type_name'].value);
+
+		
+
+		
+
+		//listTable.filter['is_oneshow'] = Utils.trim(document.forms['searchForm'].elements['is_oneshow'].value);
+
+		//listTable.filter['is_twoshow'] = Utils.trim(document.forms['searchForm'].elements['is_twoshow'].value);
+
+		
+
+		//listTable.filter['site_id'] = Utils.trim(document.forms['searchForm'].elements['site_id'].value);
+
+		listTable.filter['is_check'] = Utils.trim(document.forms['searchForm'].elements['is_check'].value);
+
+	
+
+		//listTable.filter['rank_id'] = Utils.trim(document.forms['searchForm'].elements['rank_id'].value);
+
+        listTable.filter['page'] = 1;
+
+        
+
+        listTable.loadList();
+
+    }
+
+
+
+</script>
+
+
+
+<script type="text/javascript" language="javascript">
+
+
+
+region.isAdmin = true;
+
+
+
+  <!--
+
+
+
+  listTable.recordCount = {$record_count};
+
+  listTable.pageCount = {$page_count};
+
+
+
+
+
+  {foreach from=$filter item=item key=key}
+
+
+
+  listTable.filter.{$key} = '{$item}';
+
+
+
+  {/foreach}
+
+
+
+  {literal}
+
+
+
+  onload = function()
+
+
+
+  {
+
+
+
+      // 开始检查订单
+
+
+
+      startCheckOrder();
+
+
+
+  }
+
+
+
+  {/literal}
+
+  
+
+
+
+
+
+	//导出会员信息
+
+ function export_supp()
+
+ {
+
+	 var keywords = document.getElementById('suppliers_name').value || '';
+
+	 var is_check = document.getElementById('is_check').value || '';
+
+	 var site_id = '';//document.getElementById('site_id').value;
+
+	 var rank_id = '';//document.getElementById('rank_id').value;
+
+	 var recommend_type_name = '';//document.getElementById('recommend_type_name').value;
+
+	 location.href = 'suppliers.php?act=download&keywords='+keywords+'&is_check='+is_check+'&site_id='+site_id+'&rank_id='+rank_id+'&recommend_type_name='+recommend_type_name+'&code=1';
+
+ } 
+
+
+
+  //-->
+
+
+
+</script>
+
+
+
+{include file="pagefooter.htm"}
+
+
+
+{/if}

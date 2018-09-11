@@ -1,0 +1,19 @@
+@charset "utf-8";
+
+.breadcrumb {background:#DDEFE1;position:relative;}
+.breadcrumb ul{height:44px;overflow:hidden;}
+.breadcrumb li{float:left;width:400px;text-align:center;position:relative;z-index:2; font-family:"微软雅黑";font-size:16px;line-height:44px; color:#00923a;}
+.breadcrumb li em{position:absolute;right:-26px;top:-11px;width:0;height:0;line-height:0;border-width:33px 0 33px 28px;border-color:transparent  transparent transparent #fff;border-style:dashed dashed dashed solid;}
+.breadcrumb li i{position:absolute;right:-20px;top:0;width:0;height:0;line-height:0;border-width:22px 0 22px 22px;border-color:transparent  transparent transparent #DDEFE1;border-style:dashed dashed dashed solid;}
+.breadcrumb li.current{background:#00923a;z-index:1; color:#fff;}
+.breadcrumb li.current i{border-color:transparent transparent transparent #00923a;}
+
+.bod { padding:30px 50px 30px 300px; }
+.bod li { height:30px; line-height:30px; margin-top:25px; }
+.bod li label { width:130px; float:left; text-align:right; font-size:14px; }
+.bod li .inp { width:266px; height:28px; line-height:28px; border:#ddd 1px solid; }
+.bod li .select { width:88px; height:28px; line-height:28px; border:#ddd 1px solid; }
+.bod li .file { background:#e6e6e6; border-radius:12px; }
+.bod li span { padding-left:10px; color:#f30; }
+.bod li.agree a { color:#656565;  }
+.bod li .us_Submit_reg { width:268px; height:40px; line-height:40px; background: #ee760c; text-align:center; color:#fff; border:none; font-size:18px; cursor:pointer; }

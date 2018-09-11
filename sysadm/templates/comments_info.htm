@@ -1,0 +1,60 @@
+<!-- $Id: comment_info.htm 16854 2009-12-07 06:20:09Z sxc_shop $ -->
+
+{include file="pageheader.htm"}
+<!-- comment content list -->
+<div class="main-div">
+  <table width="100%">
+    <tr>
+      <td>
+      <a href="mailto:{$msg.email}"><b>{if $msg.user_name}{$msg.user_name}{else}{$lang.anonymous}{/if}</b></a>&nbsp;{$lang.from}
+      &nbsp;{$msg.add_time}&nbsp;{$lang.to}&nbsp;<b>{$id_value}</b>&nbsp;{$lang.send_comment}
+    </td>
+    </tr>
+    <tr>
+      <td><hr color="#dadada" size="1"></td>
+    </tr>
+    <tr>
+      <td>
+        <div style="overflow:hidden; word-break:break-all;">{$msg.content}</div>
+        <div align="right"><b>{$lang.comment_rank}:</b> {$msg.comment_rank}&nbsp;&nbsp;<b>{$lang.ip_address}</b>: {$msg.ip_address}</div>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        {if $msg.status eq "0"}
+        <input type="button" onclick="location.href='comment_manage.php?act=check&check=allow&id={$msg.comment_id}'" value="{$lang.allow}" class="button" />
+        {else}
+        <input type="button" onclick="location.href='comment_manage.php?act=check&check=forbid&id={$msg.comment_id}'" value="{$lang.forbid}" class="button" />
+        {/if}
+    </td>
+    </tr>
+  </table>
+</div>
+
+
+
+
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="JavaScript">
+<!--
+document.forms['theForm'].elements['content'].focus();
+
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+    validator = new Validator("theForm");
+    validator.required("content",  no_content);
+    return validator.passed();
+}
+
+onload = function() {
+    // 开始检查订单
+    startCheckOrder();
+}
+//-->
+</script>
+{/literal}
+{include file="pagefooter.htm"}

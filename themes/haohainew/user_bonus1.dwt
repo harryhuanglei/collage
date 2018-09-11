@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,user.js'}
+</head>
+<body>
+<div class="container">
+    <!-- {if $action eq 'bonus'} 用户的优惠劵列表 start--> 
+    <script type="text/javascript">
+        {foreach from=$lang.profile_js item=item key=key}
+          var {$key} = "{$item}";
+        {/foreach}
+      </script>
+    <div class="nav_fixed">
+        <a href="user.php?act=bonus"{if $status eq '' } class="cur"{/if}><span>全部</span></a>
+        <a href="user.php?act=bonus&status=not_start"{if $status eq 'not_start' } class="cur"{/if}><span>未激活</span></a>
+        <a href="user.php?act=bonus&status=overdue"{if $status eq 'overdue' } class="cur"{/if}><span>已过期</span></a>
+    </div>
+    <div class="wrapper_coupons" > 
+        <!-- {if $bonus.using} -->
+        
+        <div class="curr_used_coupons" style="display:block;">
+            <div class="can_use"><div class="line"></div><p>使用中</p></div>
+            <!--{foreach from=$bonus.using item=item}-->
+            
+            <div class="coup_one">
+                <div class="half_width"> <img src="images/yellow_bd15f0c.png" class="coup_img">
+                    <div>
+                        <p class="pin martop"></p>
+                    </div>
+                    <div> <b class="pin1">{$item.suppliers_name}</b> <span class="unbind"><a href="user.php?act=cancel_order&order_id={$item.order_id}" onclick="if(confirm('确定要取消吗？') ) return true;else return false;">取消订单</a></span></div>
+                    <div class="coup_text_left left_next">
+                        {if $item.free_all eq 1}
+                        <p>免单券</p>
+                         {$item.goods_name|truncate:15}
+                        {else}
+                        <p>{$item.type_money}元</p>
+                        {/if}
+                        <div class="text_copus_desc">订单满{$item.min_goods_amount}元可用<br/>{$bonus_ad}</div>
+                    </div>
+                    <div class="coup_time_right"> <b>有效期</b> <br>
+                        <div class="text_copus_time"> {$item.use_startdate} ~ <br>
+                            {$item.use_enddate}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- {/foreach} --> 
+            
+        </div>
+        
+        <!-- {/if} --> 
+        
+        <!-- {if $bonus.ok} -->
+        
+        <div class="curr_used_coupons" style="display:block;">
+            <div class="can_use"><div class="line"></div><p>当前可用</p></div>
+
+            <!--{foreach from=$bonus.ok item=item}-->
+            {if $item.free_all eq 1}<a href="goods.php?id={$item.goods_id}&bonus_free_all=1">{/if}
+            <div class="coup_one">
+                <div> <img src="images/yellow_bd15f0c.png" class="coup_img">
+                    <div> <b class="pin"></b> </div>
+                    <div> <b class="pin1">{$item.suppliers_name}</b> </div>
+                    <div class="coup_text_left ">
+                        {if $item.free_all eq 1}
+                        <p>免单券</p>
+                        {$item.goods_name|truncate:15}
+                        {else}
+                        <p>{$item.type_money}元</p>
+                        {/if}
+                        <div class="text_copus_desc">订单满{$item.min_goods_amount}元可用<br/>{$bonus_ad}</div>
+                    </div>
+                    <div class="coup_time_right add_right"> <b>有效期</b> <br>
+                        <div class="text_copus_time"> {$item.use_startdate} ~ <br>
+                            {$item.use_enddate}</div>
+                    </div>
+                </div>
+            </div>
+            {if $item.free_all eq 1}</a>{/if}
+            <!-- {/foreach} --> 
+            
+        </div>
+        
+        <!-- {/if} -->
+        
+        <div> 
+            
+            <!-- {if $bonus.used} --> 
+            
+            <div class="can_use"><div class="line"></div><p>已使用</p></div>
+            
+            <!--{foreach from=$bonus.used item=item}-->
+            
+            <div class="coup_one">
+                <div> <img src="images/gray_010a283.png" class="coup_img"> <img src="images/used_b0be89f.png" class="seal">
+                    <div> <b class="pin"></b> </div>
+                    <div> <b class="pin1">{$item.suppliers_name}</b> </div>
+                    <div class="coup_text_left">
+                        {if $item.free_all eq 1}
+                        <p class="used">免单券</p>
+                         {$item.goods_name|truncate:15}
+                        {else}
+                        <p class="used">{$item.type_money}元</p>
+                        {/if}
+                        <div class="text_copus_desc">订单满{$item.min_goods_amount}元可用<br/>{$bonus_ad}</div>
+                    </div>
+                    <div class="coup_time_right"> <b class="userd">使用时间</b> <br>
+                        <div class="text_copus_time">{$item.used_date}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- {/foreach} --> 
+            
+            <!-- {/if} --> 
+            
+            <!-- {if $bonus.not_start} --> 
+
+            <div class="can_use"><div class="line"></div><p>未激活</p></div>
+            
+            <!--{foreach from=$bonus.not_start item=item}-->
+            
+            <div class="coup_one">
+                <div> <img src="images/gray_010a283.png" class="coup_img"> <img src="images/frozen_b2e18e4.png" class="seal">
+                    <div> <b class="pin"></b> </div>
+                    <div> <b class="pin1">{$item.suppliers_name}</b> </div>
+                    <div class="coup_text_left">
+                        <p class="used">{$item.type_money}元</p>
+                        <div class="text_copus_desc">{$bonus_ad}</div>
+                    </div>
+                    <div class="coup_time_right" ms-class="add_right:status==0"> <b class="userd">有效期</b> <br>
+                        <div class="text_copus_time">{$item.use_startdate} ~ <br>
+                            {$item.use_enddate}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- {/foreach} --> 
+            
+            <!-- {/if} --> 
+            
+            <!-- {if $bonus.overdue} --> 
+            
+            <div class="can_use"><div class="line"></div><p>已过期</p></div>
+            
+            <!--{foreach from=$bonus.overdue item=item}-->
+            
+            <div class="coup_one">
+                <div> <img src="images/gray_010a283.png" class="coup_img"> <img src="images/expired_9a12150.png" class="seal">
+                    <div> <b class="pin"></b> </div>
+                    <div> <b class="pin1">{$item.suppliers_name}</b> </div>
+                    <div class="coup_text_left">
+                        <p class="used">{$item.type_money}元</p>
+                        <div class="text_copus_desc">订单满{$item.min_goods_amount}元可用<br/>{$bonus_ad}</div>
+                    </div>
+                    <div class="coup_time_right" ms-class="add_right:status==0"> <b class="userd">有效期</b> <br>
+                        <div class="text_copus_time">{$item.use_startdate} ~ <br>
+                            {$item.use_enddate}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- {/foreach} --> 
+            
+            <!-- {/if} -->
+            
+            <div class="addBouns">
+                <form name="addBouns" action="user.php" method="post" onSubmit="return addBonus()">
+                    <input name="bonus_sn" type="text" size="30" class="inp" placeholder="{$lang.bonus_number}" />
+                    <input type="hidden" name="act" value="act_add_bonus" class="inp" />
+                    <input type="submit" class="bnt" style="border:none;" value="绑定优惠券" />
+                </form>
+            </div>
+        </div>
+        <div ms-if="!all_coupons.length">
+            <div ms-if="net_err" class="center  margintop"> </div>
+            <div ms-if="no_coupons" class="center margintop" ms-html="no_coupons_text"> </div>
+        </div>
+    </div>
+    
+    <!-- {/if} --> 
+</div>
+<div class="blank"></div>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+</html>
+

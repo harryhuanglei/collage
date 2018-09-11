@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>商家管理平台</title>
+<link href="templates/css/layout.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+        <div class="maincon" style="width:100%">
+			<div class="contitlelist" style="background-color:#cccccc;color:black;">
+            	<span>提货详情</span>
+            </div>
+		  <div class="conbox" >         
+<table width="100%" cellpadding="3" cellspacing="1">
+  <tr>
+    <th colspan="4">订单信息</th>
+  </tr>
+  <tr>
+    <td><div align="right"><strong>{$lang.delivery_sn_number}</strong></div></td>
+    <td>{$delivery_order.delivery_sn}</td>
+    <td><div align="right"><strong>{$lang.label_shipping_time}</strong></div></td>
+    <td>{$delivery_order.formated_update_time}</td>
+  </tr>
+  <tr>
+    <td width="16%" height="25"><div align="right"><strong>{$lang.label_order_sn}</strong></div></td>
+   <td width="34%" height="25">{$delivery_order.order_sn}{if $delivery_order.extension_code eq "group_buy"}<a href="group_buy.php?act=edit&id={$delivery_order.extension_id}">{$lang.group_buy}</a>{elseif $delivery_order.extension_code eq "exchange_goods"}<a href="exchange_goods.php?act=edit&id={$delivery_order.extension_id}">{$lang.exchange_goods}</a>{/if}
+    <td width="16%" height="25"><div align="right"><strong>{$lang.label_order_time}</strong></div></td>
+    <td height="25">{$delivery_order.formated_add_time}</td>
+  </tr>
+  <tr>
+    <td height="25"><div align="right"><strong>{$lang.label_user_name}</strong></div></td>
+    <td height="25">{$delivery_order.user_name|default:$lang.anonymous}</td>
+
+    <td height="25"><div align="right"><strong>提货人：</strong></div></td>
+    <td height="25">__________________&nbsp;&nbsp;&nbsp;&nbsp;<strong>提货日期：</strong>____年____月____日
+    </td>
+  </tr>
+  </table><br />
+  <hr style="border-style:dashed;"/><br />
+  <table width="100%" cellpadding="3" cellspacing="1">
+  <tr>
+    <th height="25" colspan="4">{$lang.consignee_info}</th>
+    </tr>
+  <tr>
+    <td height="25" width="16%"><div align="right"><strong>{$lang.label_consignee}</strong></div></td>
+    <td height="25" width="34%">{$delivery_order.consignee|escape}</td>
+    <td height="25" width="16%"><div align="right"><strong>{$lang.label_email}</strong></div></td>
+    <td height="25">{$delivery_order.email}</td>
+  </tr>
+  <tr>
+    <td height="25"><div align="right"><strong>{$lang.label_address}</strong></div></td>
+    <td height="25">[{$delivery_order.region}] {$delivery_order.address|escape}</td>
+    <td height="25"><div align="right"><strong>{$lang.label_zipcode}</strong></div></td>
+    <td height="25">{$delivery_order.zipcode|escape}</td>
+  </tr>
+  <tr>
+    <td height="25"><div align="right"><strong>{$lang.label_tel}</strong></div></td>
+    <td height="25">{$delivery_order.tel}</td>
+    <td height="25"><div align="right"><strong>{$lang.label_mobile}</strong></div></td>
+    <td height="25">{$delivery_order.mobile|escape}</td>
+  </tr>
+</table>
+<br />
+  <hr style="border-style:dashed;"/><br />
+<table width="100%" cellpadding="3"  cellspacing="1">
+  <tr>
+    <th colspan="4">商家信息</th>
+  </tr>
+  <tr>
+    <td><div align="right"><strong>商家名称：</strong></div></td>
+    <td>{$suppliers_info.suppliers_name}</td>
+    <td><div align="right"><strong>商家地址：</strong></div></td>
+    <td>[{$suppliers_info.region}]{$suppliers_info.address}</td>
+  </tr>
+  <tr>
+    <td width="16%" height="25"><div align="right"><strong>联系方式：</strong></div></td>
+   <td width="34%" height="25">{$suppliers_info.phone}</td>
+    <td width="16%" height="25"><div align="right"><strong></strong></div></td>
+    <td height="25"></td>
+  </tr>
+  </table>
+  <br />
+  <hr style="border-style:dashed;"/><br />
+ <table width="100%" cellpadding="3" cellspacing="1" >
+  <tr>
+    <th colspan="7" scope="col">{$lang.goods_info}</th>
+    </tr>
+  <tr>
+    <td align="center"><strong>{$lang.goods_name_brand}</strong></td>
+    <td align="center" ><strong>{$lang.goods_sn}</strong></td>
+    <td align="center" ><strong>{$lang.product_sn}</strong></td>
+    <td align="center" ><strong>{$lang.goods_attr}</strong></td>
+    <td align="center" ><strong>{$lang.label_send_number}</strong></td>
+    <td align="center" ><strong>单价</strong></td>
+    <td align="center" ><strong>小计</strong></td>
+    
+  </tr>
+  {foreach from=$goods_list item=goods}
+  <tr>
+    <td align="center">
+   {$goods.goods_name} {if $goods.brand_name}[ {$goods.brand_name} ]{/if}
+    </td>
+    <td align="center">{$goods.goods_sn}</td>
+    <td align="center">{$goods.product_sn}</td>
+    <td align="center">{$goods.goods_attr|nl2br}</td>
+    <td align="center">{$goods.send_number}</td>
+    <td align="center">{$goods.goods_price}</td>
+    <td align="right">{$goods.goods_amount}</td>
+  </tr>
+  {/foreach}
+  <tr>
+	<td colspan="5"> </td>
+<td align="right" colspan="2">商品总金额：{$total_goods_amount}</td>
+</tr>
+</table>
+<!-- 
+<table width="100%" border="0">
+<tbody>
+<tr align="right">
+<td> = 订单总金额：￥10.00 </td>
+</tr>
+<tr align="right">
+<td> = 应付款金额：￥10.00 </td>
+</tr>
+</tbody>
+</table> -->
+            </div>
+       </div>
+
+   </body>
+</html>

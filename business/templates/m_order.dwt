@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>商家管理平台</title>
+<link href="templates/css/mobile.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="templates/js/jquery.min.js"></script>
+</head>
+<body>
+<!--{if $action eq 'goods_order' or $action eq 'goods_order2'}-->
+<div class="container">
+    <div class="order_search">
+        <form id="" name="form_order" method="get" action="index.php">
+            <div><input type="text" value="{$filter.order_sn}" placeholder='订单号' class="input" name="order_sn"></div>
+            <input name="act" type="hidden" value="{$action}" />
+            <input type="submit" class="btn" name="" value="搜索">
+            <input name="op" type="hidden" value="order" />
+        </form>
+    </div>
+    <div class="order_list">
+        <ul>
+            {foreach from=$order_list item=order_list name=order_list}
+            <li>
+                <a href="?op=order&act=order_info&order_id={$order_list.order_id}">
+                    <p><i>{$smarty.foreach.order_list.iteration}</i>订单号：{$order_list.order_sn}{if $order_list.extension_code eq 'team_goods'}<font>团</font>{/if}{if $order_list.team_first eq 1}<font>团长</font>{/if}<span>{$order_list.shipping_name}</span></p>
+                    <p>收货人：{$order_list.consignee}  电话：{if $order_list.point_id eq 0}{if $order_list.mobile}{$order_list.mobile}{else}{$order_list.tel}{/if}{/if}<span>金额：{$order_list.total_fee}</span></p>
+                </a>
+            </li>
+            {/foreach}
+        </ul>
+    </div>
+    <!-- #BeginLibraryItem "/library/m_pages.lbi" --><!-- #EndLibraryItem -->
+</div>
+<!--{/if}--> 
+
+<!--{if $action eq 'order_info'}-->
+<div class="container">
+    <div class="order_info">
+        <form action="?op=order&act=operate" method="post" name="theForm">
+        <h2><a href="javascript:history.back();"><i> < </i></a>订单：{$order.order_sn}</h2>
+        <div class="infobox">
+            <h3>{$lang.base_info}</h3>
+            <p>{$lang.label_order_sn}{$order.order_sn}</p>
+            <p>{$lang.label_order_status}{$order.status}</p>
+            <p>{$lang.label_user_name}{$order.user_name|default:$lang.anonymous}</p>
+            <p>{$lang.label_order_time}{$order.formated_add_time}</p>
+            <p>{$lang.label_shipping}{if $exist_real_goods}{if $order.shipping_id > 0}{$order.shipping_name}{else}{/if} {if $order.insure_fee > 0}（{$lang.label_insure_fee}{$order.formated_insure_fee}）{/if}{/if}</p>
+            <p>{$lang.label_shipping_time}{$order.shipping_time}</p>
+            <p>{$lang.label_payment}{if $order.pay_id > 0}{$order.pay_name}{else}{$lang.require_field}{/if}</p>
+            <p>{$lang.label_pay_time}{$order.pay_time}</p>
+            {if $order.team_first eq 1}
+            <p>团长优惠：{if $order.discount_type eq 1 }团长免单{elseif $order.discount_type eq 2}团长优惠【{$order.discount_amount}】{else}无优惠{/if}</p>
+            {/if}
+        </div>
+        <div class="infobox">
+            <h3>{$lang.consignee_info}</h3>
+            {if $order.point_id}
+            <p>自提地址：{$point_info.region} {$point_info.address} {$point_info.shop_name}{$point_info.tel}   {$order.best_time}</p>
+            <p>验证电话：{$order.checked_mobile}</p>
+            {if $order.shipping_status eq 2}
+            <p>自提状态：已提货    操作人：{$order.op}，id：{$order.op_uid}</p>
+            {/if}
+            {else}
+            
+            <p>{$lang.label_consignee}{$order.consignee|escape}</p>
+            <p>公司类别：{if $order.address_type eq 1}家庭{else}公司{/if}</p>
+            <p>{$lang.label_address}{$order.address|escape}</p>
+            <p>{$lang.label_mobile}{$order.mobile|escape}</p>
+            {/if}
+            <p>{$lang.label_postscript}{$order.postscript}</p>
+        </div>
+        <div class="infobox">
+            <h3>{$lang.goods_info}</h3>
+            <p>{$lang.goods_name}<span>{$lang.goods_number}/价格</span></p>
+            {foreach from=$goods_list item=goods}
+            <p>{$goods.goods_name}<span>X{$goods.goods_number} {$goods.formated_subtotal}</span></p>
+            {/foreach}
+            {if $order.total_weight}
+            <p class="ter">{$lang.label_total_weight}{$order.total_weight}</p>
+            {/if}
+            <p class="ter">{$lang.label_total}{$order.formated_goods_amount}</p>
+        </div>
+        <div class="infobox">
+            <h3>{$lang.fee_info}</h3>
+            <p class="ter">{$lang.label_goods_amount}{$order.formated_goods_amount}</p>
+            <p class="ter">+ {$lang.label_shipping_fee}{$order.formated_shipping_fee}</p>
+            <p class="ter">= {$lang.label_order_amount}{$order.formated_total_fee}</p>
+            <p class="ter">- {$lang.label_money_paid}{$order.formated_money_paid}</p>
+            <p class="ter">- {$lang.label_surplus}{$order.formated_surplus}</p>
+            <p class="ter">- {$lang.label_bonus}{$order.formated_bonus}</p>
+            <p class="ter">= {if $order.order_amount >= 0}{$lang.label_money_dues}{$order.formated_order_amount}{else}{$lang.label_money_refund}{$order.formated_money_refund}{/if}</p>
+        </div>
+        </form>
+    </div>
+	{if $order.shipping_code neq cac}
+    <div class="fahuo">
+        <div class="txt">快递单号</div>
+        <div class="inp">
+            <input type="text" name="invoice_no" />
+        </div>
+        <input type="submit" value="发货" class="sub" />
+    </div>
+	{/if}
+</div>
+<!--{/if}-->
+<div class="footer">
+    <ul>
+        <li><a href="?op=main&act=default">首页</a></li>
+        <li><a href="?composite_status=101&act=goods_order&op=order"{if $action eq goods_order } class="cur"{/if}>待发货订单</a></li>
+        <li><a href="?composite_status=101&act=goods_order2&op=order"{if $action eq goods_order2 } class="cur"{/if}>待核销订单</a></li>
+    </ul>
+</div>
+<input type="hidden" value="{$order.order_id}" id="oid"/>
+<script>
+$(function(){
+    $('.sub').click(function(){
+        var no = $('input[name=invoice_no]').val()
+        var oid = $('#oid').val();
+        $.ajax({
+            url:'index.php?op=order&act=to_shippingtest',
+            type:'post',
+            data:{order_id:oid,invoice_no:no},
+            dataType:'json',
+            success:function(data){
+                if(data.status==1){
+                    alert('发货成功');
+                    window.location.href="?composite_status=101&act=goods_order&op=order";
+                }else{
+                    alert('发货失败');
+                }
+            }
+        })
+     })
+})
+</script>
+</body>
+</html>

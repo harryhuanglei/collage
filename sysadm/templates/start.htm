@@ -1,0 +1,262 @@
+<div class="start-left">
+  <div class="content-left">
+    <!-- $Id: start.htm 17216 2014-05-12 06:03:12Z pangbin $ -->
+    <link href="styles/main.css" rel="stylesheet" type="text/css" />
+    <h1>
+      {if $action_link}
+      <span class="action-span"><a href="{$action_link.href}">{$action_link.text}</a></span>
+      {/if}
+      {if $action_link2}
+      <span class="action-span"><a href="{$action_link2.href}">{$action_link2.text}</a>&nbsp;&nbsp;</span>
+      {/if}
+      {if $action_link3}
+      <span class="action-span"><a href="{$action_link3.href}">{$action_link3.text}</a>&nbsp;&nbsp;</span>
+      {/if}
+      <span class="action-span1"><a href="index.php?act=main">{$shop_name}管理后台</a> </span><span id="search_id" class="action-span1">{if $ur_here} - {$ur_here} {/if}</span>
+      <div style="clear:both"></div>
+    </h1>
+    <!-- start personal message -->
+    {if $admin_msg}
+    <div class="list-div" style="border: 1px solid #CC0000">
+      <table cellspacing='1' cellpadding='3'>
+        <tr>
+          <th>{$lang.pm_title}</th>
+          <th>{$lang.pm_username}</th>
+          <th>{$lang.pm_time}</th>
+        </tr>
+        {foreach from=$admin_msg item=msg}
+          <tr align="center">
+            <td align="left"><a href="message.php?act=view&id={$msg.message_id}">{$msg.title|truncate:60:"..."}</a></td>
+            <td>{$msg.user_name}</td>
+            <td>{$msg.send_date}</td>
+          </tr>
+        {/foreach}
+      </table>
+      </div>
+    <br />
+    {/if}
+    <!-- end personal message -->
+
+    <div class="tab-div">
+      <!-- tab bar -->
+      <div id="tabbody-div">
+        <ul id="con_one_1">
+           <!-- <li><a href="order.php?act=refund_list">退换货申请<br/><strong>{$refund_goods}</strong></a></li>-->
+			<!--li><a href="order.php?act=list&composite_status={$status.await_ship}">{$lang.await_ship}<br/><strong>{$order.await_ship}</strong></a></li>
+            <li><a href="order.php?act=list&composite_status={$status.unconfirmed}">{$lang.unconfirmed}<br/><strong>{$order.unconfirmed}</strong></a></li>
+            <li><a href="order.php?act=list&composite_status={$status.await_pay}">{$lang.await_pay}<br/><strong>{$order.await_pay}</strong></a></li>
+            <li><a href="order.php?act=list&composite_status={$status.finished}">{$lang.finished}<br/><strong>{$order.finished}</strong></a></li-->
+          <li>{$lang.goods_count}<br/><strong>{$goods.total}</strong></li>
+          <li><a href="goods.php?act=list&stock_warning=1">{$lang.warn_goods}<br/><strong>{$goods.warn}</strong></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!--整体营销概况 star-->
+    <div class="content-left">
+      <!-- $Id: start.htm 17216 2014-05-12 06:03:12Z pangbin $ -->
+      <h1>
+        <span class="action-span1"><a href="index.php?act=main">整体营销概况</a><span style="color:red;">&nbsp;&nbsp;总成交额是指交易完成的订单金额统计</span> </span>
+        <div style="clear:both"></div>
+      </h1>
+      <!-- start personal message -->
+      {if $admin_msg}
+      <div class="list-div" style="border: 1px solid #CC0000">
+        <table cellspacing='1' cellpadding='3'>
+          <tr>
+            <th>{$lang.pm_title}</th>
+            <th>{$lang.pm_username}</th>
+            <th>{$lang.pm_time}</th>
+          </tr>
+          {foreach from=$admin_msg item=msg}
+            <tr align="center">
+              <td align="left"><a href="message.php?act=view&id={$msg.message_id}">{$msg.title|truncate:60:"..."}</a></td>
+              <td>{$msg.user_name}</td>
+              <td>{$msg.send_date}</td>
+            </tr>
+          {/foreach}
+        </table>
+        </div>
+      <br />
+      {/if}
+      <!-- end personal message -->
+
+      <div class="tab-div">
+        <div id="tabbody-div">
+          <ul>
+              <li class="order-li"><a href="users.php?act=list">会员总数<br/><strong>{$table.all.user_nums}</strong></a></li>
+              <li class="order-li"><a href="order.php?act=team_list&team_status=2">共成团<br/><strong>{$table.all.group_success_nums}</strong></a></li>
+              <li class="order-li"><a href="order.php?act=team_list&team_status=3">拼团失败<br/><strong>{$table.all.group_failed_nums}</strong></a></li>
+              <li class="order-li"><a href="order.php?act=list">总成交额<br/><strong>{$table.all.amount|default:0.00}</strong></a></li>
+          </ul>
+        </div>
+      </div>
+      <!--发货订单统计信息start-->
+      <h1>
+        <span class="action-span1"><a href="index.php?act=main">发货订单概况</a></span>
+        <div style="clear:both"></div>
+      </h1>
+      <div class="tab-div">
+        <div id="tabbody-div">
+          <ul>
+              <li class="order-li"><a href="order.php?act=list&composite_status=0">待确认<br/><strong>{$table.yesterday.unConfirmed}</strong></a></li>
+              <li class="order-li"><a href="order.php?act=list&composite_status=101">待发货<br/><strong>{$table.yesterday.awaitShip}</strong></a></li>
+              <li class="order-li"><a href="order.php?act=list&composite_status=102">已完成<br/><strong>{$table.yesterday.paidOrderNum}</strong></a></li>
+              <li class="order-li"><a href="order.php?act=list&composite_status=3">已退款<br/><strong>{$table.yesterday.orderRefund}</strong></a></li>
+          </ul>
+        </div>
+      </div>
+      <!--发货订单统计信息end-->
+      <!--自提订单统计信息start-->
+      <h1>
+        <span class="action-span1"><a href="index.php?act=main">自提订单概况</a></span>
+        <div style="clear:both"></div>
+      </h1>
+      <div class="tab-div">
+        <div id="tabbody-div">
+          <ul>
+              <li class="order-li"><a href="order.php?act=point_order_list&composite_status=0">待确认<br/><strong>{$table.yesterday.unConfirmedPoint}</strong></a></li>
+              <li class="order-li"><a href="order.php?act=point_order_list&composite_status=101">待核销<br/><strong>{$table.yesterday.awaitShipPoint}</strong></a></li>
+              <li class="order-li"><a href="order.php?act=point_order_list&composite_status=102">已核销<br/><strong>{$table.yesterday.paidOrderNumPoint}</strong></a></li>
+              <li class="order-li"><a href="order.php?act=point_order_list&composite_status=3">已退款<br/><strong>{$table.yesterday.orderRefundPoint}</strong></a></li>
+          </ul>
+        </div>
+      </div>
+      <!--自提订单统计信息end-->
+      <h1>
+        <span class="action-span1"><a href="index.php?act=main">昨日营销概况</a><span style="color:red;">&nbsp;&nbsp;总成交额是指交易完成的订单金额统计</span> </span>
+        <div style="clear:both"></div>
+      </h1>
+      <div class="tab-div">
+        <div id="tabbody-div">
+          <ul>
+              <li class="order-li"><a href="users.php?act=list">会员总数<br/><strong>{$table.yesterday.user_nums}</strong></a></li>
+              <li class="order-li"><a href="order.php?act=team_list&team_status=2">共成团<br/><strong>{$table.yesterday.group_success_nums}</strong></a></li>
+              <li class="order-li"><a href="order.php?act=team_list&team_status=3">拼团失败<br/><strong>{$table.yesterday.group_failed_nums}</strong></a></li>
+              <li class="order-li"><a href="order.php?act=list">总成交额<br/><strong>{$table.yesterday.amount|default:0.00}</strong></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+      <h1>
+        <span class="action-span1"><a href="index.php?act=main">分销概况</a>  </span>
+        <div style="clear:both"></div>
+      </h1>
+      <div class="tab-div">
+        <div id="tabbody-div">
+          <ul>
+            <li class="order-li"><a href="distribution.php?act=list">总金额<br/><strong>{$table.fenxiao.all_money|default:0.00}</strong></a></li>
+            <li class="order-li"><a href="distribution.php?act=list&dstatus=1">有效金额<br/><strong>{$table.fenxiao.all_allow|default:0.00}</strong></a></li>
+            <li class="order-li"><a href="distribution.php?act=list">当月总金额<br/><strong>{$table.fenxiao.mon_money|default:0.00}</strong></a></li>
+            <li class="order-li"><a href="distribution.php?act=list&dstatus=1">当月有效金额<br/><strong>{$table.fenxiao.mon_allow|default:0.00}</strong></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>    
+    <!--整体营销概况 end-->
+  </div>
+</div>
+
+<!--content-right star-->
+<!--div class="content-right">
+  <!--热销商品排行榜 star-->
+  <!--div class="hot-goods public-start" style="width: 68%;">
+    <h1>热销商品排行榜<a href="goods.php?act=list">查看全部 > </a></h1>
+    <div class="paihang" style="height: auto;">
+      <ul class="paihang-ul">
+        <li class="paihang-num">排行</li>
+        <li class="paihang-name">商品名</li>
+        <li class="paihang-xiaoliang">销量</li>
+        <li class="paihang-price">商品id</li>
+      </ul>
+      {foreach from=$table.goods_list item=item name=foo}
+      <ul class="paihang-ul">
+        <li class="paihang-num">{$smarty.foreach.foo.iteration}</li>
+        <li class="paihang-name">{$item.goods_name}</li>
+        <li class="paihang-xiaoliang">{$item.send_nummber}</li>
+        <li class="paihang-price">{$item.goods_id}</li>
+      </ul>
+      {/foreach}
+    </div>
+  </div>
+  <!--热销商品排行榜 end-->
+  
+  <!--会员消费排行榜 star-->
+<!--   <div class="vip-price public-start">
+    <h1>会员消费排行榜<a href="users.php?act=list">查看全部 > </a></h1>
+    <div class="paihang">
+      <ul class="paihang-ul">
+        <li class="paihang-num">排行</li>
+        <li class="paihang-name">会员名</li>
+        <li class="paihang-xiaoliang">订单数</li>
+        <li class="paihang-price">消费金额</li>
+      </ul>
+      {foreach from=$table.user_list item=item name=foo}
+      <ul class="paihang-ul">
+        <li class="paihang-num">{$smarty.foreach.foo.iteration}</li>
+        <li class="paihang-name">{$item.uname|default:no name}</li>
+        <li class="paihang-xiaoliang">{$item.nums}</li>
+        <li class="paihang-price">{$item.amount|default:0.00}</li>
+      </ul>
+      {/foreach}
+    </div>
+  </div> -->
+  <!--会员消费排行榜 end-->
+</div>
+<!--content-right end-->
+
+
+<!--月营销概况曲线图 star-->
+<!--div class="json-table">
+  <!-- $Id: start.htm 17216 2014-05-12 06:03:12Z pangbin $ -->
+  <!--h1>
+    <span class="action-span1"><a href="index.php?act=main">月营销概况曲线图</a> </span>
+    <div style="clear:both"></div>
+  </h1>
+  <div id="jsonTable"></div>
+</div>
+<!--月营销概况曲线图 end-->
+
+
+{insert_scripts files="jquery.js"}
+{insert_scripts files="tabs.js"}
+{insert_scripts files="highcharts.js"}
+{insert_scripts files="json_table.js"}
+<script>
+    var yaxis = [{$table.yaxis}];
+</script>
+
+
+<script type="Text/Javascript" language="JavaScript">
+    var series =  [] ;
+    var data1 = [];
+    var data2 = [];
+    {foreach from=$table.full_mon_stats key=key item=item}
+
+    data1.push({$item.team_success});
+    data2.push({$item.team_failed});
+    {/foreach}
+
+    series = [
+      {
+        'name': '拼团成功',
+        'data': data1
+      },
+      {
+        'name': '拼团失败',
+        'data':data2
+      }
+    ] ;
+
+
+
+    onload = function()
+    {
+
+      //jsonTable
+        jsonTable();
+    }
+
+</script>
+
+{include file="pagefooter.htm"}

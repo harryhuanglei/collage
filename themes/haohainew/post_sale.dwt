@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$shop_name}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/haohaios.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{* 包含脚本文件 *}
+{insert_scripts files='jquery.js,haohaios.js,user.js'}
+</head>
+<body class="bodycolor">
+    <div>
+        <div class = "post_sale_title">
+            我要售后
+        </div>
+        <div class = "post_sale_desc">
+            非常抱歉给您造成不便，您可以在"拼好货商城"微信公众号内回复您的问题，客服童鞋会尽快解决您的问题的哦~
+        </div>
+        <div class = "post_sale_desc red_color">
+            <p class = "error_coup">如何联系我们？</p>
+            <div>
+                <div class = "post_sale_first">
+                    <p class = "describe">进入"拼好货商城"微信公众号</p>
+                    <p class = "describe">点击左下方图标</p>
+                </div>
+                <img style = "margin-top: 5px" src="themes/haohaios/images/post_sale_1_abaa493.jpg">
+            </div>
+            <div style = "width:100%; height: 10px;"></div>
+            <div class = "post_sale_second">
+                <p class = "describe">在对话框内输入您的问题</p>
+                <p class = "describe">稍后就会有客服同学帮您处理</p>
+            </div>
+            <img style = "margin-top: 5px" src="themes/haohaios/images/post_sale_2_6f51ff7.jpg">
+        </div>
+        <div class = "post_sale_desc">
+            我们承诺坏果包赔，请您放心！感谢您对我们的支持和谅解，谢谢！
+        </div>
+        <div class = "post_sale_desc">
+            <p><span class = "background-color1"><b>客服工作时间：</b></span></p>
+            <span class = "background-color1"><b>周一到周日，8:00-24:00</b></span>
+        </div>  
+    </div>
+</body>
+</html>

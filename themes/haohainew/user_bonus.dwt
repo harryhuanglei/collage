@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,user.js'}
+</head>
+<body>
+<div class="container">
+    <!-- {if $action eq 'bonus'} 用户的优惠劵列表 start--> 
+    <script type="text/javascript">
+        {foreach from=$lang.profile_js item=item key=key}
+          var {$key} = "{$item}";
+        {/foreach}
+    </script>
+    <div class="nav_fixed">
+        <a href="user.php?act=bonus"{if $status eq '' } class="cur"{/if}><span>全部</span></a>
+        <a href="user.php?act=bonus&status=not_start"{if $status eq 'not_start' } class="cur"{/if}><span>未激活</span></a>
+        <a href="user.php?act=bonus&status=overdue"{if $status eq 'overdue' } class="cur"{/if}><span>已过期</span></a>
+    </div>
+    <div class="my-coupons">
+        <!-- {if $bonus.using} -->
+		<div class="my-coupons-list">
+            <div class="can_use"><div class="line"></div><p>使用中</p></div>
+            <!--{foreach from=$bonus.using item=item}-->
+			<div class="coupons-item" onclick="toggle(this);">
+				<div class="mc-l">
+					{if $item.free_all eq 1}
+					<p>免单券</p>
+					{else}
+					<p><i>¥</i>{$item.type_money}</p>
+					{/if}
+			    </div>
+				<div class="mc-r">
+				    <p class="name">{if $item.tongyong}全场通用{else}仅限 {$item.suppliers_name} 使用{/if}</p>
+					<p class="desc">{if $item.free_all eq 1}{$item.goods_name}{else}<i></i>满 {$item.min_goods_amount} 元使用{/if}</p>
+					<p class="date"><i></i>{$item.use_startdate} ~ {$item.use_enddate}</p>
+			    </div>
+                <div class="ordre_posi">
+                    <a href="user.php?act=order_detail&order_id={$item.order_id}"><img src="{$item.goods.goods_thumb}"></a>
+                    <div class="info">
+                        <h3>{$item.goods.goods_name}</h3>
+                        <p>¥{$item.goods.total_fee}<a class="unbind" href="user.php?act=cancel_order&order_id={$item.order_id}" onclick="if(confirm('确定要取消吗？') ) return true;else return false;">取消订单</a></p>
+                    </div>
+                </div>
+			</div>
+            <!-- {/foreach} --> 
+        </div>
+        <!-- {/if} --> 
+        
+        <!-- {if $bonus.ok} -->
+        <div class="my-coupons-list">
+            <div class="can_use"><div class="line"></div><p>当前可用</p></div>
+            <!--{foreach from=$bonus.ok item=item}-->
+            {if $item.free_all eq 1}<a href="goods.php?id={$item.goods_id}&bonus_free_all=1">{/if}
+			<div class="coupons-item">
+				<div class="mc-l">
+					{if $item.free_all eq 1}
+					<p>免单券</p>
+					{else}
+					<p><i>¥</i>{$item.type_money}</p>
+					{/if}
+			    </div>
+				<div class="mc-r">
+				    <p class="name">{if $item.tongyong}全场通用{else}仅限 {$item.suppliers_name} 使用{/if}</p>
+					<p class="desc">{if $item.free_all eq 1}{$item.goods_name}{else}<i></i>满 {$item.min_goods_amount} 元使用{/if}</p>
+					<p class="date"><i></i>{$item.use_startdate} ~ {$item.use_enddate}</p>
+			    </div>
+			</div>
+            {if $item.free_all eq 1}</a>{/if}
+            <!-- {/foreach} --> 
+        </div>
+        <!-- {/if} -->
+
+            
+        <!-- {if $bonus.used} --> 
+        <div class="my-coupons-list">   
+            <div class="can_use"><div class="line"></div><p>已使用</p></div>
+            <!--{foreach from=$bonus.used item=item}-->
+            <div class="coupons-item hui">
+			    <span class="ysy"></span>
+				<div class="mc-l">
+					{if $item.free_all eq 1}
+					<p>免单券</p>
+					{else}
+					<p><i>¥</i>{$item.type_money}</p>
+					{/if}
+			    </div>
+				<div class="mc-r">
+				    <p class="name">{if $item.tongyong}全场通用{else}仅限 {$item.suppliers_name} 使用{/if}</p>
+					<p class="desc">{if $item.free_all eq 1}{$item.goods_name}{else}<i></i>满 {$item.min_goods_amount} 元使用{/if}</p>
+					<p class="date"><i></i>{$item.use_startdate} ~ {$item.use_enddate}</p>
+			    </div>
+			</div>
+            <!-- {/foreach} --> 
+        </div>   
+        <!-- {/if} --> 
+            
+        <!-- {if $bonus.not_start} --> 
+        <div class="my-coupons-list">
+            <div class="can_use"><div class="line"></div><p>未激活</p></div>
+            <!--{foreach from=$bonus.not_start item=item}-->
+            <div class="coupons-item hui">
+				<div class="mc-l">
+					{if $item.free_all eq 1}
+					<p>免单券</p>
+					{else}
+					<p><i>¥</i>{$item.type_money}</p>
+					{/if}
+			    </div>
+				<div class="mc-r">
+				    <p class="name">{if $item.tongyong}全场通用{else}仅限 {$item.suppliers_name} 使用{/if}</p>
+					<p class="desc">{if $item.free_all eq 1}{$item.goods_name}{else}<i></i>满 {$item.min_goods_amount} 元使用{/if}</p>
+					<p class="date"><i></i>{$item.use_startdate} ~ {$item.use_enddate}</p>
+			    </div>
+			</div>
+            <!-- {/foreach} --> 
+        </div>   
+        <!-- {/if} --> 
+            
+        <!-- {if $bonus.overdue} --> 
+        <div class="my-coupons-list">  
+            <div class="can_use"><div class="line"></div><p>已过期</p></div>
+            <!--{foreach from=$bonus.overdue item=item}-->
+            <div class="coupons-item hui">
+			    <span class="ygq"></span>
+				<div class="mc-l">
+					{if $item.free_all eq 1}
+					<p>免单券</p>
+					{else}
+					<p><i>¥</i>{$item.type_money}</p>
+					{/if}
+			    </div>
+				<div class="mc-r">
+				    <p class="name">{if $item.tongyong}全场通用{else}仅限 {$item.suppliers_name} 使用{/if}</p>
+					<p class="desc">{if $item.free_all eq 1}{$item.goods_name}{else}<i></i>满 {$item.min_goods_amount} 元使用{/if}</p>
+					<p class="date"><i></i>{$item.use_enddate}过期</p>
+			    </div>
+			</div>
+            <!-- {/foreach} --> 
+        </div>   
+        <!-- {/if} -->
+            
+        <div class="addBouns">
+                <form name="addBouns" action="user.php" method="post" onSubmit="return addBonus()">
+                    <input name="bonus_sn" type="text" size="30" class="inp" placeholder="{$lang.bonus_number}" />
+                    <input type="hidden" name="act" value="act_add_bonus" class="inp" />
+                    <input type="submit" class="bnt" style="border:none;" value="绑定优惠券" />
+                </form>
+        </div>
+
+    </div>
+    
+    <!-- {/if} --> 
+</div>
+<div class="blank"></div>
+<script>
+function toggle(thisObj){
+	if(thisObj.className.indexOf('slideleft')!==-1){
+		thisObj.className='coupons-item';
+	}else{
+		thisObj.className="coupons-item slideleft";
+	}
+}
+</script>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+</html>
+

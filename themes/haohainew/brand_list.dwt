@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>全部品牌</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/catall.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js'}
+<script type="text/javascript">
+    var process_request = "{$lang.process_request}";
+    function checkSearchForm()
+    {
+        if(document.getElementById('keyword').value)
+        {
+            return true;
+        }
+        else
+        {
+            alert("{$lang.no_keywords}");
+            return false;
+        }
+    }
+</script>
+</head>
+<body class="catall">
+<div class="classification">
+	<div class="searchbox">
+		<div class="search">
+		    <form id="searchForm" name="searchForm" method="get" action="search.php" onSubmit="return checkSearchForm()">
+			<input type="search" name="keywords" id="keyword" style="max-width:90%" class="ud" placeholder="搜索商品" required>
+			<input type="submit" value="" class="submit" />
+			</form>
+		</div>
+	</div>
+    <div class="cat_nav">
+        <a href="catall.php">全部分类</a>
+        <a href="brand.php" class="cur">全部品牌</a>
+    </div>
+    <div class="brand_list">
+        <ul>
+        {foreach from=$brand_list name="brand_list_foreach" item=brand_data}
+        <li>
+            <a href="{$brand_data.url}">
+                {if $brand_data.brand_logo}
+                <img src="data/brandlogo/{$brand_data.brand_logo}" alt="{$brand_data.brand_name}" />
+                {else}
+                <p>{$brand_data.brand_name}</p>
+                {/if}
+            </a>
+        </li>
+		{/foreach}
+    </div>
+</div>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+</html>

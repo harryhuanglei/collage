@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<title>{$page_title}</title>
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+</head>
+<body>
+<div class="container">
+    <div class="hexiao">
+        <ul>
+            <li>产品名称<span>数量</span></li>
+            {foreach from=$order.goods_list item=goods}
+            <li>{$goods.goods_name}<br/><font>{$goods.goods_attr}</font><span>X {$goods.goods_number}</span></li>
+            {/foreach}
+            <li>支付时间：{$order.add_time}</li>
+            <li>取货地址：{$order.shipping_point} {$order.arranged_time}</li>
+
+            {if $order.arranged_time}
+                 <li>核销时间：{$order.arranged_time}</li>
+                  <li>核销人：{$user}</li>
+                 <li class="bnt">
+				 <p style="color:red;text-align:center;font-size:18px; width:100%;">该订单之前已经核销过了</p>
+				 <p style="color:red;text-align:center;font-size:18px; width:100%;">请勿重复提货 ！！！</p>
+				 </li>
+				 
+				 
+            {else}
+                <li class="bnt"><a href="{$root}/handle.php?order_id={$order.order_id}">确认核销</a></li>
+            {/if}
+        </ul>
+    </div>
+</div>
+</body>
+</html>

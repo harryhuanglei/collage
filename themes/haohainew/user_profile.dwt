@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>我的资料</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/user.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,user.js,getcode.js'}
+</head>
+<body>
+<!-- {if $action eq 'profile' && is_weixin} -->
+<div class="container">
+    <div class="profile">   
+    <form name="formEdit" action="user.php" method="post" onSubmit="return userEdit()">
+		<dl>
+		    <dt>昵称：</dt>
+            <dd>{$profile.uname}</dd>
+		</dl>
+		{if $profile.mobile_phone}
+		<dl>
+		    <dt>手机：</dt>
+			<dd>{$profile.mobile_phone}</dd>
+        </dl>
+		{else}
+		<dl>
+		    <dt>手机：</dt>
+			<dd><input name="mobile_phone" id="mobile_phone" type="tel" value="{$profile.mobile_phone}"  /></dd>
+        </dl>
+		<dl>
+		    <dt>验证码：</dt>
+			<dd>
+			    <input name="code" id="code" type="tel" value=""  />
+				<button type="button" id="code_button" onclick="validate_mobile()">发送验证码</button>
+			</dd>
+        </dl>
+		<div class="error">
+			<p class="text-error" style="display: none;"></p>
+		</div>
+		
+        <input name="act" type="hidden" value="act_edit_profile" />
+        <input name="submit" type="submit" value="{$lang.confirm_edit}" class="submit"/>
+		{/if}
+    </form>
+    </div>
+</div>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+<!-- {/if} -->
+</body>
+</html>
+

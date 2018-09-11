@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>{$lang.cp_home}</title>
+<link href="css/mobile.css" rel="stylesheet" type="text/css" />
+{insert_scripts files="transport.js,common.js"}
+{insert_scripts files="../js/utils.js,listtable.js,../js/region.js"}
+<div class="container">
+    <div class="order_search">
+        <form action="javascript:searchOrder()" name="searchForm">
+            <div><input type="text" id="order_sn" placeholder='订单号' class="input" name="order_sn"></div>
+            <input type="submit" class="btn" name="" value="搜索">
+        </form>
+    </div>
+	<div class="order_list">
+        <ul>
+           {assign var="i" value="0"}
+            {if $smarty.get.he eq 1}
+                 {foreach from=$order_list1  item=order_list name=order_list}
+                    {if $order_list.shipping_code neq 'cac'}
+                     
+              <li> 
+                <a href="order.php?act=info&order_id={$order_list.order_id}">
+                    <p><i>{$smarty.foreach.order_list.iteration}</i>订单号：{$order_list.order_sn}{if $order_list.extension_code eq 'team_goods'}<font>团</font>{/if}{if $order_list.team_first eq 1}<font>团长</font>{/if}{if $order_list.extension_code eq 'exchange_goods'}<font>积分兑换</font>{/if}<span>{$order_list.shipping_name}</span></p>
+                    <p>收货人：{$order_list.consignee}  电话：{if $order_list.mobile}{$order_list.mobile}{else}{$order_list.tel}{/if}<span>金额：{$order_list.total_fee}</span></p>
+                </a> 
+            </li>
+                    
+                    {/if}
+              {/foreach}
+            {else}
+                {foreach from=$order_list2 key=key item=order_list name=order_list}
+                    {if $order_list.shipping_code eq 'cac'}
+                 <li> 
+                <a href="order.php?act=info&order_id={$order_list.order_id}">
+                    <p><i>{$smarty.foreach.order_list.iteration}</i>订单号：{$order_list.order_sn}{if $order_list.extension_code eq 'team_goods'}<font>团</font>{/if}{if $order_list.team_first eq 1}<font>团长</font>{/if}<span>{$order_list.shipping_name}</span></p>
+                    <p>自提点：{$order_list.point_name}<span>金额：{$order_list.total_fee}</span></p>
+                </a> 
+                 </li> 
+                    {/if}
+                {/foreach}
+            {/if}
+           
+           
+           
+        </ul>
+    </div>
+</div>
+<div class="footer">
+    <ul>            
+        <li><a href="index.php">首页</a></li>
+        <li><a href="order.php?act=list&composite_status=101&he=1"{if $smarty.get.he eq 1} class="cur"{/if}>待发货订单</a></li>
+        <li><a href="order.php?act=list&composite_status=101&he=2"{if $smarty.get.he eq 2} class="cur"{/if}>待核销订单</a></li>
+    </ul>
+</div>
+</body>
+</html>

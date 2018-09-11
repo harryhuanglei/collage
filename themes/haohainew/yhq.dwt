@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+{insert_scripts files='zepto.min.js,layer.js'}
+
+</head>
+<body class="yhq">
+<div class="container">
+    <div class="yhq_list">
+        {foreach from=$quan_list item=item name=name}
+        <div class="stamp stamp0{$item.stamp}" data-bid="{$item.type_id}">
+            <div class="par"><p><font>{$item.suppliers_name}</font></p><sub>￥</sub><span>{$item.type_money}</span><sub>优惠券</sub><p>订单满￥{$item.min_goods_amount}元可用</p></div>
+            <div class="copy">副券<p>{$item.use_start_date}<br>{$item.use_end_date}</p><a>立即领取</a></div>
+            <i></i>
+        </div>
+		{foreachelse}
+		<div class="nothing">
+            <i class="iconfont icon-youhuiquan"></i>
+		    <p>暂无优惠券</p>
+        </div>
+        {/foreach}
+    </div>
+</div>
+<div class="blank"></div>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+<script>
+$(document).ready(function() {
+    $('.stamp').click(function(event) {
+        var bid = $(this).data('bid');
+        getquan(bid);
+    });
+});
+    function getquan(bid){
+        $.ajax({
+            url: 'yhq.php?act=getquan',
+            type: 'GET',
+            dataType: 'json',
+            data: {bid:bid},
+            success: function(res){
+                var text = res.error ? res.message : res.content ;
+				
+				layer.open({
+		                content: text,
+			            btn: ['嗯']
+		        });
+					
+                //alert(text);
+            }
+        })
+        
+    }
+</script>
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script> 
+<script language="javascript" type="text/javascript">
+    wx.config({
+
+        debug: false,//这里是开启测试，如果设置为true，则打开每个步骤，都会有提示，是否成功或者失败
+
+        appId: '{$appid}',
+
+        timestamp: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+
+        nonceStr: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+
+        signature: '{$signature}',
+
+        jsApiList: [
+
+          // 所有要调用的 API 都要加到这个列表中
+
+            'onMenuShareTimeline',
+
+            'onMenuShareAppMessage',
+
+            'onMenuShareQQ',
+
+            'onMenuShareWeibo',
+
+            'checkJsApi',
+
+            'openLocation',
+
+            'getLocation'
+
+        ]
+
+    });
+
+    
+
+    var title="{$title}";
+
+    var link= "{$link}";
+
+    var imgUrl="{$imgUrl}";
+
+    var desc= "{$desc}";
+
+    wx.ready(function () {
+
+        wx.onMenuShareTimeline({//朋友圈
+
+            title: title, // 分享标题
+
+            link: link, // 分享链接
+
+            imgUrl: imgUrl, // 分享图标
+
+            success: function () { 
+
+                // 用户确认分享后执行的回调函数
+
+                statis(2,1);
+
+            },
+
+            cancel: function () { 
+
+                // 用户取消分享后执行的回调函数
+
+                statis(2,2);
+
+            }
+
+        });
+
+        wx.onMenuShareAppMessage({//好友
+
+            title: title, // 分享标题
+
+            desc: desc, // 
+
+            link: link, // 分享链接
+
+            imgUrl: imgUrl, // 分享图标
+
+            type: '', // 分享类型,music、video或link，不填默认为link
+
+            dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+
+            success: function () { 
+
+                // 用户确认分享后执行的回调函数
+
+                statis(1,1);    
+
+            },
+
+            cancel: function () { 
+
+                // 用户取消分享后执行的回调函数
+
+                statis(1,2);
+
+            }
+
+        });
+
+      
+
+        wx.onMenuShareQQ({
+
+            title: title, // 分享标题
+
+            desc: desc, // 分享描述
+
+            link: link, // 分享链接
+
+            imgUrl: imgUrl, // 分享图标
+
+            success: function () { 
+
+               // 用户确认分享后执行的回调函数
+
+                statis(4,1);
+
+            },
+
+            cancel: function () { 
+
+               // 用户取消分享后执行的回调函数
+
+                statis(4,2);
+
+            }
+
+        });
+
+        wx.onMenuShareWeibo({
+
+            title: title, // 分享标题
+
+            desc: desc, // 分享描述
+
+            link: link, // 分享链接
+
+            imgUrl: imgUrl, // 分享图标
+
+            success: function () { 
+
+               // 用户确认分享后执行的回调函数
+
+                statis(3,1);
+
+            },
+
+            cancel: function () { 
+
+                // 用户取消分享后执行的回调函数
+
+                statis(3,2);
+
+            }
+
+        });      
+
+    });
+    function statis(share_type,share_status){
+        $.ajax({
+
+            type:"post",//请求类型
+
+            url:"share.php",//服务器页面地址
+
+            data:"act=link&share_status="+share_status+"&share_type="+share_type+"&link_url={$link2}",
+
+            dataType:"json",//服务器返回结果类型(可有可无)
+
+            error:function(){//错误处理函数(可有可无)
+
+                //alert("ajax出错啦");
+
+            },
+
+            success:function(data){
+
+                
+
+            }
+
+        });
+
+    }
+</script>
+
+</body>
+</html>

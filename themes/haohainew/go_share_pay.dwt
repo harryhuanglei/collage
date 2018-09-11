@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html class="" lang="zh-CN" >
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="" />
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="cleartype" content="on">
+
+    <title>找人代付</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="http://b.yzcdn.cn/v2/build_css/stylesheets/wap/base_aa818edeb8.css" >    
+    <link rel="stylesheet" href="http://b.yzcdn.cn/v2/build_css/stylesheets/wap/projects/trade_c74fb12925.css" >        
+</head>
+<body class=" ">
+    <form action="share_pay.php?id={$order.order_id}" method="post" name="theForm" id="theForm" >
+    <div class="container js-page-content wap-page-order">
+                <div class="content peerpay-gift">
+	<div class="app app-order">
+		<div class="app-inner inner-order">
+
+			<!-- 代付订单详情 -->
+			<h2>来自小伙伴的代付订单</h2>
+<div class="block block-list block-list-peerpay">
+    <div class="block-item name-card clearfix">
+
+        <a href=" javascript:; " class="thumb">
+                        <img class="js-view-image" src="{$goods_list[0].little_img}" alt="">
+        </a>
+        <div class="detail clearfix no-price detail-peerpay">
+            <h3>
+            	<a class="ellipsis" href="javascript:void(0);"> {$goods_list[0].goods_name} </a>
+            </h3>
+            <p class="ellipsis">
+                {$order.consignee}                &nbsp;{$order.mobile}            </p>
+            <p class="ellipsis">
+                 {$order.address}
+            </p>
+            <p class="ellipsis c-orange">
+                                ￥{$order.order_amount}                            </p>
+        </div>
+        
+    </div>
+</div>
+
+			<!-- 单人代付、多人代付 选择abber -->
+			<div class="block block-border-top-none">
+			<!-- 
+				<div class="js-type-selector tabber tabber-top" style="border:none;">
+					<button class="first" style="width:100%;"  data-type="onepay">单人代付</button>
+					<button data-type="multipay" >多人代付</button>
+				</div> -->
+				<div class="js-onepay steps hide">
+					<div class="step-3 step-x center">
+						<hr />
+						<div class="step step-3-1"></div>
+						<p>留言并分享</p>
+					</div>
+					<div class="step-3 step-x center">
+						<hr />
+						<div class="step step-3-2"></div>
+						<p>朋友全额付款</p>
+					</div>
+					<div class="step-3 step-x center">
+						<hr />
+						<div class="step step-3-3"></div>
+						<p>代付成功</p>
+					</div>
+				</div>
+				<div class="js-multipay steps hide center">
+					<div class="step-4 step-x center">
+						<hr />
+						<div class="step step-4-1"></div>
+						<p>留言并分享</p>
+					</div>
+					<div class="step-4 step-x center">
+						<hr />
+						<div class="step step-4-2"></div>
+						<p>多人参与付款</p>
+					</div>
+					<div class="step-4 step-x center">
+						<hr />
+						<div class="step step-4-3"></div>
+						<p>筹集完金额</p>
+					</div>
+					<div class="step-4 step-x center">
+						<hr />
+						<div class="step step-4-4"></div>
+						<p>代付成功</p>
+					</div>
+				</div>
+			</div>
+
+							<!-- 留言 -->
+				<div class="invite-message">
+					<textarea id="wxdesc" name="wxdesc" class="txt txt-black time-line-title" placeholder="说点什么吧？">想尝一口被包养的滋味</textarea>
+				</div>
+			
+			<!-- 行动点 -->
+			<input type="hidden" name="share_pay_type" id="share_pay_type" value="1">
+			<input type="hidden" name="act" value="to_confirm">
+			<div class="action-container" id="confirm-pay-way-opts">
+			<button onclick="share_pay_confirm();" class="js-next btn btn-block btn-green">下一步</button>
+			</div>
+			<div class="center action-tip"><br></div>
+		</div>
+	</div>
+</div>    </div>
+</form>
+  
+<!-- </textarea> -->
+    </div>
+    <script src="js/youzan/common_452e0e827f.js" ></script>
+    <script src="js/youzan/base_133b82eb14.js" ></script>
+    
+    <script src="js/youzan/jquery.minicounter.min.js" ></script>	
+    <script src="js/youzan/u_b.js" ></script>
+	<script src="js/youzan/invite_d2684568bf.js" ></script>    
+    <script>
+    
+    function share_pay_confirm(){
+    	/*
+    	var a=$("button[data-type=onepay]").attr("class");
+        var b=$("button[data-type=multipay]").attr("className");
+        var share_pay_type=1;
+        if(a.indexOf("active")!=-1){
+        	share_pay_type=2;
+        }
+        if(b.indexOf("active")!=-1){
+        	share_pay_type=3;
+        }*/
+        share_pay_type=2;
+        $("#share_pay_type").val(share_pay_type);
+        document.forms[0].submit();
+        //var wxdesc=$("#wxdesc").text();
+        /*
+    	$.ajax({
+            type:"post",//请求类型
+            url:"share_pay.php",//服务器页面地址
+            data:"order_id={$order.order_id}&act=share_pay_confirm&share_pay_type="+share_pay_type+"&wxdesc="+wxdesc,
+            dataType:"json",//服务器返回结果类型(可有可无)
+            error:function(){//错误处理函数(可有可无)
+                alert("ajax出错啦");
+            },
+            success:function(data){
+                if(data.error==1){
+                    alert('错误'+data.message);
+                }else{
+                }
+            }
+        });*/
+    }
+    /*
+window.addEventListener('load', function () {
+  var _hmt = _hmt || [];
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?96801ca9ab090e6db01b2b8377a4e979";
+  hm.async = true;
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+});*/
+</script>
+    
+    </body>
+</html>

@@ -1,0 +1,184 @@
+{if $full_page}
+
+{include file="pageheader.htm"}
+
+{insert_scripts files="../js/utils.js,listtable.js,../js/region.js"}
+
+<script language="javascript" type="text/javascript" src="../js/DatePicker/WdatePicker.js"></script>
+
+<!-- 订单列表 -->
+
+<form method="post" action="luck.php?act=give_prize" name="listForm" >
+
+  <div class="list-div" id="listDiv">
+
+{/if}
+
+<table cellpadding="3" cellspacing="1">
+
+  <tr>
+	<th>用户头像</th>
+	<th>用户昵称</th>
+	<th>收货人</th>
+	<th>商品名称</th>
+    <th>订单号</th>
+	<th>下单时间</th>
+    <th>{$lang.handler}</th>
+  <tr>
+
+  {foreach from=$prize_order_list item=order}
+
+  <tr>
+  	<td align="center" valign="top" nowrap="nowrap"><img src="{$order.headimgurl}" width="50"></td>
+  	<td align="center" valign="top" nowrap="nowrap">{$order.uname}</td>
+  	<td align="center" valign="top" nowrap="nowrap">{$order.consignee}</td>
+  	<td align="center" valign="top" nowrap="nowrap">{$order.goods_name}</td>
+    <td align="center" valign="top" nowrap="nowrap" >{$order.order_sn}
+    <!-- <input type="hidden"  name="order_id[]"  value="{$order.order_id}" /> -->
+    </td>
+	<td align="center" valign="top" nowrap="nowrap">{$order.add_time}</td>
+    <td align="center" valign="top" nowrap="nowrap">
+
+     <a href="order.php?act=info&order_id={$order.order_id}">查看订单详情</a>
+
+    </td>
+
+  </tr>
+
+  {/foreach}
+
+</table>
+
+{if $full_page}
+
+  </div>
+
+  <div>
+		<input type="hidden"  name="luck_id"  value="{$luck_id}" />
+		<!-- <input type="hidden"  name="all_team_sign"  value="{$all_team_sign}" /> -->
+		{if $is_give}
+			<font style="font-size:18px;padding:3px;background-color:#009FCC;color:#fff;border:2px solid #77DDFF  ">已发奖</font>
+		{else /}
+			<input type="submit"  onclick="return start();"  value="确认发奖"   />
+		{/if}
+    {if $luckdraw_no_refund}
+              <a href="luck.php?act=luckdraw_refund&luckdraw={$luck_id}" onclick="start();">有{$luckdraw_no_refund}个订单退款未完成，点击继续退款</a>
+        {/if} 
+  </div>
+</form>
+
+<div class="sk-cube-grid" style="display:none; " id="start">
+        <div class="sk-cube sk-cube1"></div>
+        <div class="sk-cube sk-cube2"></div>
+        <div class="sk-cube sk-cube3"></div>
+        <div class="sk-cube sk-cube4"></div>
+        <div class="sk-cube sk-cube5"></div>
+        <div class="sk-cube sk-cube6"></div>
+        <div class="sk-cube sk-cube7"></div>
+        <div class="sk-cube sk-cube8"></div>
+        <div class="sk-cube sk-cube9"></div>
+</div>
+<script language="JavaScript">
+	function start(){
+			document.getElementById('start').style.display="block";
+	}
+</script>
+ <style type="text/css">
+.sk-cube-grid {
+  width: 100px;
+  height: 100px;
+  position:fixed; 
+  top:50%;
+  margin-left:-20px;
+  left:50%;
+  
+  /*
+   * Spinner positions
+   * 1 2 3
+   * 4 5 6
+   * 7 8 9
+   */ }
+  .sk-cube-grid .sk-cube {
+    width: 33.33%;
+    height: 33.33%;
+    background-color: #67cf22;
+    float: left;
+    -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
+            animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out; }
+  .sk-cube-grid .sk-cube1 {
+    -webkit-animation-delay: 0.2s;
+            animation-delay: 0.2s; }
+  .sk-cube-grid .sk-cube2 {
+    -webkit-animation-delay: 0.3s;
+            animation-delay: 0.3s; }
+  .sk-cube-grid .sk-cube3 {
+    -webkit-animation-delay: 0.4s;
+            animation-delay: 0.4s; }
+  .sk-cube-grid .sk-cube4 {
+    -webkit-animation-delay: 0.1s;
+            animation-delay: 0.1s; }
+  .sk-cube-grid .sk-cube5 {
+    -webkit-animation-delay: 0.2s;
+            animation-delay: 0.2s; }
+  .sk-cube-grid .sk-cube6 {
+    -webkit-animation-delay: 0.3s;
+            animation-delay: 0.3s; }
+  .sk-cube-grid .sk-cube7 {
+    -webkit-animation-delay: 0.0s;
+            animation-delay: 0.0s; }
+  .sk-cube-grid .sk-cube8 {
+    -webkit-animation-delay: 0.1s;
+            animation-delay: 0.1s; }
+  .sk-cube-grid .sk-cube9 {
+    -webkit-animation-delay: 0.2s;
+            animation-delay: 0.2s; }
+
+@-webkit-keyframes sk-cubeGridScaleDelay {
+  0%, 70%, 100% {
+    -webkit-transform: scale3D(1, 1, 1);
+            transform: scale3D(1, 1, 1); }
+  35% {
+    -webkit-transform: scale3D(0, 0, 1);
+            transform: scale3D(0, 0, 1); } }
+
+@keyframes sk-cubeGridScaleDelay {
+  0%, 70%, 100% {
+    -webkit-transform: scale3D(1, 1, 1);
+            transform: scale3D(1, 1, 1); }
+  35% {
+    -webkit-transform: scale3D(0, 0, 1);
+            transform: scale3D(0, 0, 1); } }
+
+  </style>
+<script language="JavaScript">
+
+listTable.recordCount = {$record_count};
+
+listTable.pageCount = {$page_count};
+
+region.isAdmin = true;
+
+{foreach from=$filter item=item key=key}
+
+listTable.filter.{$key} = '{$item}';
+
+
+{/foreach}
+
+{literal}
+
+    onload = function()
+    {
+        // 开始检查订单
+        startCheckOrder();
+    }
+
+</script>
+
+{/literal}
+
+
+
+{include file="pagefooter.htm"}
+
+{/if}

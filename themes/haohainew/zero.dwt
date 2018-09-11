@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,jquery.lazyload.js'}
+</head>
+<body>
+<div class="container">
+    <div class="top_search">
+        <form id="searchForm" name="searchForm" method="get" action="search.php" onSubmit="return checkSearchForm()">
+            <input name="keywords" id="keyword" type="text" class="text" value="{$search_keywords|escape}" placeholder="商品搜索">
+            <input type="submit" value="搜索" class="submit" />
+            <input type="hidden" name="search_type" value="is_zero">
+        </form>
+    </div>
+    <div class="top_nav">
+		<ul id="top_nav">
+            {if $sub_cat}
+			{if $pid}
+			<li class="cur"><a href="zero.php?cid={$cat_id}&sort=sort_order&uid={$uid}">全部</span></a></li>
+			{else}
+			<li class="cur"><a href="zero.php?cid={$cat_id}&sort=sort_order&uid={$uid}">全部</span></a></li>
+			{/if}
+			{else}
+			{if $pid}
+			<li><a href="zero.php?cid={$pid}&sort=sort_order&uid={$uid}">全部</span></a></li>
+			{else}
+			<li class="cur"><a href="zero.php?sort=sort_order&uid={$uid}">全部</span></a></li>
+			{/if}
+			{/if}
+			{foreach from=$cat_children item=child_data}
+			<li{if $cat_id==$child_data.id} class="cur"{/if}><a href="zero.php?cid={$child_data.id}&sort={$sort}&uid={$uid}">{$child_data.name}</span></a></li>
+			{/foreach}
+            {if 0}
+            <li{if $cat_id eq 0} class="cur"{/if}><a href="zero.php?sort=sort_order&uid={$uid}">全部分类</a></li>
+            {foreach from=$categories item=cat}
+            <li{if $cat_id eq $cat.id} class="cur"{/if}><a href="zero.php?sort={$sort}&cid={$cat.id}&uid={$uid}">{$cat.name}</a></li>
+            {/foreach}
+            {/if}
+		</ul>
+    </div>
+    <div class="blank"></div>
+    <div class="good_list">
+        <div class="blank"></div>
+        <ul class="list_B">
+            {foreach from=$goods_list item=goods}
+            <li>
+			    <a href="{$goods.url}&uid={$uid}"><img goods_id="{$goods.goods_id}" data-original="{$goods.goods_thumb}" src="images/loading.gif" class="lazy"></a>
+                <p class="tit"><a href="{$goods.url}&uid={$uid}">{$goods.goods_name}</a></p>
+                <p>
+                    <font class="price">¥<b>{$goods.shop_price}</b></font>
+                </p>
+            </li>
+			{foreachelse}
+			<div class="nothing">
+            <i class="iconfont icon-shangpin"></i>
+		    <p>此分类下暂无商品</p>
+            </div>
+            {/foreach}
+        </ul>
+    </div>
+    <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+</div>
+<div class="blank"></div>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+<script>
+var wa = $(window).width(); //获取浏览器显示区域（可视区域）的宽度
+var wb = $("#top_nav .cur").width(); //获取或设置元素的宽度
+var wc = $("#top_nav .cur").offset().left; //当前元素左侧距离
+if(wc+wb > wa){
+	$("#top_nav").scrollLeft(wc-wa+wb+wb); //设置滚动条到左边的宽度
+}
+	window.onload=function(){
+		$("img.lazy").lazyload({
+                effect: "fadeIn",
+                threshold : 200
+        });
+        $("img.lazy:eq(0)").attr('src',$("img.lazy:eq(0)").attr('data-original'));
+	}
+</script>
+</body>
+</html>
+

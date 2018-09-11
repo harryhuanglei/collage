@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/order.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/flow.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,shopping_flow.js,region.js'}
+</head>
+<body>
+<div class="container">
+        <!-- {if $step eq "consignee"} -->
+        <!-- 开始收货人信息填写界面 -->
+        {insert_scripts files='region.js,utils.js'}
+        <script type="text/javascript">
+          region.isAdmin = false;
+          {foreach from=$lang.flow_js item=item key=key}
+          var {$key} = "{$item}";
+          {/foreach}
+          {literal}
+          onload = function() {
+            if (!document.all)
+            {
+              document.forms['theForm'].reset();
+            }
+          }
+          {/literal}
+        </script>
+        <!-- 如果有收货地址，循环显示用户的收获地址 -->
+        <!-- {foreach from=$consignee_list item=consignee key=sn} -->
+        <form action="flow.php" method="post" name="theForm" id="theForm" onsubmit="return checkConsignee(this)">
+<div class="flowBox">
+<h6><span>{$lang.consignee_info}</span></h6>
+{insert_scripts files='utils.js'}
+<table width="99%" align="center" border="0" cellpadding="5" cellspacing="1" bgcolor="#dddddd">
+  <!-- {if $real_goods_count gt 0} -->
+  <!-- 购物车中存在实体商品显示国家和地区 -->
+  <tr>
+    <td bgcolor="#ffffff">{$lang.country_province}:</td>
+    <td colspan="3" bgcolor="#ffffff">
+    <select name="country" id="selCountries_{$sn}" onchange="region.changed(this, 1, 'selProvinces_{$sn}')" style="border:1px solid #ccc;">
+        <option value="0">{$lang.please_select}{$name_of_region[0]}</option>
+        <!-- {foreach from=$country_list item=country} -->
+        <option value="{$country.region_id}" {if $consignee.country eq $country.region_id}selected{/if}>{$country.region_name}</option>
+        <!-- {/foreach} -->
+      </select>
+      <br />
+      <select name="province" id="selProvinces_{$sn}" onchange="region.changed(this, 2, 'selCities_{$sn}')" style="border:1px solid #ccc;">
+        <option value="0">{$lang.please_select}{$name_of_region[1]}</option>
+        <!-- {foreach from=$province_list.$sn item=province} -->
+        <option value="{$province.region_id}" {if $consignee.province eq $province.region_id}selected{/if}>{$province.region_name}</option>
+        <!-- {/foreach} -->
+      </select>
+      <br />
+      <select name="city" id="selCities_{$sn}" onchange="region.changed(this, 3, 'selDistricts_{$sn}')" style="border:1px solid #ccc;">
+        <option value="0">{$lang.please_select}{$name_of_region[2]}</option>
+        <!-- {foreach from=$city_list.$sn item=city} -->
+        <option value="{$city.region_id}" {if $consignee.city eq $city.region_id}selected{/if}>{$city.region_name}</option>
+        <!-- {/foreach} -->
+      </select>
+      <br />
+      <select name="district" id="selDistricts_{$sn}" {if !$district_list.$sn}style="display:none"{/if} style="border:1px solid #ccc;">
+        <option value="0">{$lang.please_select}{$name_of_region[3]}</option>
+        <!-- {foreach from=$district_list.$sn item=district} -->
+        <option value="{$district.region_id}" {if $consignee.district eq $district.region_id}selected{/if}>{$district.region_name}</option>
+        <!-- {/foreach} -->
+      </select>
+    {$lang.require_field} </td>
+  </tr>
+  <!-- {/if} -->
+  <tr>
+    <td bgcolor="#ffffff">{$lang.consignee_name}:</td>
+    <td bgcolor="#ffffff"><input name="consignee" type="text" class="inputBg" id="consignee_{$sn}" value="{$consignee.consignee|escape}" />
+    {$lang.require_field} </td>
+  </tr>
+  <!-- {if $real_goods_count gt 0} -->
+  <!-- 购物车中存在实体商品显示详细地址以及邮政编码 -->
+  <tr>
+    <td bgcolor="#ffffff">{$lang.detailed_address}:</td>
+    <td bgcolor="#ffffff"><input name="address" type="text" class="inputBg"  id="address_{$sn}" value="{$consignee.address|escape}" />
+    {$lang.require_field}</td>
+  </tr>
+  <!-- {/if} -->
+  <tr>
+    <td bgcolor="#ffffff">{$lang.backup_phone}:</td>
+    <td bgcolor="#ffffff"><input name="mobile" type="text" class="inputBg"  id="mobile_{$sn}" value="{$consignee.mobile|escape}" /></td>
+  </tr>
+  <tr>
+    <td colspan="4" align="center" bgcolor="#ffffff">
+    <input type="submit" name="Submit" class="bnt_blue_2" value="{$lang.shipping_address}" />
+      <input type="hidden" name="step" value="consignee" />
+      <input type="hidden" name="act" value="checkout" />
+      <input name="address_id" type="hidden" value="{$consignee.address_id}" />
+      </td>
+  </tr>
+</table>
+</div>
+        </form>
+        <!-- {/foreach} -->
+        <!-- {/if} -->
+<!--{if $step eq 'address_list'} -->
+    {insert_scripts files='utils.js,region.js,shopping_flow.js'}
+    <script type="text/javascript">
+      region.isAdmin = false;
+      {foreach from=$lang.flow_js item=item key=key}
+      var {$key} = "{$item}";
+      {/foreach}
+      {literal}
+      onload = function() {
+        if (!document.all)
+        {
+          document.forms['theForm'].reset();
+        }
+      }
+      {/literal}
+    </script>
+	
+	<div class="consignee">
+        <div class="address_list">
+            <ul>
+                <!-- {foreach from=$consignee_list item=consignee key=sn} -->
+                <li>
+                    {if $luckdraw_id}
+				    <a href="flow.php?step=checkout&address_id={$consignee.address_id}&luckdraw_id={$luckdraw_id}" class="info">
+                    <h4>收货人：{$consignee.consignee|escape}　{$consignee.mobile|escape}</h4>
+                    <p><span>{$consignee.province_name}{$consignee.city_name}{$consignee.district_name}{$consignee.address}</span></p>
+                    </a>
+                    {else}
+                         <a href="flow.php?step=checkout&address_id={$consignee.address_id}" class="info">
+                    <h4>收货人：{$consignee.consignee|escape}　{$consignee.mobile|escape}</h4>
+                    <p><span>{$consignee.province_name}{$consignee.city_name}{$consignee.district_name}{$consignee.address}</span></p>
+                    </a>
+                    {/if}
+                    <p class="tools">
+					    <span>
+						    {if $consignee.address_id eq $default_address_id}
+							<a href="javascript:;" class="on"><em>默认地址</em></a>
+							{else}
+							<a href="flow.php?step=set_address&id={$consignee.address_id}"><em>设为默认地址</em></a>
+							{/if}
+						</span>
+                        <a href="javascript:;" class="bnt" onclick="IsSure();">删除</a>
+                        {if $luckdraw_id}
+                        <a href="flow.php?step=edit_consignee&address_id={$consignee.address_id}&luckdraw_id={$luckdraw_id}" class="bnt">编辑</a>
+                        {else}
+                          <a href="flow.php?step=edit_consignee&address_id={$consignee.address_id}" class="bnt">编辑</a>
+                        {/if}
+                    </p>
+                 </li>
+                <!-- {/foreach} --> 
+             </ul>
+         </div>
+         <div class="address_add">
+         {if $luckdraw_id}
+         <a href="flow.php?step=edit_consignee&back_url={$forward}&luckdraw_id={$luckdraw_id}"><i class="fa fa-plus"></i>新增收货地址</a>
+         {else}
+           <a href="flow.php?step=edit_consignee&back_url={$forward}"><i class="fa fa-plus"></i>新增收货地址</a>
+         {/if}
+         </div>
+    </div> 
+    <script type="text/javascript">
+        function IsSure(even){
+            var mes=confirm("确定删除该收获地址吗?");
+            if(mes==true){ 
+                   window.location='flow.php?step=drop_consignee&id={$consignee.address_id}';
+                }
+            else{
+                return false; 
+            }
+        }
+    </script>
+    <!-- {/if} -->
+    
+    
+<!--{if $step eq 'shipping_list'} -->
+    {insert_scripts files='utils.js,region.js,shopping_flow.js'}
+    <script type="text/javascript">
+      region.isAdmin = false;
+      {foreach from=$lang.flow_js item=item key=key}
+      var {$key} = "{$item}";
+      {/foreach}
+      {literal}
+      onload = function() {
+        if (!document.all)
+        {
+          document.forms['theForm'].reset();
+        }
+      }
+      {/literal}
+    </script> 
+    <div class="shipping_list">
+        <ul>
+            <!-- {foreach from=$shipping_list item=item key=key name=name} -->
+            <li{if $item.shipping_id eq $shipping_id} class="selected"{/if} onclick="location='flow.php?step=checkout&shipping_id={$item.shipping_id}'">
+                <span></span>
+                <h3>{$item.shipping_name|escape}　{if $item.free_money gt 0}{$item.free_money}元包邮{/if}</h3>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <!-- {foreachelse} -->
+            <div class="noshipping" onclick="history.go(-1);"><h3>您所填的收货地址无任何可用的配送方式</h3></div>
+            <!-- {/foreach} -->
+        </ul>
+    </div>
+<!-- {/if} --> 
+    
+<!--{if $step eq 'point_list'} -->
+{insert_scripts files='utils.js,region.js,shopping_flow.js'}
+    <div class="shipping_list">
+        <ul>
+            <!-- {foreach from=$point_list item=item key=key name=name} -->
+            <li{if $item.id eq $point_id} class="selected"{/if} onclick="location='flow.php?step=checkout&point_id={$item.id}&shipping_id={$shipping_id}'">
+                <span></span>
+                <h3>{$item.shop_name|escape}　{$item.province}{$item.city}{$item.district}{$item.address}</h3>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <!-- {foreachelse} -->
+            <div class="noshipping" onclick="history.go(-1);"><h3>无任何取货地点可选</h3></div>
+            <!-- {/foreach} -->
+        </ul>
+    </div>
+<!-- {/if} -->     
+    <!-- {if $step eq "checkout"} 开始订单确认界面 -->
+    <form action="flow.php?step=done" method="post" name="theForm" id="theForm" >
+	<input name="luckdraw_id" type="hidden" id="luckdraw_id" value="{$luckdraw_id}" />
+    <script type="text/javascript">
+        var flow_no_payment = "{$lang.flow_no_payment}";
+    </script>
+    <div class="order">
+        <div class="order_bd">
+            <!-- <h3>商家名称/分销商铺名称/0元购商品</h3> -->
+            <div id="orderList" class="order_glist">
+                <!-- {foreach from=$goods_list item=goods} -->
+                <input name="suppliers_id" type="hidden" value="{$goods.suppliers_id}" />
+                <input name="city_id" type="hidden" value="{$goods.city_id}" />
+                <input name="district_id" type="hidden" value="{$goods.district_id}" />
+                <div class="only">
+                    <div class="order_goods">
+                        <div class="order_goods_img">
+                            <img alt="{$goods.goods_name}" src="{$goods.goods_thumb}">
+                        </div>
+                        <div class="order_goods_info">
+                            <div class="order_goods_name">{$goods.goods_name}{if $luckdraw_id}<i class="lotteryIcon">抽奖</i>{/if}</div>
+                            <div class="order_goods_attr">
+                                <div class="order_goods_attr_item">
+                                    <span class="order_goods_attr_tit">数量：{$goods.goods_number}</span>
+                                    <div class="order_goods_price">
+                                    {if $luckdraw_price}{$luckdraw_price}{else}{if $is_exchange_goods eq 1}积分兑换{else}¥{$goods.formated_goods_price}{/if}{/if}</div>
+									
+                                </div>
+                                <p class="order_goods_attr_item">{$goods.goods_attr}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- {/foreach} -->
+            </div>
+        </div>
+    </div>
+	<script>
+	function select_pay(thisobj,pay_id){
+		$(thisobj).parent().children().removeClass('pay2_selected');
+		$(thisobj).addClass('pay2_selected');
+		$('#payment').val(pay_id);
+	}
+	/*修改数量*/
+	function add_number()
+	{
+		document.getElementById("number").value++;
+		var number = document.getElementById("number").value;
+		Ajax.call('flow.php', 'step=update_cart&rec_id={$goods_list[0].rec_id}&number=' + number+'&goods_id={$goods_list[0].goods_id}' , changePriceResponse, 'GET', 'JSON');
+		if (document.getElementById("number").value>1)
+		{
+		    $(".reduce").removeClass("hui");
+		}
+		
+	}
+	function cut_number()
+	{
+		if (document.getElementById("number").value>1)
+		{
+			document.getElementById("number").value--;
+			var number = document.getElementById("number").value;
+			Ajax.call('flow.php', 'step=update_cart&rec_id={$goods_list[0].rec_id}&number=' + number+'&goods_id={$goods_list[0].goods_id}' , changePriceResponse, 'GET', 'JSON');
+		}
+		if (document.getElementById("number").value==1)
+		{
+		    $(".reduce").addClass("hui");
+		}
+	}  
+	function changePriceResponse(res)
+	{
+		if(res.error>0)
+		{
+			alert(res.message);
+			document.getElementById("number").value =res.number;
+		}
+		else
+		{
+			document.getElementById('content').innerHTML = res.content;//购物车商品价
+		}
+		document.getElementById("goods_number").innerHTML =res.number;
+    window.location.reload();
+	}  
+	</script>
+       <!-- {if $teammem} -->
+           <div class="makeorder_from">
+               <div class="makeorder_from_num_box">
+                   <li class="reduce hui" onclick="cut_number();"><a href="javascript:void(0);" >-</a></li>
+                   <li class="in"><input id="number"  type="text" value="{$goods_list[0].goods_number}" size="2" readonly>件</li>
+                   <li class="add" onclick="add_number();"><a href="javascript:void(0);" >+</a></li>
+               </div>
+           	</div>
+        <!-- {/if} -->
+        <div id="content">
+        <!-- #BeginLibraryItem "/Library/order_total.lbi" --><!-- #EndLibraryItem -->
+        </div>
+  <script>
+  // window.onload=function(){
+  //   var shipping =document.getElementsByName('shipping_id');
+  //   var shipping_id = '';
+  //   var check=-1;
+  //   for(var i=0;i<shipping.length;i++){
+  //     if(shipping[i].checked){
+  //       shipping_id = shipping[i].value;
+  //       check=i;
+  //       break;
+  //     }
+  //   }
+  //   if(check!=-1){
+  //     if(shipping[check].title=='cac'){
+  //       select_shipping(1,shipping_id);
+  //     }else{
+  //       select_shipping(2,shipping_id);
+  //     }
+  //   }
+  // }
+  var express_id = 0;
+  var default_shipping_id = {$default_shipping_id|default:0};
+  $(function() {
+    if (default_shipping_id) {
+      var shipping_id  = $('input[name="shipping_id"]:checked').trigger('click');
+      express_id = $('input[name="shipping_id"]:checked').attr('express_id');
+    }
+    if($('input[name="shipping_id"]:checked').length == 0){
+      $('[name=shipping_id]').eq(0).trigger('click');
+    }
+  });
+  function select_shipping(type,shipping_id,express){
+    if(type==1){
+      document.getElementById('addr').style.display='';
+      document.getElementById('point_list').style.display='none';
+	  //$("#select_point_id option").eq(0).attr("selected",true);
+	  
+    }else{
+      document.getElementById('addr').style.display='none';
+      document.getElementById('point_list').style.display='';
+    }
+    express_id = express;
+    $('[name=express_id]').val(express_id);
+
+    // selectShipping(shipping_id);
+    var now = new Date();
+    Ajax.call('flow.php?step=select_shipping', 'shipping=' + shipping_id + '&express_id='+express_id, orderShippingSelectedResponse, 'GET', 'JSON');
+    // alert(shipping_id)
+    // $.each($("[name=package_one]"), function(index, val) {
+    //   $(this).attr('checked', false);
+    // });
+  }
+  </script>
+    <!-- {if $shipping_list}-->
+    <div class="blank"></div>
+    <div class="shipping">
+        <span>送货方式</span>
+        <!-- {foreach from=$shipping_list item=item key=key name=name} -->
+        {if $goods_list.0.is_zero eq 1 && $item.shipping_code eq 'cac'}
+        {else}
+          {if $ziti eq 0 && $item.shipping_code eq 'cac'}
+          {else}
+        <input onclick="select_shipping({if $item.shipping_code eq 'cac' }2{else}1{/if},{$item.shipping_id},'{$item.id}')" type="radio" title="{$item.shipping_code}" value="{$item.shipping_id}" name="shipping_id" id="shipping_{$smarty.foreach.name.iteration}" {if $item.shipping_id eq $default_shipping_id} checked{/if} express_id = "{$item.id}" ><label for="shipping_{$smarty.foreach.name.iteration}">{$item.shipping_name}</label>
+          {/if}
+        {/if}
+        <!-- {/foreach} -->
+    </div>
+    <div class="blank"></div>
+    <!-- {/if} -->
+        
+  <div id="addr">
+    <!-- #BeginLibraryItem "/library/consignee.lbi" --><!-- #EndLibraryItem -->
+	</div>  
+        
+    <div class="point" id="point_list" style="display:none;">
+    <!-- {if $point_list}-->
+        <div class="item">
+            <span>自提地址</span>
+            <p>
+			<select name="point_id" id="select_point_id" class="inp">
+            <option value="">请选择自提点</option>
+            <!-- {foreach from=$point_list item=item key=key name=name} -->
+			<option value="{$item.id}" {if $item.id eq $u_point}selected="selected"{/if}>{$item.shop_name} {$item.address} {$item.mobile}</option>
+            <!-- {/foreach} -->
+			</select>
+            </p>
+        </div>
+        <div class="item"><span>手机号码</span><p><input type="text" name="checked_mobile" class="inp" value="{$u_mobile}"></p></div>
+        <div class="item"><span>自提时间</span><p><input type="text" name="best_time" readonly id="appDateTime" class="inp" value=""></p></div>
+		
+	{insert_scripts files='mobiscroll2.js,mobiscroll.js,mobiscroll3.js'}
+	<link href="{$hhs_css_path}/mobiscroll.css" rel="stylesheet" />
+	<style>
+.dwwl0,.dwwl4 { display: none; }
+</style>
+    <script type="text/javascript">
+        $(function () {
+			var currYear = (new Date()).getFullYear();	
+			var nowData=new Date();
+			  var ziti_start_time = {$ziti_start_time};
+			  var ziti_end_time = {$ziti_end_time};
+			var opt={};
+			opt.date = {preset : 'date'};
+			opt.datetime = {preset : 'datetime'};
+			opt.time = {preset : 'time'};
+			opt.default = {
+				theme: 'android-ics light', //皮肤样式
+		        display: 'modal', //显示方式 
+		        mode: 'scroller', //日期选择模式
+				dateFormat: 'yyyy年mm月dd日',
+				timeFormat: 'H时',
+				lang: 'zh',
+				minDate:new Date(nowData.getFullYear(),nowData.getMonth(),nowData.getDate(),nowData.getHours()+ziti_start_time),
+				maxDate:new Date(nowData.getFullYear(),nowData.getMonth(),nowData.getDate(),nowData.getHours()+ziti_end_time),
+
+		        startYear: currYear, //开始年份
+		        endYear: currYear //结束年份
+			};
+		  	var optDateTime = $.extend(opt['datetime'], opt['default']);
+		    $("#appDateTime").mobiscroll(optDateTime).datetime(optDateTime);
+        });
+    </script>
+
+		
+		
+    <!-- {/if} --> 
+    </div>
+    
+<div class="postscript">
+    <input name="postscript" id="postscript" value="{$order.postscript|escape}" placeholder="备注">
+</div>    
+        <div class="blank"></div>
+		
+		
+		
+
+		
+        <div class="pay2">
+          
+            <div class="pay2_hd">支付方式</div>
+			
+                <div id="payList" class="pay2_list">
+            	{foreach from=$payment_list item=payment name=name}
+				{if $luckdraw_id}
+				{if $payment.pay_code eq 'wxpay'}
+                <div onclick="select_pay(this,{$payment.pay_id})" class="pay2_item  pay2_wx pay2_selected">
+                    <span class="pay2_item_state"></span>
+                    <span class="pay2_item_ico"></span>
+                    <span class="pay2_item_tit">{$payment.pay_name}</span>
+                </div>
+				{/if}
+				{else}
+
+                {if $payment.pay_code neq 'balance'}
+				
+				{if $is_weixin}
+				<div onclick="select_pay(this,{$payment.pay_id})" class="pay2_item {if $payment.pay_code eq 'wxpay'} pay2_wx pay2_selected{elseif $payment.pay_code eq 'alipay'} pay2_zfb{elseif $payment.pay_code eq 'balance'} pay2_ye{/if}">
+                    <span class="pay2_item_state"></span>
+                    <span class="pay2_item_ico"></span>
+                    <span class="pay2_item_tit">{$payment.pay_name} {if $payment.pay_code eq 'wxpay'}<i class="lotteryIcon">推荐</i>{/if} {if $payment.pay_code eq 'balance'}余额：{$your_surplus|default:0.00}{/if}</span>
+                </div>
+				{else}
+				{if $payment.pay_code eq 'alipay'}
+				<div onclick="select_pay(this,{$payment.pay_id})" class="pay2_item pay2_zfb">
+                    <span class="pay2_item_state"></span>
+                    <span class="pay2_item_ico"></span>
+                    <span class="pay2_item_tit">{$payment.pay_name}</span>
+                </div>
+				{/if}
+                
+				{/if}
+				{/if}
+				
+				
+				
+				
+				
+				{/if}
+                {/foreach}
+                <input type="hidden" id="payment" name="payment" value="{$payment_list.0.pay_id}"  />
+            </div>
+			
+			
+		    {if $your_surplus > 0 && $luckdraw < 1}
+            <div class="surplus">
+                <p>
+                    <label for="surplus">使用余额</label>
+                        <input name="surplus" type="text" class="inp" id="HHS_SURPLUS" size="10" value="0" onblur="changeSurplus(this.value)">
+                        <input type="button" class="ok" value="确定">
+                        <br/>您当前余额为：{$your_surplus|default:0} <span id="HHS_SURPLUS_NOTICE"></span>
+                    
+                </p>                
+            </div>
+            {/if}
+			
+            <input type='hidden' value="{$mbonus_id}" name="bonus" id="HHS_BONUS" >
+            <!-- {if $allow_use_bonus and $bonus_list} 是否使用红包 -->
+            <div class="pay3_list" >
+                <div id="goTenPay" class="pay3_item pay2_wx pay2_selected" onclick="pack_up();changeBonus(0);">
+                    <span class="pay2_item_state"></span>
+                    <span class="pay3_item_ico"></span>
+                    <span class="pay3_item_tit">优惠券</span>
+                    <span class="pay3_item_price" id="pay3_item_price"><b></b></span>
+                </div>
+            </div>
+            <div class="animate_set" style="height:auto;"  id="animate_set">
+                <div class="line_coupon"><img src="images/line_836fc09.png"></div>
+                
+                <!-- {foreach from=$bonus_list item=bonus name=name} -->
+				
+				
+		<div id="yellow_coupon{$bonus.bonus_id}" class="coupons{if $bonus.bonus_id eq $mbonus_id}{else} hui{/if}" onclick="changeBonus_new({$bonus.bonus_id});" >
+			<div class="coupons-item">
+				<div class="mc-l">
+					{if $bonus.free_all eq 1}
+					<p>免单券</p>
+					{else}
+					<p><i>¥</i>{$bonus.type_money}</p>
+					{/if}
+			    </div>
+				<div class="mc-r">
+				    <p class="name">{if $bonus.tongyong}全场通用{else}仅限 {$bonus.suppliers_name} 使用{/if}</p>
+					<p class="desc">{if $bonus.free_all eq 1}{$bonus.goods_name}{else}<i></i>满 {$bonus.min_goods_amount} 元使用{/if}</p>
+					<p class="date"><i></i>{$bonus.use_startdate} ~ {$bonus.use_enddate}</p>
+			    </div>
+			</div>
+		</div>
+                  <!-- {/foreach} -->
+                  
+            </div>
+			<!-- {/if} 是否使用红包 -->
+            <div>
+                <input type="button" onclick="done(this,1);" value="立即支付" class="pay2_btn" id="btn_pay_now" />
+                <input type="hidden" name="pay_type" value="1" />
+                <input type="hidden" name="express_id" value="" />
+            </div>
+            <!--disabled="disabled"  -->
+            <div>
+            	<input type="hidden" name="lat" id="lat" value="{$lat}" />
+            	<input type="hidden" name="lng" id="lng" value="{$lng}" />
+                <input type="button" onclick="done(this,0);" value="找人代付" class="pay2_btn daifu_btn" /> 
+            </div> 
+        </div>
+    </form>
+    <div class="blank"></div>
+  {if $goods_list.0.is_team gt 0}
+        <div class="step">
+            <div class="step_hd">
+                拼团玩法<a class="step_more" href="tuan_rule.php">查看详情</a>
+            </div>
+            <div class="step_list">
+                <div class="step_item">
+                    <div class="step_num">1</div>
+                    <div class="step_detail">
+                        <p class="step_tit">选择
+                            <br>心仪商品</p>
+                    </div>
+                </div>
+                <div class="step_item step_item_on">
+                    <div class="step_num">2</div>
+                    <div class="step_detail">
+                        <p class="step_tit">支付开团
+                            <br>或参团</p>
+                    </div>
+                </div>
+                <div class="step_item">
+                    <div class="step_num">3</div>
+                    <div class="step_detail">
+                        <p class="step_tit">等待好友
+                            <br>参团支付</p>
+                    </div>
+                </div>
+                <div class="step_item">
+                    <div class="step_num">4</div>
+                    <div class="step_detail">
+                        <p class="step_tit">达到人数
+                            <br>团购成功</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+  {/if}
+        
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script>
+
+var notExpress = {$notExpress};
+function done(thisObj,pay_type){
+  $('input[name="pay_type"]').val(pay_type);
+  var shipping_id    = $('input[name="shipping_id"]:checked').val() || 0;
+  var address_id     = $('input[name="address_id"]').val();
+  var point_id       = $('#select_point_id').val() || 0;
+  var checked_mobile = $('input[name="checked_mobile"]').val();
+  var package_one    = $('input[name="package_one"]').size();
+  //check
+  if(shipping_id == notExpress)
+  {
+    var reg = /^0?1[3|4|5|7|8][0-9]\d{8}$/;
+    if(point_id==undefined || point_id =='')
+    {
+      alert('请选择自提点')
+      return false;
+    }
+    if(!reg.test( checked_mobile )){
+      alert('未输入手机号码或号码有误')
+      return false;
+    }
+  }
+  else{
+      if(address_id==undefined || address_id =='')
+      {
+        alert('请选择配送方式')
+        return false;
+      }      
+  }
+  if (shipping_id ==0 && point_id ==0) {
+    alert("请选择配送方式");
+    return false;
+  };
+  /*
+  if(lat==null){
+    return false;
+  }*/
+  //$_POST['how_oos'] = isset($_POST['how_oos']) ? intval($_POST['how_oos']) : 0;
+    //$_POST['card_message'] = isset($_POST['card_message']) ? compile_str($_POST['card_message']) : '';
+    //$_POST['inv_type'] = !empty($_POST['inv_type']) ? compile_str($_POST['inv_type']) : '';
+    //$_POST['inv_payee'] = isset($_POST['inv_payee']) ? compile_str($_POST['inv_payee']) : '';
+    //$_POST['inv_content'] = isset($_POST['inv_content']) ? compile_str($_POST['inv_content']) : '';
+    //$_POST['postscript'] = isset($_POST['postscript']) ? compile_str($_POST['postscript']) : '';
+   thisObj.value='正在支付 请稍候';
+   var payment=document.forms[0].payment.value;
+   var bonus=document.forms[0].bonus.value;
+   var surplus='';
+   if(document.forms[0].surplus){
+     surplus=document.forms[0].surplus.value;
+   }
+   var data =$("#theForm").serialize();
+   {if $smarty.get.as=='change'}
+    data+='&chage=1';
+     
+   {/if}
+  Ajax.call('flow.php?step=json_done', data, done_response, 'POST', 'JSON');
+  // Ajax.call('flow.php?step=json_done', 'payment='+payment+'&bonus='+bonus+'&surplus='+surplus+"&lat={$lat}&lng={$lng}", done_response, 'POST', 'JSON');
+}
+//+"&lat="+lat+"&lng="+lng
+function jsApiCall(code,returnrul){
+	WeixinJSBridge.invoke('getBrandWCPayRequest',code,function(res){
+			WeixinJSBridge.log(res.err_msg);
+			
+		//	alert(res.err_code+'调试信息：'+res.err_desc+res.err_msg);		
+			if(res.err_msg.indexOf('ok')>0){
+				window.location.href=returnrul;
+			}else{
+				window.location.href=returnrul;
+			}
+		});
+}
+		function callpay(code,returnrul)
+		{
+			if (typeof WeixinJSBridge == "undefined"){
+			    if( document.addEventListener ){
+			        document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+			    }else if (document.attachEvent){
+			        document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+			        document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+			    }
+			}else{
+			    jsApiCall(code,returnrul);
+			}
+		}
+		
+function done_response(result){
+   // return false;
+	if(result.error==0){
+		if(result.pay_code=='wxpay'){
+			callpay(result.content.jsApiParameters,result.content.returnrul);
+		}
+		else if(result.pay_code=='alipay'){
+			window.location='toalipay.php?order_id='+result.order_id;
+		}
+	}else if(result.error==1){
+		//alert(result.url);
+		window.location=result.url;
+	}else if(result.error==2){
+		alert(result.message);
+		$('#btn_pay_now').val('立即支付');
+	}
+	
+}
+/*
+wx.config({
+    debug: false,//这里是开启测试，如果设置为true，则打开每个步骤，都会有提示，是否成功或者失败
+    appId: '{$appid}',
+    timestamp: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+    nonceStr: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+    signature: '{$signature}',
+    jsApiList: [
+      // 所有要调用的 API 都要加到这个列表中
+        'checkJsApi',
+        'openLocation',
+        'getLocation'
+    ]
+});
+wx.ready(function () {
+    
+    wx.checkJsApi({
+    	
+        jsApiList: [
+            'getLocation'
+        ],
+        success: function (res) {
+             //alert(JSON.stringify(res));
+            // alert(JSON.stringify(res.checkResult.getLocation));
+            if (res.checkResult.getLocation == false) {
+            	document.forms[0].share_pay.disabled=false;
+                alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
+                return;
+            }
+        }
+    });
+    wx.getLocation({
+        success: function (res) {
+            var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+            var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+            var speed = res.speed; // 速度，以米/每秒计
+            var accuracy = res.accuracy; // 位置精度
+           
+            document.forms[0].share_pay.disabled=false;
+            //alert(document.getElementById("share_pay").style.disabled);
+            lat=latitude;
+            lng=longitude;
+            
+        },
+        cancel: function (res) {
+        	document.forms[0].share_pay.disabled=false;
+            //alert('用户拒绝授权获取地理位置');
+        }
+    });
+    
+   
+    
+}); */
+</script>
+    <!-- {/if} -->
+    <!-- {if $step eq "done"} -->
+    <div class="message">
+        <h3>温馨提示</h3>
+        <p>您的订单已提交成功!</p>
+        <p>{$lang.remember_order_number}: <font>{$order.order_sn}</font></p>
+        <!-- {if $pay_online} -->
+        <!-- 如果是线上支付则显示支付按钮 -->
+        <p>{$pay_online}</p>
+        <!-- {/if} -->
+        <!-- 
+        <p>{$order_submit_back}</p> -->
+    </div>
+    <!-- {/if} -->
+</div>
+</body>
+<script type="text/javascript">
+var process_request = "{$lang.process_request}";
+{foreach from=$lang.passport_js item=item key=key}
+var {$key} = "{$item}";
+{/foreach}
+var username_exist = "{$lang.username_exist}";
+var compare_no_goods = "{$lang.compare_no_goods}";
+var btn_buy = "{$lang.btn_buy}";
+var is_cancel = "{$lang.is_cancel}";
+var select_spe = "{$lang.select_spe}";
+</script>
+</html>

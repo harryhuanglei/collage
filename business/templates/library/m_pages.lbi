@@ -1,0 +1,8 @@
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<form name="selectPageForm" action="{$smarty.server.PHP_SELF}" method="get">
+ <div class="pagebar">
+  {if $pager.page_prev}<a class="prev" href="{$pager.page_prev}">{$lang.page_prev}</a>{else}<span>{$lang.page_prev}</span>{/if}
+  {if $pager.page_next}<a class="next" href="{$pager.page_next}">{$lang.page_next}</a>{else}<span>{$lang.page_next}</span>{/if}
+</div>
+</form>

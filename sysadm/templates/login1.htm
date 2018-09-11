@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{$lang.cp_home}{if $ur_here} - {$ur_here}{/if}</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="css/login.css" rel="stylesheet" type="text/css" />
+{insert_scripts files="../js/utils.js,validator.js"}
+<script language="JavaScript">
+<!--
+// 这里把JS用到的所有语言都赋值到这里
+{foreach from=$lang.js_languages key=key item=item}
+var {$key} = "{$item}";
+{/foreach}
+{literal}
+if (window.parent != window)
+{
+  window.top.location.href = location.href;
+}
+{/literal}
+//-->
+</script>
+</head>
+<body>
+<div class="loginbox">
+    <div class="logo"></div>
+    <form method="post" action="privilege.php" name='theForm' onsubmit="return validate()">
+        <ul>
+        <li><label>用户名</label><input type="text" name="username" size="35" style="float:left;" /></li>
+        <li><label>密码</label><input type="password" name="password" size="35" style="float:left;" /></li>
+        {if $gd_version > 0}
+        <li><label>{$lang.label_captcha}</label><input type="text" name="captcha" class="capital" /><img src="index.php?act=captcha&{$random}" width="145" height="20" alt="CAPTCHA" border="1" onclick= this.src="index.php?act=captcha&"+Math.random() style="cursor: pointer;" title="{$lang.click_for_another}" /></li>
+        {/if}
+        <li><label>&nbsp;</label><input type="checkbox" value="1" name="remember" id="remember" style="float:left;" /><font style="float:left; padding:0 5px;">{$lang.remember}</font> 　<!--<a href="get_password.php?act=forget_pwd" style="float:left; color:#3399ff;">{$lang.forget_pwd}</a>--></li>
+        <li><input class="signin" type="submit" value="{$lang.signin_now}" /></li>
+        </ul>
+        <input type="hidden" name="act" value="signin" />
+    </form>
+</div>
+<div class="copyright">© xaphp.cn</div>
+<script language="JavaScript">
+<!--
+  document.forms['theForm'].elements['username'].focus();
+  {literal}
+  /**
+   * 检查表单输入的内容
+   */
+  function validate()
+  {
+    var validator = new Validator('theForm');
+    validator.required('username', user_name_empty);
+    //validator.required('password', password_empty);
+    if (document.forms['theForm'].elements['captcha'])
+    {
+      validator.required('captcha', captcha_empty);
+    }
+    return validator.passed();
+  }
+  {/literal}
+//-->
+</script>
+</body>

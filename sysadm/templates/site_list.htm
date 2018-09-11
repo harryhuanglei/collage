@@ -1,0 +1,58 @@
+<!-- $Id: link_list.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+
+<form method="post" action="" name="listForm">
+<!-- start ads list -->
+<div class="list-div" id="listDiv">
+{/if}
+
+<table cellpadding="3" cellspacing="1">
+  <tr>
+    <th>站点城市</th>
+    <!--th>站点LOGO</th-->
+    <th><a href="javascript:listTable.sort('link_url'); ">站点状态</a></th>
+    <th>操作</th>
+  </tr>
+  <tr>
+  {foreach from=$links_list item=link}
+  <tr>
+    <td align="center">{$link.region_name}</td>
+    <!--td align="center"><span>{if $link.site_logo}<img src="../{$link.site_logo}"  style="size:100px; height:100px">{/if}</span></td-->
+    <td align="center"><img src="images/{if $link.close eq 1}yes{else}no{/if}.gif"  onclick="listTable.toggle(this, 'is_close', {$link.id})" style="cursor:pointer;"/></td>
+    <td align="center" class="bnt_a">
+    <a href="site.php?act=edit&id={$link.id}" title="{$lang.edit}">{$lang.edit}</a>
+    <a href="javascript:;" onclick="listTable.remove({$link.id}, '请慎重操作')" title="{$lang.remove}">{$lang.remove}</a></span></td>
+    </td>
+  </tr>
+  {foreachelse}
+    <tr><td class="no-records" colspan="10">暂未开通</td></tr>
+  {/foreach}
+  <tr>
+    <td align="right" nowrap="true" colspan="10">{include file="page.htm"}</td>
+  </tr>
+</table>
+
+{if $full_page}
+</div>
+<!-- end ad_position list -->
+</form>
+
+<script type="text/javascript" language="JavaScript">
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+  {literal}
+  onload = function()
+  {
+    // 开始检查订单
+    startCheckOrder();
+  }
+  {/literal}
+</script>
+{include file="pagefooter.htm"}
+{/if}

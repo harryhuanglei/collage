@@ -1,0 +1,99 @@
+.login_input {
+    background-color: #fff;
+    border-top: 1px solid #dfdfdf;
+    border-bottom: 1px solid #dfdfdf;
+	margin-top:10px;
+}
+.input_group {
+    width: 100%;
+    -ms-flex-line-pack: center;
+    align-content: center;
+    height:50px;
+    color: #767676;
+    position: relative;
+    padding-top:5px;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+.input_group input {
+    width: 80%;
+    margin-left:15px;
+    height:30px;
+    font-size:16px;
+    color: #4a4a4a;
+    float: left;
+    margin-top: 1%;
+	border: none;
+}
+.phone_icon {
+    display: inline-block;
+    background: url(../images/phone_sprite.png) no-repeat;
+    background-size: 66.66667px 66.66667px;
+    float: left;
+    margin-top: 6px;
+}
+#icon1 {
+    background-position: 0 0;
+    width: 17px;
+    height: 26px;
+}
+#icon2 {
+    background-position: -20px 0;
+    width: 18px;
+    height: 23px;
+}
+
+.input_hr {
+    width: 90%;
+    height: 1px;
+    border: none;
+    border-top: 1px solid #eceded;
+    margin-left: 10%;
+}
+#code {
+    width: 40%;
+}
+#code_button {
+    float: right;
+    border: 1px solid #ef293b;
+    border-radius: 3px;
+    width:100px;
+    height:34px;
+    background: #fff;
+    color: #ef293b;
+    font-size:14px;
+    margin-top:3px;
+}
+.error {
+    width: 100%;
+    height: 20px;
+}
+
+.error .text-error {
+    padding-top: 1%;
+    margin-top: 0;
+    color: red;
+	padding-left: 5%;
+}
+#submit_button, .submit_button_login {
+    display: block;
+    width: 93%;
+    height:40px;
+    font-size:16px;
+    margin-left: auto;
+    margin-right: auto;
+	background: #de3025;
+    border: none;
+    color: #fff;
+    border-radius: 4px;
+    margin-top:10px;
+}
+.submit_button_login {
+    background: #fff;
+    border: 1px solid #de3025;
+    color: #de3025;
+    border-radius: 4px;
+    margin-top: 2%;
+	line-height:40px;
+	text-align: center;
+}

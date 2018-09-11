@@ -1,0 +1,13 @@
+<!-- {foreach from=$pic_list item=item} -->
+
+					<li>
+
+						<a href="{$item.pic}"  target="_blank"><img src="{$item.pic}" width="200" height="200"></a>
+
+						<a href="" class="name">{$item.pic_name}</a>
+
+						<div class="r"><!--<a href="?act=edit_pic&id={$item.id}">更换</a>--><a href="javascript:;" onclick="if (confirm('确定要删除吗')) drop_delete_pic('{$item.id}')">删除</a></div>
+
+					</li>
+
+					<!--{/foreach}-->

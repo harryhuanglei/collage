@@ -1,0 +1,311 @@
+
+
+<!-- #BeginLibraryItem "/library/header.lbi" --><!-- #EndLibraryItem --><body >
+
+
+<!-- #BeginLibraryItem "/library/lift_menu.lbi" --><!-- #EndLibraryItem -->
+<script type="text/javascript" src="templates/js/public_tab.js"></script>
+<!--{if $action eq 'team_order'}-->
+    <div class="main" id="main">
+
+    <div class="maintop">
+
+      <img src="templates/images/title_pics.png" /><span>订单管理</span>
+    </div>
+
+    <div class="maincon">
+      <div class="conbox" style="position:relative;">
+      <div class="contitlelist">
+
+        <span>团购列表</span>
+               <div class="searchdiv">
+            <form id="" name="form_order" method="get" action="index.php">
+        <!-- <div>订单状态：</div>
+        <select name="composite_status" id="composite_status">
+                <option value="-1">请选择</option>
+                  {html_options options=$status_list selected=$filter.composite_status}
+                </select>
+
+<input type="text" value="{$filter.order_sn}" placeholder='订单号' class="input" name="order_sn">
+
+<div>起止时间：</div>
+<input class="Wdate" value="{$filter.start_date}" type="text" onfocus="WdatePicker({dateFmt:'yyyy-M-d HH:mm'})" readonly name="start_time">
+<div>~</div>
+<input class="Wdate" value="{$filter.end_date}" type="text" onfocus="WdatePicker({dateFmt:'yyyy-M-d HH:mm'})" readonly name="end_time"> --> 
+ <div>开团状态</div>
+    <select name="team_status" id="team_status">
+      <option value="-1">请选择</option>
+   <option {if $filter.team_status eq 0} selected="selected"{/if} value="0">团购待付款</option>
+     <option {if $filter.team_status eq 1} selected="selected"{/if} value="1">团购正在进行中</option>
+  <option  {if $filter.team_status eq 2} selected="selected"{/if}value="2">团购成功</option>
+  <option  {if $filter.team_status eq 3} selected="selected"{/if}value="3">团购失败</option>
+    </select>        
+      <input name="act" type="hidden" value="{$action}" />
+       <input type="submit" class="btn" name="" value="搜索">
+  <input name="op" type="hidden" value="team_order" />
+                            </form>
+
+                        </div>
+      </div>
+
+<form id="form_data" action="index.php" method="post" name="myform">
+ <script>
+var order_sn=document.forms['form_order'].order_sn.value;
+var composite_status=document.forms['form_order'].composite_status.value;
+var start_time=document.forms['form_order'].start_time.value;
+var end_time=document.forms['form_order'].end_time.value;
+
+var str="order_sn="+order_sn+"&composite_status="+composite_status+"&start_time="+start_time+"&end_time="+end_time+"&action={$action}";
+
+function order_d(){ 
+  
+  window.location="index.php?op=order&act=order_download2&"+str;
+}
+</script>
+        <table cellspacing="0" cellpadding="0" class="listtable">
+        <tr>
+          <th class="center"><input type="checkbox" name="checkbox" onclick='listTable.selectAll(this, "order_id")' />团购编号 </th>
+            <th class="center">商品名称</th>
+			<th class="center">商品编号</th>          
+            <th class="center">状态</th>
+            <th class="center">所需人数</th>
+            <th class="center">缺少人数</th>
+			<th class="center">开团时间</th>
+                      <th class="center">到期时间</th>
+                      <th class="center">用户名</th>
+                      <th class="center">授权ID</th>
+               <th>操作列</th>
+            </tr>
+
+                      <!--{foreach from=$order_list item=order_list}-->
+
+          <tr>
+            <td align="center"><input type="checkbox"  name="order_id[]" id="order_id" value="{$order_list.team_sign}" style="height:36px;line-height:36px;" /> {$order_list.team_sign}</td>
+			<td align="center">{$order_list.goods_name}</td>
+			<td align="center">{$order_list.goods_sn}</td>
+
+                      <td align="center">{$lang.team_status[$order_list.team_status]}</td>
+
+                      <td align="center">{$order_list.team_num}</td>
+            <td align="center">{$order_list.team_lack_num}</td>
+                      <td align="center">{$order_list.team_start_date}</td>
+					  <td align="center">{$order_list.team_end_date}</td>
+					  
+                      <td align="center">{$order_list.uname}</td>
+
+            <td align="center">{$order_list.openid}</td>
+
+            <td align="center">
+
+                       <a href="?op=team_order&act=teammen_list&team_sign={$order_list.team_sign}">查看</a> 
+              </td>
+        </tr>
+
+          <!--{/foreach}-->
+</table>
+            </form>    
+
+      </div>
+     <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+    </div>
+</div>
+
+<!--{/if}--> 
+  <!--{if $action eq 'teammen_list'}-->
+  
+      <div class="main" id="main">
+    <div class="maintop">
+      <img src="templates/images/title_pics.png" /><span>订单管理</span>
+    </div>
+    <div class="maincon">
+      <div class="contitlelist">
+        <span>团详情</span>
+                <div class="titleright">
+          <a href="?op=team_order&act=team_order
+">团列表</a>
+        </div>
+
+        
+
+      </div>
+
+      <div class="conbox">
+
+        <form action="?op=team_order&act=team_operate" method="post" name="theForm">
+
+<div class="list-div" style="margin-bottom: 5px">
+
+<table width="100%" cellpadding="3" cellspacing="1">
+
+  <tr>
+
+    <th colspan="4">团信息</th>
+
+  </tr>
+
+  <tr>
+
+    <td width="18%"><div align="right"><strong>团编号：</strong></div></td>
+
+    <td width="34%">{$teammen_info.team_sign}<input name="team_sign" type="hidden" value="{$teammen_info.team_sign}" /></td>
+
+    <td width="15%"><div align="right"><strong>开团数量：</strong></div></td>
+
+    <td>已满:{$teammen_info.teammen_num}总数:{$teammen_info.team_num}</td>
+
+  </tr>
+
+  <tr>
+
+    <td><div align="right"><strong>开团时间：</strong></div></td>
+
+    <td>{$teammen_info.team_start_date}</td>
+
+    <td><div align="right"><strong>结束时间：</strong></div></td>
+
+    <td>{$teammen_info.team_end_date}</td>
+
+  </tr>
+  <tr>
+
+    <td><div align="right"><strong>团状态：</strong></div></td>
+
+    <td>{$lang.team_status[$teammen_info.team_status]}</td>
+
+  </tr>
+  <tr>
+
+    <th colspan="4">商品信息</th>
+
+  </tr>
+  <tr>
+
+    <td><div align="right"><strong>商品名称：</strong></div></td>
+
+    <td>{$goods_info.goods_name}</td>
+
+    <td><div align="right"><strong>团购价格：</strong></div></td>
+
+    <td>{$goods_info.team_price}</td>
+
+  </tr>
+  <tr>
+
+    <td><div align="right"><strong>商品价格：</strong></div></td>
+
+    <td>{$goods_info.shop_price}</td>
+
+    <td><div align="right"><strong>团购人数：</strong></div></td>
+
+    <td>{$goods_info.team_num}</td>
+
+  </tr>
+  
+</table>
+
+</div>
+
+
+
+<!-- 商品信息 -->
+
+<div class="list-div" style="margin-bottom: 5px">
+
+<table width="100%" cellpadding="3" cellspacing="1">
+
+  <tr>
+
+    <th colspan="12" scope="col">参与信息</th>
+
+    </tr>
+
+  <tr>
+
+    <td scope="col"><div align="center"><strong>用户头像</strong></div></td>
+
+    <td scope="col"><div align="center"><strong>标签</strong></div></td>
+
+    <td scope="col"><div align="center"><strong>用户昵称</strong></div></td>
+
+    <td scope="col"><div align="center"><strong>收货人</strong></div></td>
+
+    <td scope="col"><div align="center"><strong>参与时间</strong></div></td>
+
+    <td scope="col"><div align="center"><strong>团购状态</strong></div></td>
+
+    <td scope="col"><div align="center"><strong>订单号</strong></div></td>
+
+    <td scope="col"><div align="center"><strong>微信单号</strong></div></td>
+	
+	<td scope="col"><div align="center"><strong>订单状态</strong></div></td>
+	
+	<td scope="col"><div align="center"><strong>下单时间</strong></div></td>
+	
+	<td scope="col"><div align="center"><strong>商品编号</strong></div></td>
+	
+	<td scope="col"><div align="center"><strong>总金额</strong></div></td>
+
+  </tr>
+
+  {foreach from=$teammen_list item=teammen_list}
+
+  <tr>
+
+    <td align="center"><img src="{$teammen_list.headimgurl}" width="50"></td>
+
+    <td align="center">{if $teammen_list.team_first eq 1}团长{else}团员{/if}</td>
+
+    <td align="center">{$teammen_list.uname}</td>
+
+    <td align="center">{$teammen_list.consignee|escape} <br />{$teammen_list.address|escape}</td>
+	
+	<td align="center">{$teammen_list.formated_pay_date}</td>
+
+    <td align="center">{$lang.team_status[$teammen_list.team_status]}</td>
+
+    <td align="center">{$teammen_list.order_sn}</td>
+
+    <td align="center">{$teammen_list.transaction_id}</td>
+
+    <td align="center">{$lang.os[$teammen_list.order_status]},{$lang.ps[$teammen_list.pay_status]},{$lang.ss[$teammen_list.shipping_status]}</td>
+
+	<td align="center">{$teammen_list.short_order_time}</td>
+	
+	<td align="center">{$teammen_list.goods_id}</td>
+	
+	<td align="center">{$teammen_list.formated_total_fee}</td>
+
+  </tr>
+
+  {/foreach}
+  
+  <tr>
+
+    <td colspan="12">{if $teammen_info.team_status eq 1}<input type="submit" class="button" value="立即成团" name="team_status">{/if}</td>
+
+  </tr>
+
+</table>
+
+</div>
+
+
+
+<div class="list-div" style="margin-bottom: 5px">
+
+</div>
+
+
+<div class="list-div" style="margin-bottom: 5px">
+
+</div>
+
+</form>
+    </div>
+	<!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+    </div>
+</div>
+ <!--{/if}--> 
+
+</body>
+</html>

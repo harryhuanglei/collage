@@ -1,0 +1,7 @@
+<!-- {foreach from=$consignee_list item=consignee key=sn} -->
+<div class="address">
+    <input name="address_id" onclick="show_address1({$consignee.address_id})" type="radio" id="address_id_{$consignee.address_id}" value="{$consignee.address_id}" {if $s_address_id eq $consignee.address_id }checked="checked"{/if}/>
+    <p>{$consignee.consignee}&nbsp;&nbsp;{$consignee.mobile}<br/>
+        {$consignee.province_name}{$consignee.city_name}{$consignee.district_name}{$consignee.address},&nbsp;&nbsp;<a href="javascript:;" onclick="show_address({$consignee.address_id})">修改</a>&nbsp; <a href="javascript:;" onclick="drop_consignee({$consignee.address_id})">删除</a></p>
+</div>
+<!-- {/foreach} -->

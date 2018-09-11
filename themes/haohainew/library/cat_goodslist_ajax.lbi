@@ -1,0 +1,10 @@
+<div class="pic">
+    <a href="{if $item.goods_number gt 0}{$item.url}&uid={$uid}{else}javascript:void(0);{/if}"><img goods_id="{$item.goods_id}" src="{$item.goods_thumb}"></a>
+</div>
+<div class="info">
+    <p class="tit"><a href="{$item.url}&uid={$uid}">{$item.goods_name}</a></p>
+    <p>
+	    <font>{$item.shop_price}</font>
+		<del>{$item.market_price}</del>
+	</p>
+</div>

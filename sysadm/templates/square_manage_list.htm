@@ -1,0 +1,132 @@
+<!-- $Id: announcement_list.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+
+{if $full_page}
+
+{include file="pageheader.htm"}
+
+{insert_scripts files="jquery.js,../js/utils.js,listtable.js"}
+
+<form method="post" action="" name="listForm">
+
+<div class="list-div" id="listDiv">
+
+{/if}
+
+<table cellpadding="3" cellspacing="1">
+
+  <tr>
+
+    <th>商品名称</th>
+	
+    <th>团购/单独购</th>
+	
+    <th> 是否加精</th>
+
+    <th>发布人</th>
+    
+    <th>发布时间</th>
+
+    <th>点赞数量</th>
+  
+    <th>评论数量</th>
+
+  <!--   <th>{$lang.handler}</th> -->
+
+  </tr>
+
+  {foreach from=$square item=list}
+
+  <tr>
+   <!--  <td align="center"><span>{$list.goods_name|escape:html}</span></td> -->
+   <td align="center"><span>{$list.goods_name}</span></td>
+    <td align="center">{if $list.team_sign}团购{else}单独购{/if}</td>
+    <td align="center">
+          <a href="javascript:;" id="va"  onclick="return changes('{$list.order_id}','{$list.goods_id}', this);">{if $list.is_boutique eq 1}是{else}否{/if}</a></td>
+          <input type="hidden" name="is_boutique" value="{$list.is_boutique}" id="boutique" />
+    <td align="center">{$list.uname}</td>
+    <td align="center">{$list.square_add_time}</td>
+    <td align="center">{if $list.zan_num}{$list.zan_num}{else}0{/if}</td>
+    <td align="center">{if $list.comment_num}{$list.comment_num}{else}0{/if}</td>
+   <!--  <td align="center" class="bnt_a">
+   
+   </td> -->
+  </tr>
+
+  {foreachelse}
+
+    <tr><td colspan="6" align="center" class="no-records">还没有人发布！！！</td></tr>
+
+  {/foreach}
+
+  <tr>
+
+    <td align="right" nowrap="true" colspan="6">{include file="page.htm"}</td>
+
+  </tr>
+
+</table>
+
+{if $full_page}
+
+</div>
+
+</form>
+<script type="text/javascript">
+  
+function changes(order_id,goods_id,obj){
+  var is_boutique = $('#boutique').val();
+       $.ajax({   
+          type:"POST",
+          url:"square_manage.php?act=change",
+          dataType:"text",
+          data:{"is_boutique":is_boutique,"order_id":order_id,"goods_id":goods_id},
+          success:function(res) {
+            var res = $.parseJSON(res);
+            if (res.is_boutique == 1) {
+                $(obj).text('是');
+                document.getElementById('boutique').value = res.is_boutique;
+            }else{
+                 $(obj).text('否');
+                document.getElementById('boutique').value = res.is_boutique;
+            }
+            
+         
+          }
+      });
+
+}
+
+
+
+</script>
+<script type="text/javascript" >
+
+  listTable.recordCount = {$record_count};
+
+  listTable.pageCount = {$page_count};
+
+
+  {foreach from=$filter item=item key=key}
+
+  listTable.filter.{$key} = '{$item}';
+
+  {/foreach}
+
+  {literal}
+
+  onload = function()
+
+  {
+
+    startCheckOrder();
+
+  }
+
+  {/literal}
+
+</script>
+
+{include file="pagefooter.htm"}
+
+{/if}
+

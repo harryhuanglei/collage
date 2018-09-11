@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/login.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,user.js,getcode.js'}
+<body>
+<!--#登录界面 start-->
+<!-- {if $action eq 'login'} -->
+<div class="container">
+	<form name="formLogin" action="user.php" method="post" onSubmit="return userLogin()">
+		<div class="login_input">
+			<div class="input_group">
+				<label for="mobile_phone" id="icon1" class="phone_icon"></label>
+				<input type="tel" id="mobile_phone" name="mobile_phone" value="" placeholder="手机号码">
+			</div>
+			<hr class="input_hr">
+			<div class="input_group">
+				<label for="user_mobile" id="icon2" class="phone_icon"></label>
+				<input type="tel" id="code" name="code" value="" placeholder="验证码">
+				<button type="button" id="code_button" onclick="validate_mobile()">发送验证码</button>
+			</div>
+		</div>
+		<div class="error">
+			<p class="text-error" style="display: none;"></p>
+		</div>
+		<input type="hidden" name="act" value="act_login" />
+        <input type="hidden" name="back_act" value="{$back_act}" />
+        <input type="submit" name="submit" id="submit_button" value="登录" />
+		<!--a href="user.php?act=register" class="submit_button_login">注册</a-->
+		
+	</form>
+<!--{/if}-->
+<!--#登录界面 end-->
+</body>
+<script type="text/javascript">
+var process_request = "{$lang.process_request}";
+{foreach from=$lang.passport_js item=item key=key}
+var {$key} = "{$item}";
+{/foreach}
+var username_exist = "{$lang.username_exist}";
+</script>
+</html>

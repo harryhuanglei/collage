@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/flexslider.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,jquery.flexslider-min.js'}
+</head>
+<body>
+<div class="container">
+    <div class="flexslider">
+        <ul class="slides">
+            <!-- {foreach from=$pictures item=picture name=ptab}-->
+            <li><img src="{$picture.img_url}"/></li>
+            <!--{/foreach}-->
+        </ul>
+    </div>
+    <script type="text/javascript">
+        $(function() {
+            $('.flexslider').flexslider({
+                animation: "slide",
+                slideDirection: "horizontal"
+            });
+        });
+    </script>
+	<div class="tuan_info">
+	    <form action="exchange.php?act=buy" method="post" name="HHS_FORMBUY" id="HHS_FORMBUY" >
+		<div class="g_box">
+            <div class="g_name">{$goods.goods_name}</div>
+            <div class="g_brief">{$goods.goods_brief}</div>
+        </div>
+		<div class="spec_select">
+		    <ul>
+			    {foreach from=$specification item=spec key=spec_key}
+			    <li>
+				    <span>{$spec.name}</span>
+					{foreach from=$spec.values item=value key=key}
+					<input type="radio" name="spec_{$spec_key}" value="{$value.id}" id="spec_value_{$value.id}" {if $key eq 0}checked{/if} /><label for="spec_value_{$value.id}">{$value.label}</label>
+					{/foreach}
+				</li>
+				{/foreach}
+			</ul>
+		</div>
+		<input type="hidden" name="goods_id" value="{$goods.goods_id}" />
+        <input type="submit" value="{$lang.exchange_goods}" class="duihuan"/>  
+		  
+		</form>
+	</div>
+	<div class="pro_detial">
+        <h3><i></i>图文详情</h3>
+        <div class="pro_con">
+            {$goods.goods_desc}
+        </div>
+    </div>
+</div>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+</html>

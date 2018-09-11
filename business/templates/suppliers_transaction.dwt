@@ -1,0 +1,5963 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>商家管理平台</title>
+<link href="templates/css/layout.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../../js/haohaios.js"></script>
+<script type="text/javascript" src="../../js/jquery.js"></script>
+<script type="text/javascript" src="../../js/user.js"></script>
+<script type="text/javascript" src="../../js/region.js"></script>
+<script type="text/javascript" src="../../js/utils.js"></script>
+<script type="text/javascript" src="templates/js/main.js"></script>
+<script type="text/javascript" src="templates/js/supp.js"></script>
+<script type="text/javascript" src="../../{$admin_path}/js/listtable.js"></script>
+<script language="javascript" type="text/javascript" src="../../js/DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="templates/js/public_tab.js"></script>
+<script>
+var process_request = "{$lang.process_request}";
+
+	
+</script>
+</head>
+<body >
+
+
+  <!--{if $action eq 'commission_desc'}-->
+  <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_goods.png" /><span>订单管理</span>
+		</div>
+        <div class="maincon">
+			<div class="contitlelist">
+            	<span>佣金说明</span>
+            </div>
+		  <div class="conbox">
+<table cellspacing="0" cellpadding="0" class="listtable">
+    <tr>
+      <th class="left">编号</th>
+      <th class="left">分类</th>
+      <th class="left">佣金</th>
+    </tr>
+    {foreach from=$category_list name=id item=item}
+    <tr>
+      <td>{$smarty.foreach.id.iteration}</td>
+      <td><span>{$item.cat_name}</span></td>
+      <td><span>{$item.commission}%</span></td>
+    </tr>
+    {/foreach}
+  </table>
+        </div>
+       </div>
+        </div>
+  <!--{/if}-->
+    <!--{if $action eq 'delivery'}-->  
+     <script>
+ function change_order_card(id)
+ {
+	var result=Ajax.call('suppliers.php?act=change_order_card', 'id=' + id, null, 'POST', 'JSON',false);
+ 	if(result.error==0)
+	{
+		alert('系统超时');	
+		return false;
+	}
+	if(result.error ==1)
+	{
+		document.getElementById('over_msg').innerHTML = '已提货';
+	}
+	else
+	{
+		alert('系统错误');
+	}
+ }
+function order_code_check()
+ {
+	 var order_code = document.getElementById('order_code').value;
+	 var order_sn = document.getElementById('order_sn').value;
+	 if(order_sn =='')
+	 {
+		alert('请输入订单号');
+		return false; 
+	 }
+	 if(order_code=='')
+	 {
+		alet('请输入验证码');
+		return false; 
+	 }
+	var result=Ajax.call('suppliers.php?act=order_code_check_act', 'order_code=' + order_code+'&order_sn='+order_sn, null, 'POST', 'JSON',false);
+	if(result.error ==0)
+	{
+		alert('提货单还未指派或信息输入有误!');
+	}
+	else
+	{
+		document.getElementById('show_order_code_html').innerHTML = result.content;
+		
+	}
+ }
+function check_delivery_person()
+{
+	if(document.theForm.delivery_person.value=='')
+	{
+		alert('请输入提货人姓名');	
+		return false;
+	}
+		return true;	
+}
+ </script>
+	 
+           <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_article.png" /><span>订单管理</span>
+		</div>
+		<div class="maincon">
+    	<div class="contitleedit"><span>顾客提货</span></div>
+			<div class="conbox" >
+
+
+				<table cellspacing="0" cellpadding="0" class="edittable">
+					
+
+					<tr>
+                           <td class="right">订单号：</td>
+						<td><input type="text" id="order_sn" value="" class="input" size="35"></td>
+					</tr>
+					<!-- 
+					<tr>
+                         <td class="right">扫描二维码验证：</td>
+						<td>
+						<img src="http://qr.liantu.com/api.php?text={$link}&w=100&m=10">
+						</td>
+					</tr>
+					 -->
+
+                    
+                    <tr>
+                    						<td class="right">请输入用户提货码：</td>
+						<td><input type="text" id="order_code" value="" class="input" size="35"></td>
+
+</tr> 
+                       
+					<tr>
+						<td class="right"></td>
+						<td><input type="button" onclick="order_code_check();" value="验  证" class="btn"></td>
+					</tr>
+                    
+				</table>
+			</div>
+            <div class="conbox" id="show_order_code_html">
+            
+            </div>
+    </div>
+    </div>
+    <!--{/if}-->
+  <!--{if $action eq 'order_code_list'}-->
+  <div class="main" id="main">
+
+		<div class="maintop">
+
+			<img src="templates/images/title_goods.png" /><span>订单管理</span>
+
+		</div>
+
+        <div class="maincon">
+
+			<div class="contitlelist">
+
+            	<span>本地消费列表</span>
+
+            </div>
+
+		  <div class="conbox">
+
+  
+
+<table cellspacing="0" cellpadding="0" class="listtable">
+
+    <tr>
+
+      <th class="left"> 编号</th>
+
+      <th class="left">用户名</th>
+
+      <th class="left">验证码</th>
+
+      <th class="left">购买时间</th>
+
+      <th class="left">消费金额</th>
+
+      <th class="left">消费状态</th>
+
+      <th class="left">订单号</th>
+
+      <th class="left">手机号</th>
+
+      <th class="left">操作</th>
+
+    </tr>
+
+    {foreach from=$card_list item=card}
+
+    {if $card.password}
+
+    <tr>
+
+      <td>{$card.id}</td>
+
+      <td><span>{$card.user_name}</span></td>
+
+      <td><span>xxxx</span></td>
+
+      <td ><span>{$card.add_date}</span></td>
+
+      <td >{$card.goods_amount}</td>
+
+      <td >{if $card.is_sale}已消费{else}未消费{/if}</td>
+
+
+      <td>{$card.order_sn}</td>
+
+      <td> {$card.phone}</td>
+
+      <td >
+
+        <a href="javascript:;" onclick="listTable.remove({$card.id}, '您确定要删除此记录么？', 'remove')" title="删除">删除</a>
+
+      </td>
+
+    </tr>
+
+    {/if}
+
+    {foreachelse}
+
+    <tr><td class="no-records" colspan="8">没有记录</td></tr>
+
+    {/foreach}
+
+  </table>
+
+            </div>
+
+       </div>
+
+        </div>
+
+  <!--{/if}-->
+
+   <!--{if $action eq 'delivery_info'}-->
+     <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_goods.png" /><span>订单管理</span>
+		</div>
+        <div class="maincon">
+			<div class="contitlelist">
+            	<span>发货详情</span>
+            </div>
+		  <div class="conbox">
+            <form action="suppliers.php" method="post" name="theForm" >
+            <table width="100%" cellpadding="3" cellspacing="1">
+
+  <tr>
+
+    <th colspan="4">订单信息</th>
+
+  </tr>
+
+  <tr>
+
+    <td><div align="right"><strong>{$lang.delivery_sn_number}</strong></div></td>
+
+    <td>{$delivery_order.delivery_sn}</td>
+
+    <td><div align="right"><strong>{$lang.label_shipping_time}</strong></div></td>
+
+    <td>{$delivery_order.formated_update_time}</td>
+
+  </tr>
+
+  <tr>
+
+    <td width="18%" height="25"><div align="right"><strong>{$lang.label_order_sn}</strong></div></td>
+
+   <td width="34%" height="25">{$delivery_order.order_sn}{if $delivery_order.extension_code eq "group_buy"}<a href="group_buy.php?act=edit&id={$delivery_order.extension_id}">{$lang.group_buy}</a>{elseif $delivery_order.extension_code eq "exchange_goods"}<a href="exchange_goods.php?act=edit&id={$delivery_order.extension_id}">{$lang.exchange_goods}</a>{/if}
+
+    <td height="25"><div align="right"><strong>{$lang.label_order_time}</strong></div></td>
+
+    <td height="25">{$delivery_order.formated_add_time}</td>
+
+  </tr>
+  <tr>
+    <td><div align="right"><strong>{$lang.label_shipping}</strong></div></td>
+    <td>{if $exist_real_goods}{if $delivery_order.shipping_id > 0}{$delivery_order.shipping_name}{else}{/if} {if $delivery_order.insure_fee > 0}（{$lang.label_insure_fee}{$delivery_order.formated_insure_fee}）{/if}{/if}</td>
+    <td><div align="right"><strong>{$lang.label_shipping_fee}</strong></div></td>
+    <td>{$delivery_order.shipping_fee}</td>
+  </tr>
+  <tr>
+    <td height="25"><div align="right"><strong>{$lang.label_user_name}</strong></div></td>
+
+    <td height="25">{$delivery_order.user_name|default:$lang.anonymous}</td>
+{if $delivery_order.shipping_id  eq  $offlineID}
+    <td height="25"><div align="right"><strong>提货人：</strong></div></td>
+
+    <td height="25">{if $delivery_order.status neq 1}<input name="delivery_person" type="text" value="{$delivery_order.delivery_person}" {if $delivery_order.status eq 0} readonly="readonly" {/if}>{else}{$delivery_order.delivery_person}{/if}</td>
+{else}
+    <td height="25"><div align="right"><strong>快递单号：</strong></div></td>
+
+    <td height="25">{if $delivery_order.status neq 1}<input name="invoice_no" type="text" value="{$delivery_order.invoice_no}" {if $delivery_order.status eq 0} readonly="readonly" {/if}>{else}{$delivery_order.invoice_no}{/if}</td>
+{/if}
+  </tr></table><br />
+  <hr style="border-style:dashed;"/><br />
+  <table width="100%" cellpadding="3" cellspacing="1">
+  <tr>
+
+    <th height="25" colspan="4">{$lang.consignee_info}</th>
+
+    </tr>
+
+  <tr>
+
+    <td height="25"><div align="right"><strong>{$lang.label_consignee}</strong></div></td>
+
+    <td height="25">{$delivery_order.consignee|escape}</td>
+
+    <td height="25"><div align="right"><strong>{$lang.label_email}</strong></div></td>
+
+    <td height="25">{$delivery_order.email}</td>
+
+  </tr>
+
+  <tr>
+
+    <td height="25"><div align="right"><strong>{$lang.label_address}</strong></div></td>
+
+    <td height="25">[{$delivery_order.region}] {$delivery_order.address|escape}</td>
+
+    <td height="25"><div align="right"><strong>{$lang.label_zipcode}</strong></div></td>
+
+    <td height="25">{$delivery_order.zipcode|escape}</td>
+
+  </tr>
+  <tr>
+    <td height="25"><div align="right"><strong>{$lang.label_tel}</strong></div></td>
+
+    <td height="25">{$delivery_order.tel}</td>
+
+    <td height="25"><div align="right"><strong>{$lang.label_mobile}</strong></div></td>
+
+    <td height="25">{$delivery_order.mobile|escape}</td>
+
+  </tr>
+
+</table>
+<br />
+  <hr style="border-style:dashed;"/><br />
+<table width="100%" cellpadding="3" cellspacing="1">
+  <tr>
+    <th colspan="4">商家信息</th>
+  </tr>
+  <tr>
+    <td><div align="right"><strong>商家名称：</strong></div></td>
+    <td>{$suppliers_info.suppliers_name}</td>
+    <td><div align="right"><strong>商家地址：</strong></div></td>
+    <td>[{$suppliers_info.region}]{$suppliers_info.address}</td>
+  </tr>
+  <tr>
+    <td width="18%" height="25"><div align="right"><strong>联系方式：</strong></div></td>
+   <td width="34%" height="25">{$suppliers_info.phone}</td>
+    <td height="25"><div align="right"><strong></strong></div></td>
+    <td height="25"></td>
+  </tr>
+  </table>
+  <br />
+  <hr style="border-style:dashed;"/><br />
+
+
+ <table width="100%" cellpadding="3" cellspacing="1" >
+
+  <tr>
+
+    <th colspan="7" scope="col">{$lang.goods_info}</th>
+
+    </tr>
+
+  <tr>
+
+    <td align="center"><strong>{$lang.goods_name_brand}</strong></td>
+
+    <td align="center" ><strong>{$lang.goods_sn}</strong></td>
+
+    <td align="center" ><strong>{$lang.product_sn}</strong></td>
+
+    <td align="center" ><strong>{$lang.goods_attr}</strong></td>
+
+    <td align="center" ><strong>{$lang.label_send_number}</strong></td>
+ 	<td align="center" ><strong>单价</strong></td>
+    <td align="center" ><strong>小计</strong></td>
+  </tr>
+
+  {foreach from=$goods_list item=goods}
+
+  <tr>
+
+    <td align="center">
+
+    <a href="/goods.php?id={$goods.goods_id}" target="_blank">{$goods.goods_name} {if $goods.brand_name}[ {$goods.brand_name} ]{/if}
+    </td>
+    <td align="center">{$goods.goods_sn}</td>
+    <td align="center">{$goods.product_sn}</td>
+    <td align="center">{$goods.goods_attr|nl2br}</td>
+    <td align="center">{$goods.send_number}</td>
+ 	<td align="center">{$goods.goods_price}</td>
+    <td align="right">{$goods.goods_amount}</td>
+  </tr>
+
+  {/foreach}
+	<tr>
+		<td colspan="5"> </td>
+		<td align="right" colspan="2">商品总金额：{$total_goods_amount}</td>
+	</tr>
+</table>
+{if $smarty.session.role_id eq ''}
+<table cellpadding="3" cellspacing="1">
+
+
+
+  {if $delivery_order.status neq 1}
+
+  <tr>
+
+    <td><div align="right"><strong>{$lang.label_action_note}</strong></div></td>
+
+  <td colspan="5"><textarea name="action_note" cols="80" rows="3"></textarea></td>
+
+  </tr>
+
+  <tr>
+
+    <td><div align="right"><strong>{$lang.label_operable_act}</strong></div></td>
+
+    <td  align="left">
+    {if $delivery_order.status eq 2}
+    <input type="hidden" name="shipping_id" value="{$delivery_order.shipping_id}" />
+    <input name="delivery_confirmed" type="submit" value="确认发货" class="button"/>&nbsp;&nbsp;
+    {else}
+    已发货
+    {/if}
+    <td align="left"><input onclick="de_print();" name="delivery_print" type="button" value="打印" class="button"/>
+
+        <input name="order_id" type="hidden" value="{$delivery_order.order_id}">
+
+        <input name="delivery_id" type="hidden" value="{$delivery_order.delivery_id}">
+
+        <input name="act" type="hidden" value="{$action_act}">
+
+    </td>
+
+  </tr>
+
+  {/if}
+
+
+
+  
+
+</table>
+{/if}
+
+         </form>
+
+       
+
+            </div>
+
+       </div>
+
+        </div>
+
+   <!--{/if}-->
+
+<!--{if $action eq 'shipping_delivery_list'}-->
+
+<div class="main" id="main">
+  <div class="maintop"> <img src="templates/images/title_goods.png" /><span>订单管理</span> </div>
+  <div class="maincon">
+    <div class="contitlelist"> <span>发货列表</span>
+      <div class="searchdiv">
+        <form action="suppliers.php"  name="searchForm">
+          <input name="order_sn"  placeholder='订单号' value="{$filter.order_sn}" type="text" id="order_sn" size="15">
+          <input name="consignee" placeholder='{$lang.consignee|escape}' value="{$filter.consignee}" type="text" id="consignee" size="15">
+          <select name="status" id="status">
+            <option value="-1" selected="selected">发货状态</option>
+            <option value="0">已发货</option>
+            <option value="1">退货</option>
+            <option value="2">未发货</option>
+          </select>
+<!--           {if $smarty.session.role_id neq ''}
+
+          {else}
+          <select name="supp_account_id" id="supp_account_id">
+            <option value="-1" selected="selected">分店</option>
+       
+ {foreach from=$supp_account_list item=supp_account}
+
+            <option value="{$supp_account.account_id}" {if $supp_account.account_id eq $filter.supp_account_id} selected='selected'{/if}>{$supp_account.name}</option>
+     
+ {/foreach}
+
+          </select>
+          {/if} -->
+          <input name="act" type="hidden" value="shipping_delivery_list" />
+          <input type="submit" value="查询" class="btn" />
+        </form>
+      </div>
+      <div class="titleright"> <a href="javascript:void(0);" id="delivery_download">导出</a> <a href="javascript:void(0);" id="delivery_print" target="_blank">打印</a> </div>
+      <script >
+
+var str;
+
+var order_sn=document.forms['searchForm'].order_sn.value;
+
+var consignee=document.forms['searchForm'].consignee.value;
+
+var status=document.forms['searchForm'].status.value;
+
+str="order_sn="+order_sn+"&consignee="+consignee+"&status="+status;
+
+
+{if $smarty.session.role_id eq ''}
+
+var supp_account_id=document.forms['searchForm'].supp_account_id.value;
+
+str+="&supp_account_id="+supp_account_id;
+
+{/if}
+
+
+document.getElementById('delivery_download').href="suppliers.php?act=delivery_download&shipping_type=0&"+str;
+
+document.getElementById('delivery_print').href="suppliers.php?act=delivery_print&shipping_type=0&"+str;
+
+
+</script> 
+    </div>
+    <div class="conbox">
+      <table cellspacing="0" cellpadding="0" class="listtable">
+        <tr>
+          <!-- <th>分店</th> -->
+          <th>{$lang.order_sn}</th>
+          <th>{$lang.label_add_time}</th>
+          <th class="left">{$lang.consignee}</th>
+          <th class="left">发货时间</th>
+          <th class="left">发货状态</th>
+          <th class="left">操作</th>
+        </tr>
+        {foreach from=$delivery_list item=delivery key=dkey}
+        <tr>
+          <!-- <td class="middle">{if $delivery.supp_account_name}{$delivery.supp_account_name}{else}未指派{/if}</td> -->
+          <td class="middle">{$delivery.order_sn}</td>
+          <td  class="middle">{$delivery.add_time}</td>
+          <td><a href="mailto:{$delivery.email}"> {$delivery.consignee|escape}</a></td>
+          <td>{$delivery.update_time}</td>
+          <td>{if $delivery.status eq '0'}已发货{elseif $delivery.status eq '2'}未发货{else}退货{/if}</td>
+          <td><a href="suppliers.php?act=delivery_info&delivery_id={$delivery.delivery_id}&shipping_type=0">详情</a> 
+            
+            <!--                   <a onclick="{if(confirm('{$lang.confirm_delete}')){return true;}return false;}" href="delivery_info.php?act=operate&remove_invoice=1&delivery_id={$delivery.delivery_id}">{$lang.remove}</a>
+
+--></td>
+        </tr>
+        {/foreach}
+      </table>
+    </div>
+    <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem --> </div>
+</div>
+
+<!--{/if}--> 
+    <!--{if $action eq 'delivery_list'}-->
+
+       <div class="main" id="main">
+
+		<div class="maintop">
+
+			<img src="templates/images/title_goods.png" /><span>订单管理</span>
+
+		</div>
+
+        <div class="maincon">
+
+			<div class="contitlelist">
+
+            	<span>提货列表</span>
+
+                 <div class="searchdiv">
+
+        <form action="suppliers.php"  name="searchForm">
+
+ <input name="order_sn"  placeholder='订单号' value="{$filter.order_sn}" type="text" id="order_sn" size="15">
+
+    <input name="consignee" placeholder='{$lang.consignee|escape}' value="{$filter.consignee}" type="text" id="consignee" size="15">
+
+  
+    <select name="status" id="status">
+      <option value="-1" selected="selected">提货状态</option>
+      {html_options options=$lang.delivery_status selected=$filter.status }
+    </select>
+    <!-- {if 0} -->
+    <select name="delivery_pic" id="delivery_pic">
+      <option value="-1" selected="selected">提货单上传</option>
+      <option value="1">是</option>
+     <option value="0">否</option>
+    </select>
+    
+    {if $smarty.session.role_id neq ''}
+    {else} 
+     <select name="supp_account_id" id="supp_account_id">
+      <option value="-1" selected="selected">分店</option>
+ {foreach from=$supp_account_list item=supp_account}
+		<option value="{$supp_account.account_id}" {if $supp_account.account_id eq $filter.supp_account_id} selected='selected'{/if}>{$supp_account.name}</option>
+ {/foreach}
+    </select>
+   {/if}
+<!-- {/if} -->
+    <input name="act" type="hidden" value="delivery_list" />
+
+    <input type="submit" value="查询" class="btn" />
+
+  </form>
+      </div>
+      <div class="titleright">
+<a href="javascript:void(0);" id="delivery_download">导出</a>
+<a href="javascript:void(0);" id="delivery_print" target="_blank">打印</a>
+</div>
+<script >
+var str;
+var order_sn=document.forms['searchForm'].order_sn.value;
+var consignee=document.forms['searchForm'].consignee.value;
+var status=document.forms['searchForm'].status.value;
+str="order_sn="+order_sn+"&consignee="+consignee+"&status="+status;
+/*
+{if $smarty.session.role_id eq ''}
+var supp_account_id=document.forms['searchForm'].supp_account_id.value;
+str+="&supp_account_id="+supp_account_id;
+{/if}*/
+
+document.getElementById('delivery_download').href="suppliers.php?act=delivery_download&"+str;
+document.getElementById('delivery_print').href="suppliers.php?act=delivery_print&"+str;
+
+</script>
+            </div>
+			<div class="conbox">
+				<table cellspacing="0" cellpadding="0" class="listtable">
+
+					<tr>
+					  <th>分店</th>
+					  <th>{$lang.order_sn}</th>
+					  <th>提货人</th>
+
+					  <th>{$lang.label_add_time}</th>
+
+					  <th class="left">{$lang.consignee}</th>
+
+					  <th class="left">提货时间</th>
+
+					  <th class="left">提货状态</th>
+
+                      <th class="left">操作</th>
+
+					</tr>
+
+                     {foreach from=$delivery_list item=delivery key=dkey}
+
+                <tr>
+                  <td class="middle">{if $delivery.supp_account_name}{$delivery.supp_account_name}{else}未指派{/if}</td>
+
+                  <td class="middle">{$delivery.order_sn}</td>
+                  <td class="middle">{$delivery.delivery_person}</td>
+
+                  <td  class="middle">{$delivery.add_time}</td>
+
+                  <td><a href="mailto:{$delivery.email}"> {$delivery.consignee|escape}</a></td>
+
+                  <td>{$delivery.update_time}</td>
+
+                  <td>{$delivery.status_name}</td>
+
+                  <td>
+                   <a href="suppliers.php?act=delivery_info&delivery_id={$delivery.delivery_id}">详情</a>
+                 
+                 
+                 {if $delivery.status eq 0 and 0}
+                 {if $delivery.delivery_pic}
+                 <a href="{$delivery.delivery_pic}" target="_blank">提货单</a>
+                 {else}
+                 <span id="delivery_pic_{$delivery.delivery_id}">
+                  <a href="javascript:;" onclick="winopen('suppliers.php?act=delivery_upload&delivery_id={$delivery.delivery_id}','600','500');" >上传提货单</a>
+				</span>
+                {/if}
+                {/if}
+
+<!--                   <a onclick="{if(confirm('{$lang.confirm_delete}')){return true;}return false;}" href="delivery_info.php?act=operate&remove_invoice=1&delivery_id={$delivery.delivery_id}">{$lang.remove}</a>
+
+-->                  </td>
+
+                </tr>
+
+  				{/foreach}
+				</table>
+			</div>
+			     <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+		</div>
+
+        </div>
+        
+    <!--{/if}-->
+
+    <!--{if $action eq 'my_order'}-->
+
+      <div class="main" id="main">
+
+		<div class="maintop">
+
+			<img src="templates/images/title_article.png" /><span>结算管理</span>
+
+		</div>
+
+		<div class="maincon">
+
+    	<div class="contitlelist">        
+
+        <span>订单结算</span>
+
+         <div class="searchdiv">
+
+             <form method="post" name="account_form" action="suppliers.php">
+
+              <div>结算状态：</div>
+              <select id="settlement_status" name="settlement_status">
+              <option value="">请选择</option>
+              {html_options options=$lang.account_settlement_status selected=$filter.settlement_status}
+
+              </select>
+			 <div>结算单号：</div>
+              <input type="text"  value="{$filter.order_sn}" class="input" name="order_sn">
+              <div>结算起止时间：</div>
+             <input class="Wdate" value="{$filter.start_time}" type="text" name="start_time" readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-M-d HH:mm'})"/>     
+      <input class="Wdate" type="text" value="{$filter.end_time}" name="end_time" readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-M-d HH:mm'})"/>              
+              <input type="hidden" name="act"  value="my_order" />
+              <input type="submit" class="btn" name="" value="搜索">
+              </form>
+        </div>
+		<div class="titleright">
+		<a href="javascript:void(0);" id="account_download">导出</a>
+		<a href="javascript:void(0);" id="account_print" target="_blank">打印</a>
+		</div>
+<script>
+var settlement_status=document.forms['account_form'].settlement_status.value;
+var order_sn=document.forms['account_form'].order_sn.value;
+var start_time=document.forms['account_form'].start_time.value;
+var end_time=document.forms['account_form'].end_time.value;
+
+var str="settlement_status="+settlement_status+"&order_sn="+order_sn+"&start_time="+start_time+"&end_time="+end_time;
+document.getElementById('account_download').href="suppliers.php?act=account_download&"+str;
+document.getElementById('account_print').href="suppliers.php?act=account_print&"+str;
+
+</script>
+        </div>
+
+		<div class="conbox" >
+    	<form id="form_data" action="suppliers.php" method="post" name="myform">
+    	 <table class="listtable"  width="100%" border="0" cellpadding="5" cellspacing="1">
+        <tr>
+        <!-- 
+        <th >
+        <input type="checkbox" name="checkbox" onclick='listTable.selectAll(this, "id")' /></th>
+ -->
+          <th align="center" bgcolor="#FFFFFF">结算单号</th>
+          <!-- <th align="center" bgcolor="#FFFFFF">结算起止时间</th> --> 		
+          <th align="center" bgcolor="#FFFFFF">总金额</th>
+          <th align="center" bgcolor="#FFFFFF">平台佣金</th>
+          <th align="center" bgcolor="#FFFFFF">分销佣金</th>
+          <th align="center" bgcolor="#FFFFFF">结算总额</th>
+ 		  <th align="center" bgcolor="#FFFFFF">结算时间</th>
+           <th align="center" bgcolor="#FFFFFF">状态</th>
+			<th align="center" bgcolor="#FFFFFF">操作</th>
+        </tr>
+
+        <!-- {if $account_list} -->
+
+        <!--{foreach from=$account_list item=item}-->
+
+        <tr>
+<!-- 
+         <td class="checkbox"><input type="checkbox"  name="id[]" id="id" value="{$item.id}" /></td>
+ -->
+          <td align="center" bgcolor="#FFFFFF"><a href="suppliers.php?act=account_detail&suppliers_accounts_id={$item.id}">{$item.settlement_sn}</a></td>
+          <!-- <td align="center" bgcolor="#FFFFFF">{$item.start_time}<br />{$item.end_time}</td>
+           -->
+          <td align="center" bgcolor="#FFFFFF">{$item.total}</td>
+          <td align="center" bgcolor="#FFFFFF">{$item.commission}</td>
+          <td align="center" bgcolor="#FFFFFF">{$item.fenxiao_money}</td>
+          <td align="center" bgcolor="#FFFFFF">{$item.settlement_amount}</td>
+          <td align="center" bgcolor="#FFFFFF">{$item.add_time}</td>
+          <td align="center" bgcolor="#FFFFFF">{$lang.account_settlement_status[$item.settlement_status]}</td>
+
+           <td align="center" bgcolor="#FFFFFF"><a href="suppliers.php?act=account_detail&suppliers_accounts_id={$item.id}">明细</a></td>
+
+        </tr>
+
+        <!--{/foreach}-->
+
+       
+
+        <!-- {else} -->
+
+        <tr>
+
+          <td colspan="5" bgcolor="#FFFFFF">暂无可结算订单</td>
+
+        </tr>
+
+        <!-- {/if} -->
+
+      </table>
+
+       
+</form>
+{if 1}
+      <div class="blank"></div>
+      <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+      </div>
+{/if}
+         </div>
+
+     </div>
+
+       <!-- {/if} -->
+
+<!--{if $action eq 'account_detail'}-->
+
+      <div class="main" id="main">
+
+		<div class="maintop">
+
+			<img src="templates/images/title_article.png" /><span>结算管理</span>
+
+		</div>
+
+		<div class="maincon">
+
+    	<div class="contitlelist">        
+        <span>订单结算明细</span> 
+        <div class="titleright">
+<a href="suppliers.php?act=account_detail_download&suppliers_accounts_id={$suppliers_accounts_id}">导出</a>
+<a target="_blank" href="suppliers.php?act=account_detail_print&suppliers_accounts_id={$suppliers_accounts_id}">打印</a>
+</div>   
+         
+        </div>
+
+		<div class="conbox" >
+
+    	<form id="form_data" action="suppliers.php" method="post" name="myform">
+
+    	 <table class="listtable"  width="100%" border="0" cellpadding="5" cellspacing="1">
+
+        <tr>
+
+        <th align="center" bgcolor="#FFFFFF">序号</th>
+          <th align="center" bgcolor="#FFFFFF">订单号</th>
+          <th align="center" bgcolor="#FFFFFF">商品名称</th>
+           <th align="center" bgcolor="#FFFFFF">订单时间</th>
+           <th align="center" bgcolor="#FFFFFF">商品数量</th>		
+          <th align="center" bgcolor="#FFFFFF">订单金额</th>
+          <th align="center" bgcolor="#FFFFFF">平台佣金</th>
+          <th align="center" bgcolor="#FFFFFF">分销佣金</th>
+          <th align="center" bgcolor="#FFFFFF">结算金额</th>		
+        </tr>
+        <!-- {if $account_detail} -->
+
+        <!--{foreach from=$account_detail item=item name=name}-->
+        <tr> 
+         <td align="center" bgcolor="#FFFFFF">{$smarty.foreach.name.iteration}</td>
+          <td align="center" bgcolor="#FFFFFF"><a href="suppliers.php?act=order_info&order_id={$item.order_id}" title="查看详情">{$item.order_sn}</a></td>
+          
+          <td align="center" bgcolor="#FFFFFF">{$item.goods_name}</td>
+          
+          <td align="center" bgcolor="#FFFFFF">{$item.order_time}</td>
+          <td align="center" bgcolor="#FFFFFF">{$item.total_goods_num}</td>
+          <td align="center" bgcolor="#FFFFFF">{$item.amount}</td>
+          <td align="center" bgcolor="#FFFFFF">{$item.commission}</td>
+          <td align="center" bgcolor="#FFFFFF">{$item.fenxiao_money}</td>
+          <td align="center" bgcolor="#FFFFFF">{$item.money}</td>
+
+        </tr>
+        <!--{/foreach}-->
+		<tr>
+		 <td colspan="4" ></td> 
+          <td align="center" >合计</td> 
+          <td align="center" bgcolor="#FFFFFF">{$total_amount}</td>
+          <td align="center" bgcolor="#FFFFFF">{$total_commission}</td>
+          <td align="center" bgcolor="#FFFFFF">{$total_fenxiao}</td>   
+          <td align="center" bgcolor="#FFFFFF">{$total_money}</td>   
+        </tr>
+		<tr>
+		  <td colspan="4" >备注：
+		    <textarea name="accounts_desc" id="accounts_desc" cols="40" rows="3">{$accounts_desc}</textarea></td>
+		  <td align="center" >&nbsp;</td>
+		  <td align="center" bgcolor="#FFFFFF">&nbsp;</td>
+		  <td align="center" bgcolor="#FFFFFF">&nbsp;</td>
+		  <td align="center" bgcolor="#FFFFFF">&nbsp;</td>
+		  </tr>
+        <tr>
+		  <td colspan="4" align="left"> 
+		  <!--<input type="text" style="width:350px;" id="remark" placeholder="如有问题，请在这里提交" >
+		  <input type="button" name="" value="提交" onclick="account_detail_sub()">-->
+
+         
+         <table border="0">
+         <tr>
+         {if $settlement_status eq 1 or $settlement_status eq 10}
+         <td>
+         <input name="check" onclick="if (confirm('确定此操作')) account_confirm('{$suppliers_accounts_id}','account_confirm')" type="button" class="button"  value="审核">
+		</td>
+        <td>
+         <input name="check" onclick="if (confirm('确定此操作')) account_confirm('{$suppliers_accounts_id}','account_cancel')" type="button" class="button"  value="有疑问">
+		 </td>
+		  {elseif $settlement_status eq 2 or $settlement_status eq 3 or $settlement_status eq 5 }
+		   <td >{$lang.account_settlement_status[$settlement_status]}</td>
+		   {elseif $settlement_status eq 4}
+		   <td>
+		   <input name="check" onclick="if (confirm('确定此操作')) account_confirm('{$suppliers_accounts_id}','check_accountok')" type="button" class="button"  value="确认账户信息">
+		   &nbsp;&nbsp;&nbsp;&nbsp;
+			商家开户行：{$supp_row.bank_name} &nbsp;&nbsp;
+			户名：{$supp_row.bank_p_name} &nbsp;&nbsp;
+			账号：{$supp_row.bank_account} &nbsp;&nbsp;
+          </td>
+          {elseif $settlement_status eq 6}
+          <td><input name="check" onclick="if (confirm('确定已收款了?')) account_confirm('{$suppliers_accounts_id}','account_receive')" type="button" class="button"  value="确定已收款">
+          </td>
+          {/if}
+          </tr>
+          </table> 
+		  </td> 
+		  <td colspan="3" align="left" bgcolor="#FFFFFF"></td>
+		 </tr>
+		 <tr>
+<td  colspan="9" align="center">
+<table border="0" width="100%">
+<tr>
+	<th>身份：</th>
+	<th>操作时间</th>
+	<th>结算单状态</th>
+	<th>备注</th>
+</tr>
+{foreach from=$action_list2 item=item}
+<tr>
+	<td><div align="center">{$item.action_user}</div></td>
+	<td><div align="center">{$item.action_time}</div></td>
+	<td><div align="center">{$item.status_name}</div></td>
+	<td><div align="center">{$item.action_note}</div></td>
+	
+</tr>
+{/foreach}
+</table>
+		  </td>		 
+		 </tr>
+        <!-- {else} -->
+
+        <tr>
+
+          <td colspan="7" bgcolor="#FFFFFF">无可结算订单</td>
+
+        </tr>
+
+        <!-- {/if} -->
+
+      </table>
+</form>
+      <div class="blank"></div>
+      </div>
+         </div>
+     </div>
+       <!-- {/if} -->
+
+
+
+
+
+
+   <!--{if $action eq 'accounts_apply'}-->
+
+   <div class="main" id="main">
+
+		<div class="maintop">
+
+			<img src="templates/images/title_article.png" /><span>结算管理</span>
+
+		</div>
+
+		<div class="maincon">
+
+    	<div class="contitleedit"><span>账单结算</span></div>
+
+			<div class="conbox" >
+
+            <form name="formEdit" action="suppliers.php"  enctype="multipart/form-data" method="post" onSubmit="return userEdit()">
+
+      <table width="100%" border="0" cellpadding="5" class="edittable" cellspacing="1">
+
+                <tr>
+
+                  <td width="28%" align="right" bgcolor="#FFFFFF">提现总额： </td>
+
+                  <td width="72%" align="left" bgcolor="#FFFFFF"><span style="color:#FF0000; font-weight:bold;">{$price_total}-{$account_total}=￥{$account_total}</span>
+
+                  <input name="account" type="hidden" value="{$account_total}" />
+
+                  </td>
+
+                </tr>
+
+                <tr>
+
+                  <td align="right" bgcolor="#FFFFFF">开户行：</td>
+
+                  <td align="left" bgcolor="#FFFFFF">{$supp_config.bank_name}<input name="bank_name" type="hidden" value="{$supp_config.bank_name}" /></td>
+
+                </tr>
+
+                <tr>
+
+                  <td align="right" bgcolor="#FFFFFF">开户行姓名：</td>
+
+                  <td align="left" bgcolor="#FFFFFF">{$supp_config.bank_p_name}<input name="bank_p_name" type="hidden" value="{$supp_config.bank_p_name}" /></td>
+
+                </tr>
+
+                <tr>
+
+                  <td align="right" bgcolor="#FFFFFF">开户行账号：</td>
+
+                  <td align="left" bgcolor="#FFFFFF">{$supp_config.bank_account}<input name="bank_account" type="hidden" value="{$supp_config.bank_account}" /></td>
+
+                </tr>
+
+                <tr>
+
+                  <td align="right" bgcolor="#FFFFFF">备注：</td>
+
+                  <td align="left" bgcolor="#FFFFFF"><textarea name="apply_desc" id="apply_desc" cols="45" rows="2"></textarea></td>
+
+                </tr>
+
+                <tr>
+
+                  <td align="right" bgcolor="#FFFFFF">提现密码：</td>
+
+                  <td align="left" bgcolor="#FFFFFF"><input type="password"name="bank_password" class="input" id="bank_password" /></td>
+
+                </tr>
+
+                <tr>
+
+                	<td>&nbsp;</td>
+
+                  <td bgcolor="#FFFFFF">
+
+     				<input name="idx" type="hidden" value="{$idx}" />
+
+                  <input name="act" type="hidden" value="accounts_apply_act" />
+
+                    <input name="submit" type="submit" value="提交申请" class="btn" style="border:none;" />
+
+                  </td>
+
+                </tr>
+
+       </table>
+
+    </form>
+
+           </div>
+
+         </div>
+
+     </div>
+
+   <!--{/if}-->
+
+ <!--{if $action eq 'accounts_apply_list'}-->
+
+      <div class="main" id="main">
+
+		<div class="maintop">
+
+			<img src="templates/images/title_article.png" /><span>结算管理</span>
+
+		</div>
+
+		<div class="maincon">
+
+  
+
+        
+
+        	<div class="contitlelist">
+
+				<span>结算申请</span>
+
+                
+
+            
+
+			</div>
+
+        
+
+        
+
+			<div class="conbox" >
+
+            
+
+            
+
+             <table class="listtable" width="100%" border="0" cellpadding="5" cellspacing="1">
+
+        <tr>
+
+          <th align="center" bgcolor="#FFFFFF">提现金额</th>
+
+           <th align="center" bgcolor="#FFFFFF">提现时间</th>
+
+          <th align="center" bgcolor="#FFFFFF">备注</th>
+
+         <th align="center" bgcolor="#FFFFFF">状态</th>
+
+         <th align="center" bgcolor="#FFFFFF">操作</th>
+
+          
+
+        </tr>
+
+        <!-- {if $accounts_apply_list} -->
+
+        <!--{foreach from=$accounts_apply_list item=item}-->
+
+        <tr>
+
+          <td align="center" bgcolor="#FFFFFF">{$item.account}</td>
+
+          <td align="center" bgcolor="#FFFFFF">{$item.add_time}</td>
+
+          <td align="center" bgcolor="#FFFFFF">{$item.apply_desc}</td>
+
+          <td align="center" bgcolor="#FFFFFF">{if $item.apply_status eq 0}未结算{else}已结算{/if}</td>
+
+          <td align="center" bgcolor="#FFFFFF">{if $item.apply_status eq 0}<a href="?act=accounts_apply_del&id={$item.id}" 
+
+onclick="return confirm('确定要此操作吗');">取消申请</a>{else}已完成{/if}</td>
+
+       </tr>
+
+        <!--{/foreach}-->
+
+       
+
+        <!-- {else} -->
+
+        <tr>
+
+          <td colspan="5" bgcolor="#FFFFFF">暂无申请</td>
+
+        </tr>
+
+        <!-- {/if} -->
+
+      </table>
+
+      <div class="blank"></div>
+
+            
+
+            </div>
+
+                  <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+
+
+
+         </div>
+
+       </div>
+
+ 
+
+ 
+
+ <!--{/if}-->
+
+<!--{if $action eq 'order_code_check'}-->
+
+ <script type="text/javascript" src="/js/transport.js"></script>
+
+ <script type="text/javascript">
+
+ function change_order_card(id)
+
+ {
+
+	var result=Ajax.call('suppliers.php?act=change_order_card', 'id=' + id, null, 'POST', 'JSON',false);
+
+ 	if(result.error==0)
+
+	{
+
+		alert('系统超时');	
+
+		return false;
+
+	}
+
+	if(result.error ==1)
+
+	{
+
+		document.getElementById('over_msg').innerHTML = '已消费';
+
+	}
+
+	else
+
+	{
+
+		alert('系统错误');
+
+	}
+
+ }
+
+ function order_code_check()
+
+ {
+
+	 var order_code = document.getElementById('order_code').value;
+
+	 if(order_code=='')
+
+	 {
+
+		alet('请输入验证码');
+
+		return false; 
+
+	 }
+
+	var result=Ajax.call('suppliers.php?act=order_code_check_act', 'order_code=' + order_code, null, 'POST', 'JSON',false);
+
+ 	if(result.error ==0)
+
+	{
+
+		alert('验证码不正确，或无订单信息');
+
+	}
+
+	else
+
+	{
+
+		document.getElementById('show_order_code_html').innerHTML = result.content;
+
+		
+
+	}
+
+ }
+
+ </script>
+
+     <div class="main" id="main">
+
+		<div class="maintop">
+
+			<img src="templates/images/title_article.png" /><span>交易管理</span>
+
+		</div>
+
+		<div class="maincon">
+
+    	<div class="contitleedit"><span>提货码验证</span></div>
+
+			<div class="conbox" >
+
+				<table cellspacing="0" cellpadding="0" class="edittable">
+
+					<tr>
+
+						<td class="right">请输入用户提货码：</td>
+
+						<td><input type="text" id="order_code" value="" class="input" size="35"></td>
+
+					</tr>
+
+					<tr>
+
+						<td class="right"></td>
+
+						<td><input type="button" onclick="order_code_check();" value="验  证" class="btn"></td>
+
+					</tr>
+
+                    
+
+				</table>
+
+			</div>
+
+            <div class="conbox" id="show_order_code_html">
+
+            
+
+            </div>
+
+    </div>
+
+    </div>
+
+    
+
+    <!--{/if}-->
+
+    <!--订单列表-->
+
+    <!--{if $action eq 'goods_order' or $action eq 'goods_order2'}-->
+
+      <div class="main" id="main">
+
+		<div class="maintop">
+
+			<img src="templates/images/title_pics.png" /><span>订单管理</span>
+
+		</div>
+
+		<div class="maincon">
+			<div class="conbox" style="position:relative;">
+			<div class="contitlelist">
+
+				<span>订单列表</span>
+                <div class="searchdiv">
+						<form id="" name="form_order" method="get" action="suppliers.php">
+				<div>订单状态：</div>
+				<select name="composite_status" id="composite_status">
+                <option value="-1">请选择</option>
+                  {html_options options=$status_list selected=$filter.composite_status}
+                </select>
+
+<input type="text" value="{$filter.order_sn}" placeholder='订单号' class="input" name="order_sn">
+
+<div>起止时间：</div>
+<input class="Wdate" value="{$filter.start_date}" type="text" onfocus="WdatePicker({dateFmt:'yyyy-M-d HH:mm'})" readonly="readonly" name="start_time">
+<div>~</div>
+<input class="Wdate" value="{$filter.end_date}" type="text" onfocus="WdatePicker({dateFmt:'yyyy-M-d HH:mm'})" readonly="readonly" name="end_time">  
+ <div>开团状态</div>
+    <select name="team_status" id="team_status">
+      <option value="-1">请选择</option>
+	 <option {if $filter.team_status eq 0} selected="selected"{/if} value="0">团购待付款</option>
+     <option {if $filter.team_status eq 1} selected="selected"{/if} value="1">团购正在进行中</option>
+	<option  {if $filter.team_status eq 2} selected="selected"{/if}value="2">团购成功</option>
+	<option  {if $filter.team_status eq 3} selected="selected"{/if}value="3">团购失败</option>
+    </select>        
+   <div> 购买类型</div>
+    <select name="type" id="type">
+      <option value="-1">全部</option>
+      <option value="1" {if $filter.type eq 1} selected="selected"{/if}>团购购买</option>
+      <option value="2" {if $filter.type eq 2} selected="selected"{/if}>单独购买</option>
+
+                                <input name="act" type="hidden" value="{$action}" />
+                                <input type="submit" class="btn" name="" value="搜索">
+
+                            </form>
+
+                        </div>
+			</div>
+
+<form id="form_data" action="suppliers.php" method="post" name="myform">
+    <div class="bnts">
+     <input name="act" type="hidden" value="order_operation" />
+     <input type="submit" value="打印" name="order_print">
+
+     <input type="button" onclick="order_d();" value="导出" name="order_download">
+ </div>
+ <script>
+var order_sn=document.forms['form_order'].order_sn.value;
+var composite_status=document.forms['form_order'].composite_status.value;
+var start_time=document.forms['form_order'].start_time.value;
+var end_time=document.forms['form_order'].end_time.value;
+
+var str="order_sn="+order_sn+"&composite_status="+composite_status+"&start_time="+start_time+"&end_time="+end_time+"&action={$action}";
+
+function order_d(){	
+	
+	window.location="suppliers.php?act=order_download2&"+str;
+}
+</script>
+				<table cellspacing="0" cellpadding="0" class="listtable">
+
+					<tr>
+					<th class="center"><input type="checkbox" name="checkbox" onclick='listTable.selectAll(this, "order_id")' /> </th>
+					  <th class="center">订单号</th>					 
+					  <th class="center">下单时间</th>
+					  <th class="center">{if $order_list.0.point_id neq 0}自提点{else}收货人{/if}</th>
+					  <th class="center">商品数量</th>
+                      <th class="center">总金额</th>
+                      <th class="center">应付金额</th>
+                      <th class="center">订单状态</th>
+
+                      <th>操作列</th>
+
+					</tr>
+
+                      <!--{foreach from=$order_list item=order_list}-->
+
+					<tr>
+						<td align="center"><input type="checkbox"  name="order_id[]" id="order_id" value="{$order_list.order_sn}" style="height:36px;line-height:36px;" /> </td>
+					  <td align="center"><a href="?act=order_info&order_id={$order_list.order_id}">{$order_list.order_sn}{if $order_list.extension_code eq 'team_goods'}<span style="color:#F00;">[团]</span>{/if}{if $order_list.team_first eq 1} <font color="red">[团长]</font> {/if}</a><!--&nbsp;&nbsp;$order_list.msg_code--></td>
+
+                      <td align="center">{$order_list.buyer}<br />{$order_list.short_order_time}</td>
+
+                      <td align="center">{$order_list.consignee}{if $order_list.point_id eq 0}[TEL:{if $order_list.mobile}{$order_list.mobile}{else}{$order_list.tel}{/if}]<br />{$order_list.address}{/if}</td>
+					  <td align="center">{$order_list.goods_num}</td>
+                      <td align="center">{$order_list.total_fee}</td>
+
+                      <td align="center">{$order_list.order_amount}</td>
+
+					  <td align="center">{$lang.os[$order_list.order_status]},{$lang.ps[$order_list.pay_status]},{$lang.ss[$order_list.shipping_status]}</td>
+
+					  <td align="center">
+
+                       <a href="?act=order_info&order_id={$order_list.order_id}">查看</a> 
+
+                       <!--
+
+                       <a href="?act=supp_account_delete&id={$account.account_id}" onclick="return confirm('确定要此操作吗');">删除-->
+
+
+                       
+
+                        </td>
+
+					</tr>
+
+					<!--{/foreach}-->
+</table>
+            </form>    
+
+			</div>
+     <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+		</div>
+</div>
+
+      <!--{/if}--> 
+      
+
+      <!--{if $action eq 'order_info'}-->
+      <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_pics.png" /><span>订单管理</span>
+		</div>
+		<div class="maincon">
+			<div class="contitlelist">
+				<span>订单详情</span>
+                <div class="titleright">
+					<a href="suppliers.php?act=goods_order
+">订单列表</a>
+				</div>
+
+				
+
+			</div>
+
+			<div class="conbox">
+
+				<form action="suppliers.php?act=operate" method="post" name="theForm">
+
+<div class="list-div" style="margin-bottom: 5px">
+
+<table width="100%" cellpadding="3" cellspacing="1">
+
+  <tr>
+
+    <th colspan="4">{$lang.base_info}</th>
+
+  </tr>
+
+  <tr>
+
+    <td width="18%"><div align="right"><strong>{$lang.label_order_sn}</strong></div></td>
+
+    <td width="34%">{$order.order_sn}{if $order.extension_code eq "group_buy"}<a href="group_buy.php?act=edit&id={$order.extension_id}">{$lang.group_buy}</a>{elseif $order.extension_code eq "exchange_goods"}<a href="exchange_goods.php?act=edit&id={$order.extension_id}">{$lang.exchange_goods}</a>{/if}</td>
+
+    <td width="15%"><div align="right"><strong>{$lang.label_order_status}</strong></div></td>
+
+    <td>{$order.status}</td>
+
+  </tr>
+
+  <tr>
+
+    <td><div align="right"><strong>{$lang.label_user_name}</strong></div></td>
+
+    <td>{$order.user_name|default:$lang.anonymous}</td>
+
+    <td><div align="right"><strong>{$lang.label_order_time}</strong></div></td>
+
+    <td>{$order.formated_add_time}</td>
+
+  </tr>
+ <tr>
+    <td><div align="right"><strong>{$lang.label_shipping}</strong></div></td>
+
+    <td>{if $exist_real_goods}{if $order.shipping_id > 0}{$order.shipping_name}{else}{/if} {if $order.insure_fee > 0}（{$lang.label_insure_fee}{$order.formated_insure_fee}）{/if}{/if}</td>
+    <td><div align="right"><strong>{$lang.label_shipping_time}</strong></div></td>
+    <td>{$order.shipping_time}</td>
+  </tr>
+  <tr>
+
+    <td><div align="right"><strong>{$lang.label_payment}</strong></div></td>
+
+    <td>{if $order.pay_id > 0}{$order.pay_name}{else}{$lang.require_field}{/if}
+
+    </td>
+
+    <td><div align="right"><strong>{$lang.label_pay_time}</strong></div></td>
+
+    <td>{$order.pay_time}</td>
+
+  </tr>
+  <!-- {if $order.discount_type} -->
+  <tr>
+
+    <td><div align="right"><strong>团长优惠：</strong></div></td>
+
+    <td colspan="3">
+    {if $order.discount_type eq 1}团长免单{/if}
+    {if $order.discount_type eq 2}价格优惠{/if}
+    </td>
+
+  </tr>
+  <!-- {/if} -->
+  <!-- {if 0} -->
+  <tr>
+    
+    <th colspan="4">{$lang.other_info}</th>
+    
+  </tr>
+
+  <tr>
+
+    <td><div align="right"><strong>{$lang.label_inv_type}</strong></div></td>
+
+    <td>{$order.inv_type}</td>
+
+    <td>&nbsp;</td>
+
+    <td>&nbsp;</td>
+
+  </tr>
+
+  <tr>
+
+    <td><div align="right"><strong>{$lang.label_inv_payee}</strong></div></td>
+
+    <td>{$order.inv_payee}</td>
+
+    <td><div align="right"><strong>{$lang.label_inv_content}</strong></div></td>
+
+    <td>{$order.inv_content}</td>
+
+  </tr>
+
+  <tr>
+
+    <td><div align="right"><strong>{$lang.label_postscript}</strong></div></td>
+
+    <td colspan="3">{$order.postscript}</td>
+
+  </tr>
+<!-- {/if} -->
+  
+
+  <!-- 收货人信息 -->
+<!-- {if $order.point_id eq 0} -->
+  <tr>
+
+    <th colspan="4">{$lang.consignee_info}</th>
+
+    </tr>
+
+  <tr>
+
+    <td><div align="right"><strong>{$lang.label_consignee}</strong></div></td>
+
+    <td>{$order.consignee|escape}</td>
+
+    <td><div align="right"><strong>{$lang.label_email}</strong></div></td>
+
+    <td>{$order.email}</td>
+
+  </tr>
+
+  <tr>
+
+    <td><div align="right"><strong>{$lang.label_address}</strong></div></td>
+
+    <td>[{$order.region}] {$order.address|escape}</td>
+
+    <td><div align="right"><strong>{$lang.label_zipcode}</strong></div></td>
+
+    <td>{$order.zipcode|escape}</td>
+
+  </tr>
+
+  <tr>
+
+    <td><div align="right"><strong>{$lang.label_tel}</strong></div></td>
+
+    <td>{$order.tel}</td>
+
+    <td><div align="right"><strong>{$lang.label_mobile}</strong></div></td>
+
+    <td>{$order.mobile|escape}</td>
+
+  </tr>
+<!-- {else} -->
+  <tr>
+
+    <td><div align="right"><strong>自提点：</strong></div></td>
+
+    <td>{$point_info.region}，
+{$point_info.address}，
+{$point_info.shop_name}，
+{$point_info.tel}</td>
+
+    <td><div align="right"><strong>验证电话：</strong></div></td>
+
+    <td>{$order.checked_mobile|escape}</td>
+
+  </tr>
+<!-- {/if} -->
+</table>
+
+</div>
+
+
+
+<!-- 商品信息 -->
+
+<div class="list-div" style="margin-bottom: 5px">
+
+<table width="100%" cellpadding="3" cellspacing="1">
+
+  <tr>
+
+    <th colspan="8" scope="col">{$lang.goods_info}</th>
+
+    </tr>
+
+  <tr>
+
+    <td scope="col"><div align="center"><strong>{$lang.goods_name_brand}</strong></div></td>
+
+    <td scope="col"><div align="center"><strong>{$lang.goods_sn}</strong></div></td>
+
+    <td scope="col"><div align="center"><strong>{$lang.product_sn}</strong></div></td>
+
+    <td scope="col"><div align="center"><strong>{$lang.goods_price}</strong></div></td>
+
+    <td scope="col"><div align="center"><strong>{$lang.goods_number}</strong></div></td>
+
+    <td scope="col"><div align="center"><strong>{$lang.goods_attr}</strong></div></td>
+
+    <td scope="col"><div align="center"><strong>{$lang.storage}</strong></div></td>
+
+    <td scope="col"><div align="center"><strong>{$lang.subtotal}</strong></div></td>
+
+  </tr>
+
+  {foreach from=$goods_list item=goods}
+
+  <tr>
+
+    <td align="center">
+
+    {if $goods.goods_id gt 0 && $goods.extension_code neq 'package_buy'}
+
+    <a href="./../goods.php?id={$goods.goods_id}" target="_blank">{$goods.goods_name} {if $goods.brand_name}[ {$goods.brand_name} ]{/if}
+
+    {if $goods.is_gift}{if $goods.goods_price > 0}{$lang.remark_favourable}{else}{$lang.remark_gift}{/if}{/if}
+
+    {if $goods.parent_id > 0}{$lang.remark_fittings}{/if}</a>
+
+    {elseif $goods.goods_id gt 0 && $goods.extension_code eq 'package_buy'}
+
+    <a href="javascript:void(0)" onclick="setSuitShow({$goods.goods_id})">{$goods.goods_name}<span style="color:#FF0000;">{$lang.remark_package}</span></a>
+
+    <div id="suit_{$goods.goods_id}" style="display:none">
+
+        {foreach from=$goods.package_goods_list item=package_goods_list}
+
+          <a href="./../goods.php?id={$package_goods_list.goods_id}" target="_blank">{$package_goods_list.goods_name}</a><br />
+
+        {/foreach}
+
+    </div>
+
+    {/if}
+
+    </td>
+
+    <td align="center">{$goods.goods_sn}</td>
+
+    <td align="center">{$goods.product_sn}</td>
+
+    <td align="center">{$goods.formated_goods_price}</td>
+
+    <td align="center">{$goods.goods_number}
+</td>
+
+    <td align="center">{$goods.goods_attr|nl2br}</td>
+
+    <td align="center">{$goods.storage}</td>
+
+    <td align="center">{$goods.formated_subtotal}</td>
+
+  </tr>
+
+  {/foreach}
+
+  <tr>
+
+    <td></td>
+
+    <td>&nbsp;</td>
+
+    <td>&nbsp;</td>
+
+    <td>{if $order.total_weight}<div align="right"><strong>{$lang.label_total_weight}
+
+    </strong></div>{/if}</td>
+
+    <td>{if $order.total_weight}<div align="right">{$order.total_weight}
+
+    </div>{/if}</td>
+
+    <td>&nbsp;</td>
+
+    <td><strong>{$lang.label_total}</strong></td>
+
+    <td>{$order.formated_goods_amount}</td>
+
+  </tr>
+
+</table>
+
+</div>
+
+
+
+<div class="list-div" style="margin-bottom: 5px">
+
+<table width="100%" cellpadding="3" cellspacing="1">
+
+  <tr>
+
+    <th>{$lang.fee_info}</th>
+
+  </tr>
+
+  <tr>
+    <td><div align="right">{$lang.label_goods_amount}<strong>{$order.formated_goods_amount}</strong> 
+      + {$lang.label_shipping_fee}<strong>{$order.formated_shipping_fee}</strong>
+    </div></td></tr>
+  <tr>
+    <td><div align="right"> = {$lang.label_order_amount}<strong>{$order.formated_total_fee}</strong></div></td>
+  </tr>
+  <tr>
+    <td><div align="right">
+      - {$lang.label_money_paid}<strong>{$order.formated_money_paid}</strong> - {$lang.label_surplus} <strong>{$order.formated_surplus}</strong>
+      - {$lang.label_bonus} <strong>{$order.formated_bonus}</strong>
+    </div></td>
+  <tr>
+    <td><div align="right"> = {if $order.order_amount >= 0}{$lang.label_money_dues}<strong>{$order.formated_order_amount}</strong>
+      {else}{$lang.label_money_refund}<strong>{$order.formated_money_refund}</strong>
+      <input name="refund" type="button" value="{$lang.refund}" onclick="location.href='order.php?act=process&func=load_refund&anonymous={if $order.user_id <= 0}1{else}0{/if}&order_id={$order.order_id}&refund_amount={$order.money_refund}'" />
+      {/if}{if $order.extension_code eq "group_buy"}<br />{$lang.notice_gb_order_amount}{/if}</div></td>
+  </tr>
+
+
+</table>
+</div>
+
+
+<div class="list-div" style="margin-bottom: 5px">
+<table cellpadding="3" cellspacing="1">
+  {if $order.point_id eq 0}
+  <tr>
+    <th colspan="6">{$lang.action_info}</th>
+  </tr>
+  <tr>
+    <td><div align="right"><strong>{$lang.label_action_note}</strong></div></td>
+  <td colspan="5"><textarea name="action_note" cols="80" rows="3"></textarea></td>
+    </tr>
+  <tr>
+    <td><div align="right"></div>
+      <div align="right"><strong>{$lang.label_operable_act}</strong> </div></td>
+    <td colspan="5">
+    
+        <input type="hidden" name="shipping_id" value="{$order.shipping_id}" />  
+    {if $order.order_status eq 4}
+    已退货
+    {else if $operable_list.confirm}
+      <!-- 等待平台确认 -->
+      
+        {/if} {if $operable_list.pay}
+       等待付款
+        {/if} 
+    {if $operable_list.split }
+      {if $order.extension_code eq 'team_goods'}
+      	{if $order.team_status eq 2}<!-- 
+      <div>  
+	<img src="http://qr.liantu.com/api.php?text={$link}&w=100&m=10" >
+	<p>扫描二维码</p>
+</div>
+      
+-->     
+        {if $order.pay_status eq 2}
+        <input name="ship" type="submit" value="{$lang.op_split}" class="button" />
+        {/if}
+      	{elseif $order.team_status eq 1}
+       <span style="color:#F00;"> 团购进行中...</span>
+      	{elseif $order.team_status eq 4}
+        <span style="color:#F00;"> 团购失败</span>
+        
+        {/if}
+      
+      {else}
+<div>
+	<img src="http://qr.liantu.com/api.php?text={$link}&w=100&m=10" >
+	<p>扫描二维码</p>
+</div>
+      
+  <!-- -->  
+        <input name="ship" type="submit" value="{$lang.op_split}" class="button" />
+         {/if}
+        {/if} 
+        
+        <!--{if $operable_list.unship}
+        <input name="unship" type="submit" value="{$lang.op_unship}" class="button" />
+        {/if} --><!-- {if $operable_list.receive}
+        <input name="receive" type="submit" value="{$lang.op_receive}" class="button" />
+        {/if}  -->
+         {if $operable_list.return}
+        <input name="return" type="submit" value="{$lang.op_return}" class="button" />
+        {/if} {if $operable_list.to_delivery}
+        <input name="to_delivery" type="submit" value="{$lang.op_to_delivery}" class="button"/>
+        <input name="order_sn" type="hidden" value="{$order.order_sn}" />
+        {/if} 
+        <input name="order_id" type="hidden" value="{$smarty.request.order_id}"></td>
+    </tr>
+  {/if}
+  <tr>
+    <th>{$lang.action_user}</th>
+    <th>{$lang.action_time}</th>
+    <th>{$lang.order_status}</th>
+    <th>{$lang.pay_status}</th>
+    <th>{$lang.shipping_status}</th>
+    <th>{$lang.action_note}</th>
+  </tr>
+  {foreach from=$opt_action_list item=action}
+  <tr>
+    <td><div align="center">{$action.action_user}</div></td>
+    <td><div align="center">{$action.action_time}</div></td>
+    <td><div align="center">{$action.order_status}</div></td>
+    <td><div align="center">{$action.pay_status}</div></td>
+    <td><div align="center">{$action.shipping_status}</div></td>
+    <td>{$action.action_note|nl2br}</td>
+  </tr>
+  {/foreach}
+</table>
+</div>
+
+
+
+
+
+
+</form>
+
+                
+
+			</div>
+
+		</div>
+
+</div>
+
+      <!--{/if}--> 
+
+      
+
+      
+
+    
+
+    
+
+    <!--{if $action eq 'user_message'}-->
+
+      <div class="main" id="main">
+
+		<div class="maintop">
+
+			<img src="templates/images/title_article.png" /><span>用户评论管理</span>
+
+		</div>
+
+		<div class="maincon">
+
+			
+
+			<div class="contitlelist">
+
+            <span>用户评论</span>
+
+            </div>
+
+			<div class="conbox">
+
+				<table cellspacing="0" cellpadding="0" class="listtable">
+
+					<tr>
+
+                      <th class="center">用户名称</th>
+
+                      <th class="center">类型</th>
+
+					  <th class="center">评论对象</th>
+
+					  <th class="center">IP地址</th>
+
+                      <th class="center">评论时间</th>
+
+                      <th class="center">状态</th>
+
+                      <th>操作</th>
+
+					</tr>
+
+                
+
+                <!--{foreach from=$comment_list item=comment}-->
+
+			<tr>
+
+   
+
+    <td class="center">{if $comment.user_name}{$comment.user_name}{else}{$lang.anonymous}{/if}</td>
+
+    <td class="center">{if $comment.comment_type eq 1}文章{else}商品{/if}</td>
+
+    <td class="center"><a href="./../{if $comment.comment_type eq '0'}goods{else}article{/if}.php?id={$comment.id_value}" target="_blank">{$comment.title}</td>
+
+    <td class="center">{$comment.ip_address}</td>
+
+    <td align="center">{$comment.add_time}</td>
+
+    <td align="center">{if $comment.status eq 0}隐藏{else}显示{/if}</td>
+
+   
+
+    <td align="center">
+
+      <a href="?act=reply&amp;id={$comment.comment_id}">查看详情</a> |
+
+      <a href="?act=delete_comment&id={$comment.comment_id}" onclick="return confirm('确定要此操作吗');">删除</a>
+
+    </td>
+
+  </tr>
+
+    <!--{foreachelse}-->
+
+    <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+
+    <!--{/foreach}-->
+
+    
+
+				</table>
+
+                
+
+			</div>
+
+		</div>
+
+        </div>
+
+      <!--{/if}--> 
+
+      
+
+    <!--{if $action eq 'reply'}-->  
+
+     <div class="main" id="main">
+
+		<div class="maintop">
+
+			<img src="templates/images/title_article.png" /><span>用户评论管理</span>
+
+		</div>
+
+		<div class="maincon">
+				<div class="contitleedit"><span>用户评论详情</span></div>
+			<div class="conbox">
+            <form action="suppliers.php" enctype="multipart/form-data" method="post" name="myform">
+           <table cellspacing="0" cellpadding="0" class="edittable">
+<tr>
+
+      <td>
+
+      <a href="mailto:{$msg.email}">
+
+      <b>{if $msg.user_name}{$msg.user_name}{else}匿名用户{/if}</b></a>&nbsp;于
+
+      &nbsp;{$msg.add_time}&nbsp;于&nbsp;<b>{$id_value}</b>&nbsp;发表评论
+
+    </td>
+
+    </tr>
+
+    <tr>
+
+      <td><hr color="#dadada" size="1"></td>
+
+    </tr>
+
+    <tr>
+
+      <td>
+
+        <div style="overflow:hidden; word-break:break-all;">{$msg.content}</div>
+
+        <div align="right"><b>{$lang.comment_rank}:</b> {$msg.comment_rank}&nbsp;&nbsp;<b>IP地址</b>:{$msg.ip_address}</div>
+
+      </td>
+
+    </tr>
+    <tr>
+      <td align="center">
+        {if $msg.status eq "0"}
+
+        <input type="button" onclick="location.href='?act=update_comment_status&check=allow&id={$msg.comment_id}'" class="btn" value="允许显示" />
+        {else}
+        <input type="button" onclick="location.href='?act=update_comment_status&check=forbid&id={$msg.comment_id}'" class="btn" value="禁止显示"  />
+
+        {/if}
+
+    </td>
+    </tr>
+                    </table>
+                    </form>
+
+{if $reply_info.content}
+
+<!-- reply content list -->
+<div class="maincon">
+				<div class="contitleedit"><span>回复</span></div>
+			<div class="conbox"> 
+      <table cellspacing="0" cellpadding="0" class="edittable">
+    <tr>
+      <td>
+      操作人员&nbsp;<a href="mailto:{$msg.email}"><b>{$reply_info.user_name}</b></a>&nbsp;于
+      &nbsp;{$reply_info.add_time}&nbsp;回复
+    </td>
+    </tr>
+    <tr>
+      <td><hr color="#dadada" size="1"></td>
+    </tr>
+    <tr>
+      <td>
+
+        <div style="overflow:hidden; word-break:break-all;">{$reply_info.content}</div>
+
+        <div align="right"><b>IP地址</b>: {$reply_info.ip_address}</div>
+
+      </td>
+
+    </tr>
+
+  </table>
+
+</div>
+
+{/if}        
+
+           
+
+
+
+
+
+
+
+<script language="javascript">
+
+	function comment_validate()
+
+	{
+
+		var frm              = document.forms['comment_Form'];
+
+	  	var content     = frm.elements['content'].value;
+
+	  	if(content == 0){
+
+			alert('回复的评论内容不能为空!');
+
+			return false;	
+
+		}
+
+	}
+
+</script>
+
+
+
+<form method="post" action="suppliers.php?act=action" name="comment_Form" onsubmit="return comment_validate()">
+  <table cellspacing="0" cellpadding="0" class="edittable">
+  <tr><th colspan="2" align="left">
+  <strong>回复评论</strong>
+  </th></tr>
+  <tr>
+
+    <td>用户名:</td>
+    <td><input name="user_name" type="text" value="商家" class="input"  /></td>
+  </tr>
+
+  <tr>
+    <td>回复内容:</td>
+    <td><textarea name="content" cols="50" rows="4" wrap="VIRTUAL">{$reply_info.content}</textarea></td>
+  </tr>
+  {if $reply_info.content}
+  <tr>
+    <td>&nbsp;</td>
+    <td>提示: 此条评论已有回复, 如果继续回复将更新原来回复的内容!</td>
+  </tr>
+  {/if}
+ <tr>
+
+    <td>&nbsp;</td>
+
+    <td>
+
+      <input name="submit" type="submit" value="确定" class="btn">
+      <input type="hidden" name="comment_id" value="{$msg.comment_id}">
+
+      <input type="hidden" name="comment_type" value="{$msg.comment_type}">
+
+      <input type="hidden" name="id_value" value="{$msg.id_value}">
+
+    </td>
+
+  </tr>
+
+</table>
+
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+           
+
+           
+
+           
+
+           
+
+           
+
+           
+
+           
+
+           
+
+           
+
+           
+
+           
+
+           
+
+           
+
+           
+
+            </div>
+
+  </div>
+
+  </div> 
+    <!--{/if}--> 
+      <!--{if $action eq 'goods_category'}-->
+      <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_article.png" /><span>商品分类管理</span>
+		</div>
+		<div class="maincon">
+			<div class="contitlelist">
+            <span>分类管理</span>
+            <div class="titleright"><a href="?act=add_cate">添加分类</a></div>
+            </div>
+			<div class="conbox">
+				<table cellspacing="0" cellpadding="0" class="listtable" id="list-table">
+					<tr>
+					  <th class="center">分类名称</th>
+					  <th class="center">是否显示</th>
+					  <th class="center">排序</th>
+					  <th>操作列</th>
+					</tr>
+                      <!--{foreach from=$cate_list item=cat}-->
+					<tr align="center" class="{$cat.level}" id="{$cat.level}_{$cat.cat_id}"{if $cat.level gt 0} style="display:none;"{/if}>
+					  <td align="center" class="first-cell" >
+      {if $cat.is_leaf neq 1}
+      <img src="templates/images/menu_plus.gif" id="icon_{$cat.level}_{$cat.cat_id}" width="9" height="9" border="0" style="margin-left:{$cat.level}em" onclick="rowClicked(this)" />
+      {else}
+      <img src="templates/images/menu_arrow.gif" width="9" height="9" border="0" style="margin-left:{$cat.level}em" />
+      {/if}
+      <span><a href="goods.php?act=list&cat_id={$cat.cat_id}">{$cat.cat_name}</a></span>
+    {if $cat.cat_image}
+      <img src="../{$cat.cat_image}" border="0" style="vertical-align:middle;" width="60px" height="21px">
+    {/if}
+    </td>
+					  <td align="center">{if $cat.is_show eq 1}显示{else}不显示{/if}</td>
+					  <td align="center">{$cat.sort_order}</td>
+					  <td align="center">
+                       <a href="?act=edit_cate&cat_id={$cat.cat_id }">编辑</a> |
+                       <a href="?act=delete_cate&cat_id={$cat.cat_id}" onclick="return confirm('确定要此操作吗');">删除</a>
+                        </td>
+					</tr>
+					<!--{/foreach}-->
+				</table>
+			</div>
+		</div>
+        </div>
+<script>
+var imgPlus = new Image();
+imgPlus.src = "templates/images/menu_plus.gif";
+
+/*
+ *
+ * 折叠分类列表
+ */
+function rowClicked(obj)
+{
+  // 当前图像
+  img = obj;
+  // 取得上二级tr>td>img对象
+  obj = obj.parentNode.parentNode;
+  // 整个分类列表表格
+  var tbl = document.getElementById("list-table");
+  // 当前分类级别
+  var lvl = parseInt(obj.className);
+  // 是否找到元素
+  var fnd = false;
+  var sub_display = img.src.indexOf('menu_minus.gif') > 0 ? 'none' : (Browser.isIE) ? 'block' : 'table-row' ;
+  // 遍历所有的分类
+  for (i = 0; i < tbl.rows.length; i++)
+  {
+      var row = tbl.rows[i];
+      if (row == obj)
+      {
+          // 找到当前行
+          fnd = true;
+          //document.getElementById('result').innerHTML += 'Find row at ' + i +"<br/>";
+      }
+      else
+      {
+          if (fnd == true)
+          {
+              var cur = parseInt(row.className);
+              var icon = 'icon_' + row.id;
+              if (cur > lvl)
+              {
+                  row.style.display = sub_display;
+                  if (sub_display != 'none')
+                  {
+                      var iconimg = document.getElementById(icon);
+                      iconimg.src = iconimg.src.replace('plus.gif', 'minus.gif');
+                  }
+              }
+              else
+              {
+                  fnd = false;
+                  break;
+              }
+          }
+      }
+  }
+
+  for (i = 0; i < obj.cells[0].childNodes.length; i++)
+  {
+      var imgObj = obj.cells[0].childNodes[i];
+      if (imgObj.tagName == "IMG" && imgObj.src != 'templates/images/menu_arrow.gif')
+      {
+          imgObj.src = (imgObj.src == imgPlus.src) ? 'templates/images/menu_minus.gif' : imgPlus.src;
+      }
+  }
+}
+        </script>
+      <!--{/if}--> 
+
+      <!--{if $action eq 'brand'}-->
+      <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_article.png" /><span>商品品牌管理</span>
+		</div>
+		<div class="maincon">
+			<div class="contitlelist">
+            <span>品牌管理</span>
+            <div class="titleright"><a href="?act=add_brand">添加品牌</a></div>
+            </div>
+			<div class="conbox">
+				<table cellspacing="0" cellpadding="0" class="listtable">
+					<tr>
+					  <th class="center">品牌名称</th>
+					  <th class="center">是否显示</th>
+					  <th class="center">排序</th>
+					  <th>操作列</th>
+					</tr>
+                      <!--{foreach from=$supp_brand_list item=brand}-->
+					<tr>
+					  <td align="center">{$brand.brand_name}</td>
+					  <td align="center">{if $brand.is_show eq 1}显示{else}不显示{/if}</td>
+					  <td align="center">{$brand.sort_order}</td>
+					  <td align="center">
+                       <a href="?act=edit_brand&brand_id={$brand.brand_id }">编辑</a> |
+                       <a href="?act=delete_brand&brand_id={$brand.brand_id}" onclick="return confirm('确定要此操作吗');">删除</a>
+                        </td>
+					</tr>
+					<!--{/foreach}-->
+				</table>
+			</div>
+		</div>
+        </div>
+      <!--{/if}--> 
+
+      <!--{if $action eq 'edit_brand' || $action eq 'add_brand' }-->
+     <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_article.png" /><span>商品品牌管理</span>
+		</div>
+		<div class="maincon">
+        		{if $action eq 'edit_rand'}
+				<div class="contitlelist"><span>编辑品牌</span></div>
+                {else}
+                <div class="contitlelist"><span>添加品牌</span></div>
+                {/if}
+			<div class="conbox">
+            <form action="suppliers.php" enctype="multipart/form-data" method="post" name="myform">
+           <table cellspacing="0" cellpadding="0" class="edittable">
+					<tr>
+						<td class="right">品牌名称：</td>
+						<td> <input type="text" name="brand_name" value="{$brand_info.brand_name}" class="input" size="35" /></td>
+					</tr>
+                    <tr>
+						<td class="right">是否显示：</td>
+						<td>
+                        {if $brand_info.is_show eq 1}
+     是 <input type='radio'  name="is_show"  value="1" checked="checked">
+      否 <input type='radio' name="is_show" value="0">
+                        {else}
+        是 <input type='radio' name="is_show" value="1" >
+       否 <input  type='radio' name="is_show" value="0" checked="checked">                 
+                        {/if}
+                        </td>
+					</tr>
+                    <tr>
+                    <td class="right">品牌LOGO：</td>
+                    <td><input type="file" name="brand_logo" id="logo" size="45">&nbsp;&nbsp;建议260*100像素
+                    {if $brand_info.brand_logo}<a href="/data/brandlogo/{$brand_info.brand_logo}">查看</a>{/if}
+                    </td>
+                   </tr>
+                     <tr>
+						<td class="right">排序：</td>
+						<td>
+                        <input type="text" name="sort_order" value="{$brand_info.sort_order}"class="input" size="35"  />
+                        </td>
+					</tr>
+                    <tr>
+						<td class="right">&nbsp;</td>
+						<td>
+                        <input type="hidden" name="suppliers_id" value="{$suppliers_id}">
+                        <input type="hidden" name="brand_id" value="{$brand_info.brand_id}">
+                        <input type="hidden" name="act"  value="{$status}">
+                        <input type="submit" value="确 认" class="btn" name="subsupp"></td>
+					</tr>
+                    </table>
+                    </form>
+             </div>
+  </div>
+  </div>         
+      <!--{/if}--> 
+
+<!--{if $action eq 'edit_cate' || $action eq 'add_cate' }-->
+     <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_article.png" /><span>商品分类管理</span>
+		</div>
+		<div class="maincon">
+        		{if $action eq 'edit_cate'}
+				<div class="contitlelist"><span>编辑分类</span></div>
+                {else}
+                <div class="contitlelist"><span>添加分类</span></div>
+                {/if}
+			<div class="conbox">
+            <form action="suppliers.php" enctype="multipart/form-data" method="post" name="myform">
+           <table cellspacing="0" cellpadding="0" class="edittable">
+					<tr>
+						<td class="right">分类名称：</td>
+						<td> <input type="text" name="cat_name" value="{$cat_info.cat_name}" class="input" size="35" /></td>
+					</tr>
+                    
+                    <tr>
+						<td class="right">上级分类：</td>
+					 
+                        
+                        <td>
+                        <select name="parent_id">
+            				<option value="0">请选择...</option>
+            				{$cat_list}
+            			</select>
+                        </td>
+                        
+					</tr>
+                    
+                    <tr>
+						<td class="right">是否显示：</td>
+						<td>
+                        {if $cat_info.is_show eq 1}
+     是 <input type='radio'  name="is_show"  value="1" checked="checked">
+      否 <input type='radio' name="is_show" value="0">
+                        {else}
+        是 <input type='radio' name="is_show" value="1" >
+       否 <input  type='radio' name="is_show" value="0" checked="checked">                 
+                        {/if}
+                        </td>
+					</tr>
+                     <tr>
+						<td class="right">排序：</td>
+						<td>
+                        <input type="text" name="sort_order" value="{$cat_info.sort_order}"class="input" size="35"  />
+                        </td>
+					</tr>
+                    <tr>
+						<td class="right">&nbsp;</td>
+						<td>
+                        <input type="hidden" name="suppliers_id" value="{$suppliers_id}">
+                        <input type="hidden" name="cat_id" value="{$cat_info.cat_id}">
+                        <input type="hidden" name="act"  value="{$status}">
+                        <input type="submit" value="确 认" class="btn" name="subsupp"></td>
+					</tr>
+                    </table>
+                    </form>
+             </div>
+  </div>
+  </div>         
+      <!--{/if}--> 
+
+    <!--{if $action eq 'shipping_config'}-->
+
+        <script language="javascript">
+
+		function s_type(type)
+
+		{
+
+			if(type==2)
+
+			{
+
+				document.getElementById('shipping_fee').style.display = '';	
+
+			}
+
+			else
+
+			{
+
+				document.getElementById('shipping_fee').style.display = 'none';	
+
+			}
+
+		}
+
+		function res()
+
+		{
+
+			if(document.myform.shipping_type.value =='')
+
+			{
+
+				alert('请选择');	
+
+				return false;
+
+			}
+
+			else
+
+			{
+
+				if(document.myform.shipping_type.value ==2)
+
+				{
+
+					if(document.myform.shipping_fee.value=='')	
+
+					{
+
+						alert('请输入运费');	
+
+						return false;
+
+					}
+
+				}
+
+			}
+
+			return true;
+
+		}
+
+    </script>
+
+
+
+    <div class="main" id="main">
+
+		<div class="maintop">
+
+			<img src="templates/images/title_article.png" /><span>系统设置</span>
+
+		</div>
+
+		<div class="maincon">
+
+			
+
+			<div class="contitleedit">
+
+            <span>运费设置</span>
+
+            </div>
+
+			<div class="conbox">
+
+           <form action="suppliers.php" method="post" name="myform" onsubmit="return res();">
+
+				
+
+               <table width="100%" border="0" cellpadding="5" class="edittable" cellspacing="1">
+
+                <tr>
+
+                  <td  align="right" bgcolor="#FFFFFF">运费类别： </td>
+
+                  <td  align="left" bgcolor="#FFFFFF">
+
+                <select name="shipping_type" id="shipping_type" onchange="s_type(this.value)">
+
+                	<option value="">请选择</option>
+
+                    <option value="1" {if $supp_row.shipping_type eq 1} selected="selected"{/if}>按商品计算</option>
+
+                    <option value="2" {if $supp_row.shipping_type eq 2} selected="selected"{/if}>按店铺计算</option>
+
+                </select>
+
+           
+
+                  </td>
+
+                </tr>
+
+                
+
+                 <tr id="shipping_fee"  {if $supp_row.shipping_type eq 1}style="display:none;"{/if}>
+
+                  <td align="right" bgcolor="#FFFFFF">运费：</td>
+
+                  <td align="left" bgcolor="#FFFFFF"><input type="text" name="shipping_fee" class="input" value="{$supp_row.shipping_fee}" />
+
+                </td>
+
+                </tr>
+
+                
+
+                
+
+              <tr>
+
+                  <td width="28%" align="right" bgcolor="#FFFFFF">&nbsp;</td>
+
+                  <td width="72%" align="left" bgcolor="#FFFFFF">
+
+                  按商品计算：根据购买订单商品重量进行继续运费<br>
+
+					按店铺计算：只要购买该店铺商品只收取固定运费                  
+
+                  </td>
+
+                </tr>
+
+                <tr>
+
+                	<td>&nbsp;</td>
+
+                  <td bgcolor="#FFFFFF">
+
+     
+
+                  <input name="act" type="hidden" value="shipping_config_act" />
+
+                    <input name="submit" type="submit" value="提交" class="btn" style="border:none;" />
+
+                  </td>
+
+                </tr>
+
+       </table> 
+
+                
+
+                </form>
+
+            </div>
+
+		</div>
+
+        </div>
+
+    <!--{/if}-->
+
+    <!--运费类型-->
+
+    <!--{if $action eq 'bank_config'}-->
+    <script>
+		function bank_config()
+		{
+			var bank_name = document.myform.bank_name.value;
+			var bank_p_name = document.myform.bank_p_name.value;	
+			var bank_account = document.myform.bank_account.value;
+			//var bank_password = document.myform.bank_password.value;	
+			if(bank_name=='')
+			{
+				alert('开户行名称不能为空');
+				return false;	
+			}
+			if(bank_p_name=='')
+			{
+				alert('开户行姓名不能为空');
+				return false;	
+			}
+			if(bank_account=='')
+			{
+				alert('银行账号不能为空');	
+				return false;
+			}
+//			if(bank_password=='')
+//			{
+//				alert('提现密码不能为空');	
+//				return false;
+//			}
+			
+			if(bank_name.length>50)
+			{
+				alert('开户行名称不大于50个汉字');
+				return false;
+			}
+			if(bank_p_name.length>30)
+			{
+				alert('开户行姓名不大于10个汉字或字母');
+				return false;
+			}
+			var reg = /^[\d|\-|\s]+$/;
+			if (!reg.test(bank_account)||bank_account.length>20)
+			{
+				alert('账号格式不正确');
+				return false;
+			}
+
+//			if (!reg.test(bank_password)||bank_password.length!=6)
+//			{
+//				alert('提现密码格式不正确');
+//				return false;
+//			}
+			
+			return true;
+			
+		}
+	
+	</script>
+
+      <div class="main" id="main">
+
+		<div class="maintop">
+
+			<img src="templates/images/title_article.png" /><span>结算管理</span>
+
+		</div>
+
+		<div class="maincon">
+
+			
+
+			<div class="contitleedit">
+
+            <span>账号设置</span>
+
+            </div>
+
+			<div class="conbox" style="font-size:16px;">
+
+           <form action="suppliers.php" name="myform" method="post" onsubmit="return bank_config();">
+
+				
+						
+
+               <table width="100%" border="0" cellpadding="5" class="edittable" cellspacing="1">
+
+				<div style="font-size:16px; text-align:center; color:#f60; padding-top:20px;">注意事项：开户行设置只能提交一次，提交后不可再编辑，请您确认好账户信息，如您的账户需要发生变更时，请于平台联系。</div>	
+				
+                 
+                
+                <tr>
+
+                  <td width="28%" align="right" bgcolor="#FFFFFF">开户行名称： </td>
+
+                  <td width="72%" align="left" bgcolor="#FFFFFF">
+				
+               {if $supp_row.bank_name}
+               	{$supp_row.bank_name}
+               {else}
+               
+               	 <input name="bank_name"  id='bank_name' type="text" class="input" value="{$supp_row.bank_name}" />可以输入50个汉字字符
+               {/if}
+                 
+
+                  </td>
+
+                </tr>
+
+                <tr>
+
+                  <td align="right" bgcolor="#FFFFFF">开户行姓名：</td>
+
+                  <td align="left" bgcolor="#FFFFFF">
+                  
+                  {if $supp_row.bank_name}
+                  	{$supp_row.bank_p_name}
+                  {else}
+                  	<input type="text" name="bank_p_name" id='bank_p_name' class="input" value="{$supp_row.bank_p_name}" />
+可以输入个10汉字或字母
+                  {/if}
+                  
+                </td>
+
+                </tr>
+
+                <tr>
+
+                  <td align="right" bgcolor="#FFFFFF">开户行账号：</td>
+
+                  <td align="left" bgcolor="#FFFFFF">
+                  {if $supp_row.bank_name}
+                  {$supp_row.bank_account}
+                  {else}
+                  <input type="text" name="bank_account" id='bank_account' class="input"  value="{$supp_row.bank_account}" />
+                  可以输入20个数字
+                  {/if}
+                  
+                  
+                  </td>
+
+                </tr>
+                {if $supp_row.bank_name}
+                {else}
+                <tr>
+
+                	<td>&nbsp;</td>
+				
+                  <td bgcolor="#FFFFFF">
+                  <input name="act" type="hidden" value="update_shipping_type" />
+                    <input name="submit" type="submit" value="提交" class="btn" style="border:none;" />
+                  </td>
+				
+                </tr>
+                {/if}
+
+       </table> 
+
+                
+
+                </form>
+
+            </div>
+
+		</div>
+
+        </div>
+
+      <!--{/if}--> 
+    <!--子账号列表-->
+    <!--{if $action eq 'supp_account'}-->
+      <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_article.png" /><span>子账号管理</span>
+		</div>
+		<div class="maincon">
+			<div class="contitlelist">
+            <span>子账号列表</span>
+            <div class="titleright"><a href="?act=add_supp_account">新建账号</a></div>
+            </div>
+			<div class="conbox">
+
+				<table cellspacing="0" cellpadding="0" class="listtable">
+
+					<tr>
+
+					  <th class="center">账号名</th>
+					  <th class="center">类别</th>
+
+					  <th class="center">名称</th>
+
+					  <th class="center">状态</th>
+
+                      <th>操作列</th>
+
+					</tr>
+
+                      <!--{foreach from=$account_list item=account}-->
+
+					<tr>
+
+					  <td align="center">{$account.account_name}</td>
+					  <td align="center">{if $account.account_type eq 0}子账号{else}分店{/if}</td>
+
+                      <td align="center">{$account.name}</td>
+
+                      <td align="center">{if $account.is_check eq 1}可用{else}不可用{/if}</td>
+
+					  <td align="center">
+
+                       <a href="?act=edit_account&id={$account.account_id}">编辑</a> |
+
+                       <a href="?act=supp_account_delete&id={$account.account_id}" onclick="return confirm('确定要此操作吗');">删除</a> | <a href="?act=allot&id={$account.account_id}">权限</a>
+
+                        </td>
+
+					</tr>
+
+					<!--{/foreach}-->
+
+				</table>
+
+ 			</div>
+
+		</div>
+
+        </div>
+
+      <!--{/if}--> 
+<!--{if $action eq 'allot'}-->
+     <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_article.png" /><span>子账号管理</span>
+		</div>
+		<div class="maincon">
+				<div class="contitlelist"><span>权限分配</span><div class="titleright"><a href="?act=supp_account_list">返回列表</a></div></div>
+			<div class="conbox">
+            <form action="suppliers.php" enctype="multipart/form-data" method="post" name="myform">
+           <table cellspacing="0" cellpadding="0" class="edittable">
+             <!-- {foreach from=$role_lists item=item} -->
+					<tr>
+						<td class="right">{$item.action_name}：</td>
+						<td> 
+                       <!-- {foreach from=$item.action_list item=it} --> 
+                        <input name="role_action[]" type="checkbox" {if $it.checked eq 1} checked="checked"{/if} value="{$it.action}" />&nbsp;&nbsp;{$it.action_name}&nbsp;&nbsp;
+                       <!--{/foreach}-->  
+                        </td>
+
+                  </tr>
+             <!--{/foreach}-->
+                    <tr>
+						<td class="right">&nbsp;</td>
+						<td>
+                        <input type="hidden" name="suppliers_id" value="{$suppliers_id}">
+
+                        <input type="hidden" name="account_id" value="{$account_info.account_id}">
+
+                        <input type="hidden" name="act"  value="allot_act">
+
+                		<input type="submit" value="{if $action eq 'edit_supp_account'}修 改 {else}添 加{/if}" class="btn" name="subsupp">
+                        </td>
+					</tr>
+                    </table>
+
+                   
+
+                    </form>
+             </div>
+
+  </div>
+
+  </div>         
+
+
+
+<!--{/if}-->
+    <!--{if $action eq 'edit_supp_account' || $action eq 'add_supp_account' }-->
+     <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_article.png" /><span>子账号管理</span>
+		</div>
+		<div class="maincon">
+        		{if $action eq 'edit_supp_account'}
+				<div class="contitlelist"><span>编辑子账号</span><div class="titleright"><a href="?act=supp_account_list">返回列表</a></div></div>
+                {else}
+                <div class="contitlelist"><span>添加子账号</span><div class="titleright"><a href="?act=supp_account_list">返回列表</a></div></div>
+                {/if}
+			<div class="conbox">
+            <form action="suppliers.php" enctype="multipart/form-data" method="post" name="myform">
+           <table cellspacing="0" cellpadding="0" class="edittable">
+					<tr>
+						<td class="right">账号名：</td>
+						<td> 
+                        {if $action eq 'edit_supp_account'}
+                        {$account_info.account_name}
+                        {else}
+                        <input type="text" name="account_name" value="{$account_info.account_name}" class="input" size="35" /></td>
+						{/if}
+                    	</tr>
+                    <tr>
+						<td class="right">名称：</td>
+						<td> <input type="text" name="name" value="{$account_info.name}" class="input" size="35" /></td>
+					</tr>
+                    <tr>
+						<td class="right">类别：</td>
+						<td>
+     分店 <input type='radio'  name="account_type"  value="1"  {if $account_info.account_type eq 1 } checked="checked"{/if}>
+      子账号 <input type='radio' name="account_type" value="0" {if $account_info.account_type eq 0 or $account_info.account_type eq ''} checked="checked"{/if}>
+
+                        </td> 
+					</tr>
+                     <tr>
+						<td class="right">分店地址：</td>
+						<td> <input type="text" name="address" value="{$account_info.address}" class="input" size="35" />
+                        
+                        如果类别选择分店后请填写地址,方便给用户发提货短信
+                        </td>
+					</tr>
+                    
+                     <tr>
+						<td class="right">手机号码：</td>
+						<td> <input type="text" name="phone" value="{$account_info.phone}" class="input" size="35" />
+                        如果类别选择分店后请填写手机号码,方便用户联系
+                        </td>
+					</tr>
+                    
+                    
+                    <tr>
+						<td class="right">状态：</td>
+						<td>
+                        {if $account_info.is_check eq 1}
+     是 <input type='radio'  name="is_check"  value="1" checked="checked">
+      否 <input type='radio' name="is_check" value="0">
+                        {else}
+        是 <input type='radio' name="is_check" value="1" >
+
+       否 <input  type='radio' name="is_check" value="0" checked="checked">                 
+
+                        {/if}
+
+                        </td>
+
+					</tr>
+                     <tr>
+
+						<td class="right">密码：</td>
+
+						<td>
+
+                        <input type="password" name="account_password" value="" class="input" size="35"  />
+                      </td>
+
+					</tr>
+
+                      <tr>
+
+						<td class="right">确认密码：</td>
+
+						<td>
+
+                        <input type="password" name="account_password_crm" value=""class="input" size="35"  />
+
+                        
+
+                        </td>
+
+					</tr>
+                    <tr>
+						<td class="right">&nbsp;</td>
+						<td>
+                        <input type="hidden" name="suppliers_id" value="{$suppliers_id}">
+
+                        <input type="hidden" name="account_id" value="{$account_info.account_id}">
+
+                        <input type="hidden" name="act"  value="{$status}">
+
+                		<input type="submit" value="{if $action eq 'edit_supp_account'}修 改 {else}添 加{/if}" class="btn" name="subsupp">
+                        </td>
+
+					</tr>
+
+                    </table>
+
+                   
+
+                    </form>
+             </div>
+
+  </div>
+
+  </div>         
+
+      <!--{/if}--> 
+
+    <!--{if $action eq 'pic_category_add' or $action eq 'pic_category_edit'}-->
+
+     <div class="main" id="main">
+
+		<div class="maintop">
+
+			<img src="templates/images/title_pics.png" /><span>图片管理</span>
+
+		</div>
+
+      <div class="maincon">
+
+			<div class="contitleedit"><span>{if $action eq 'pic_category_add'}分类添加{else}分类编辑{/if}</span></div>
+			<div class="conbox"> 
+
+     
+
+     <form action="suppliers.php" method="post" name="myform" onsubmit="return checkpic_category();">
+
+	<table cellspacing="0" cellpadding="0" class="edittable">
+
+      <tr>
+
+        <td align="right">分类名称：</td>
+
+        <td><input name="cat_name" type="text" class="input" value="{$rows.cat_name}" size="40"  />*</td>
+
+      </tr>
+
+     <tr>
+
+    <td align="right">&nbsp;</td>
+
+	<input name="act" type="hidden" value="{$form_act}" />
+
+	<input name="id" type="hidden" value="{$rows.id}" />
+
+    <td><input type="submit" name="Submit" value="提 交"  class="btn"/></td>
+
+  </tr>
+
+</table>
+
+
+
+	</form>
+
+     </div>
+
+     </div>
+
+     </div>
+
+    <!--{/if}-->
+
+      <!--{if $action eq 'pic_category'}-->
+
+      
+
+      <div class="main" id="main">
+
+		<div class="maintop">
+
+			<img src="templates/images/title_pics.png" /><span>图片管理</span>
+
+		</div>
+
+		<div class="maincon">
+
+			<div class="contitlelist">
+
+				<span>图片分类</span>
+
+				<div class="titleright">
+
+					<a href="?act=pic_category_add">新增分类</a>
+
+					<a href="?act=pic_list">返回我的图片</a>
+
+				</div>
+
+			</div>
+
+			<div class="conbox">
+
+				<table cellspacing="0" cellpadding="0" class="listtable">
+
+      <tr>
+
+        <th class="left">名称</td>
+
+        <th class="right">操作</td>
+
+      </tr>
+
+      <!-- {foreach from=$list item=item} -->
+
+      <tr>
+
+        <td>{$item.cat_name}</td>
+
+        <td class="right"><a href="suppliers.php?act=pic_category_delete&id={$item.id}" onclick="if (!confirm('确定删除吗')) return false;">删除</a>&nbsp;&nbsp;<a href="suppliers.php?act=pic_category_edit&id={$item.id}">编辑</a></td>
+
+      </tr>
+
+      <!--{/foreach}-->
+
+    </table>
+
+                
+
+			</div>
+
+		</div>
+
+</div>
+
+      <!--{/if}--> 
+
+      <!--{if $action eq 'edit_pic'}-->
+
+            <link href="themes/xaphp2013/style/uploadify.css" rel="stylesheet" type="text/css" />
+
+          {insert_scripts files='jquery_common.min.js,jquery.uploadify.min.js'}
+
+      <div class="main" id="main">
+
+		<div class="maintop">
+
+			<img src="templates/images/title_pics.png" /><span>图片管理</span>
+
+		</div>
+
+      <div class="maincon">
+
+			<div class="contitleedit">
+
+				<span>图片更换</span>
+
+				<div class="titleright">
+
+					<a href="?act=pic_list">返回我的图片</a>
+
+				</div>
+
+			</div>
+
+			<div class="conbox"> 
+
+     
+
+    <form action="suppliers.php"  enctype="multipart/form-data"  method="post" name="myform" onsubmit="return checkpic_info();">
+
+	<table cellspacing="0" cellpadding="0" class="edittable">
+
+      <tr>
+
+        <td align="right">选择分类：</td>
+
+        <td><select id="cat_id" name="cat_id">
+
+        <option value="">请选择</option>
+
+             <!-- {foreach from=$cat_list item=item} -->
+
+        	<option value="{$item.id}" {if $item.id eq $rows.cat_id} selected="selected"{/if}>{$item.cat_name}</option>
+
+            <!--{/foreach}-->
+
+        </select>
+
+        *</td>
+
+      </tr>
+
+      <tr>
+
+      	<td align="right">图片：</td>
+
+        <td>
+
+        <img src="{$rows.pic}" width="200" height="200">
+
+        <input name="pic" type="file" />
+
+		</td>
+
+     </tr>
+
+     <tr>
+
+		<td align="right">&nbsp;</td>
+
+		<input name="act" type="hidden" value="{$form_act}" />
+
+		<input name="id" type="hidden" value="{$rows.id}" />
+
+		<td><input type="submit" name="Submit" value="提 交" class="btn"/></td>
+
+	 </tr>
+
+	</table>
+
+	</form>
+
+     </div>
+
+     </div>
+
+     </div>
+
+    <script>
+
+	function checkpic_info()
+
+	{
+
+		if($("#cat_id").attr("value") =='')
+
+		{
+
+			alert('请选择分类');
+
+			return false;	
+
+		}
+
+	
+
+		return true;
+
+		
+
+	}
+
+	
+
+</script>
+
+
+
+      
+
+      <!--{/if}-->
+
+<!--{if $action eq 'pic_add'}-->
+<link href="templates/css/uploadify.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="templates/js/jquery_common.min.js"></script>
+<script type="text/javascript" src="templates/js/supp.js"></script>
+<script type="text/javascript" src="templates/js/jquery.uploadify.min.js"></script>          
+      <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_pics.png" /><span>图片管理</span>
+		</div>
+      <div class="maincon">
+			<div class="contitleedit">
+				<span>图片添加</span>
+				<div class="titleright">
+					<a href="?act=pic_list">返回我的图片</a>
+				</div>
+			</div>
+			<div class="conbox"> 
+    <form action="suppliers.php" method="post" name="myform" onsubmit="return checkpic_info();">
+
+	<table cellspacing="0" cellpadding="0" class="edittable">
+
+      <tr>
+
+        <td align="right">选择分类：</td>
+
+        <td><select id="cat_id" name="cat_id" class="input">
+
+        <option value="">请选择</option>
+
+             <!-- {foreach from=$cat_list item=item} -->
+
+        	<option value="{$item.id}">{$item.cat_name}</option>
+
+            <!--{/foreach}-->
+
+        </select>
+
+        *</td>
+
+      </tr>
+
+      <tr>
+
+      	<td align="right">图片：</td>
+
+        <td><input id="file_upload" name="file_upload" type="file" multiple="true">&nbsp;&nbsp;大小建议600像素*600像素  
+
+           	<div>
+
+				<ul id="url" class="picupload">
+
+                </ul>
+
+            </div>
+
+		</td>
+
+     </tr>
+
+     <tr>
+
+		<td align="right">&nbsp;</td>
+
+		<input name="act" type="hidden" value="{$form_act}" />
+
+		<input name="id" type="hidden" value="{$rows.id}" />
+
+		<td><input type="submit" name="Submit" value="提 交" class="btn"/></td>
+
+	 </tr>
+
+	</table>
+
+	</form>
+
+     </div>
+
+     </div>
+
+     </div>
+
+    <script type="text/javascript" language="javascript">
+	function checkpic_info()
+	{
+		if($("#cat_id").attr("value") =='')
+		{
+			alert('请选择分类');
+			return false;	
+		}
+		if($("input[name='pics[]']").val()=='')
+		{
+			alert('请选择上传图片');
+			return false;	
+		}
+		return true;
+	}
+	$(function() {
+			$('#file_upload').uploadify({
+				//校验数据
+				'formData'     	: {
+					'timestamp' : '{$timestamp}',
+					'jsessionid' : '{$suppliers_id}',
+					'token'     : '{$unique_salt}'//声明令牌
+				},
+				'swf'         	: 'templates/uploadify.swf',			//指定上传控件的主体文件，默认‘uploader.swf’
+				'uploader'    	: 'uploadify.php',			//指定服务器端上传处理文件，默认‘upload.php’
+				'auto'        	: true,					//手动上传
+				'buttonImage' 	: 'templates/images/uploadify-browse.png',	//浏览按钮背景图片
+				//'cancelImg'     : '/{$temp_dir}images/cancel.png',
+				'multi'       	: true,					//单文件上传
+				'removeCompleted' : true,//是否消失进度
+				'fileTypeExts'	: '*.gif; *.jpg; *.png; *.flv',	//允许上传的文件后缀
+				'fileSizeLimit'	: '300MB',					//上传文件的大小限制，单位为B, KB, MB, 或 GB
+				'successTimeout': 30,						//成功等待时间
+				'onUploadSuccess' : function(file, data, response) {//每成功完成一次文件上传时触发一次
+				  $('#url').append("<li id=pic_"+file.id+" ><input type=checkbox name=pics[] id='"+file.id+"'  checked value="+data+" class='checkinput'><img src="+data+"><span>名称：</span><input type='text' name='pic_name[]' class='textinput'><a href='javascript:;'  onclick=del_img('"+data+"','"+file.id+"')  >删除</a></li>");
+
+		        },
+
+		        'onUploadError'   : function(file, data, response) {//当上传返回错误时触发
+
+		            $('#url').append("<li>"+data+"</li>");
+
+		        }
+
+			});
+
+		});
+
+		
+
+	function del_img(data,id)
+
+	{
+
+		getStatusUrl = 'suppliers.php?act=delete_pic&pic='+data+'&id='+id;
+
+		$.ajax(
+
+		{
+
+			  url: getStatusUrl,
+
+			  dataType: 'json',
+
+			  global: false,
+
+			  success: function(data)
+
+			  {
+
+				 $("#pic_"+id).hide();
+
+				 $("#"+id+"").attr("checked",false);
+
+				//document.getElementById("pic_"+id).style.display = "none";
+
+			  },
+
+			  error: function(XMLHttpRequest,textStatus, errorThrown){
+
+							//alert(XMLHttpRequest.responsetext);
+
+							//alert(textStatus);
+
+							//alert(errorThrown);
+
+			  }
+
+		});		
+
+	}
+
+
+	
+
+		
+
+		</script>  
+
+      <!--{/if}-->
+
+      
+
+        <!--{if $action eq 'pic_list'}-->
+    <script>
+		function search_pic(value)
+		{
+			window.location.href="suppliers.php?act=pic_list&cat_id="+value;
+		}
+	</script>
+        <LINK href="templates/css/jquery.lightbox-0.5.css" type=text/css rel=stylesheet>
+
+     <script type="text/javascript" src="templates/js/jquery_common.min.js"></script>
+
+      <script type="text/javascript" src="templates/js/jquery.lightbox-0.5.min.js"></script>
+
+      <div class="main" id="main">
+
+		<div class="maintop">
+
+			<img src="templates/images/title_pics.png" /><span>图片管理</span>
+
+		</div>
+
+		<div class="maincon">
+
+			<div class="contitlelist">
+
+				<span>我的图片</span>
+
+				<div class="searchdiv">
+
+					<form id="" name="" method="get" action="suppliers.php">
+
+						<div>分类：</div>
+
+						<select id="cat_id" name="cat_id"  onchange="search_pic(this.value);">
+
+        <option value="">请选择</option>
+		<!-- {foreach from=$cat_list item=item} -->
+
+        	<option value="{$item.id}">{$item.cat_name}</option>
+
+            <!--{/foreach}-->
+        </select>
+
+						<div id="show_cat_list_2"></div>
+
+						<div id="show_cat_list_3"></div>
+
+						<input type="text" value="" placeholder='名称关键字' class="input" name="keywords">
+
+						<input name="act" type="hidden" value="pic_list" />
+
+						<input type="submit" class="btn" name="" value="搜索">
+
+					</form>
+
+				</div>
+
+				<div class="titleright">
+
+					<a href="?act=pic_add">图片添加</a>
+
+					<a href="?act=pic_category">图片分类</a>
+
+				</div>
+
+			</div>
+
+			<div class="conbox">
+
+				<ul class="picbox"  id="photo">
+
+					<!-- #BeginLibraryItem "/library/pic_list.lbi" --><!-- #EndLibraryItem -->
+
+               	</ul> 
+
+			</div>
+
+            <div id="pages">
+
+			<!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+
+            </div>
+
+		</div>
+
+
+
+	</div>
+
+ <script language="JavaScript" >
+
+ function drop_delete_pic(id)
+ {
+
+		getStatusUrl = 'suppliers.php?act=drop_delete_pic&id='+id;
+
+		$.ajax(
+
+		{
+
+			  url: getStatusUrl,
+
+			  dataType: 'json',
+
+			  global: false,
+
+			  success: function(data)
+
+			  {
+
+				 document.getElementById('photo').innerHTML =data.pic_list;
+
+				 document.getElementById('pages').innerHTML =data.pages;
+
+			  },
+
+			  error: function(XMLHttpRequest,textStatus, errorThrown){
+
+			  }
+
+		});		
+
+ }
+
+(function($){
+
+	$(function()
+
+	{
+
+		$('#photo a.photo').lightBox({fixedNavigation:true});
+
+	});
+
+})(jQuery);
+
+</script>
+
+		<!--{/if}-->
+
+        
+
+        <!--{if $action eq 'article_edit'}-->
+
+         <div class="main" id="main">
+
+		<div class="maintop">
+
+			<img src="templates/images/title.png" /><span>{$info.suppliers_name}</span>
+
+		</div>
+
+      <div class="maincon">
+			<div class="contitleedit"><span>文章编辑</span></div>
+			<div class="conbox"> 
+     <form action="suppliers.php" method="post" name="myform" onsubmit="return checkarticle();">
+		<table cellspacing="0" cellpadding="0" class="edittable">
+  <tr>
+    <td align="right">文章标题：</td>
+    <td><input name="title" type="text" value="{$rows.title}" size="40"  />*</td>
+  </tr>
+    <tr>
+    <td align="right">分类选择：</td>
+
+    <td> <select name="cat_id" id="cat_id" >
+	<option value="0">请选择</option>
+   {$goods_cat_list}
+</select>
+		  </td>
+  </tr>
+  <tr>
+    <td align="right">作者：</td>
+    <td><input name="author" type="text"  value="{$rows.author}"/></td>
+  </tr>
+  <tr>
+    <td align="right">内容：</td>
+    <td>{$FCKeditor}</td>
+  </tr>
+  <tr>
+    <td align="right">&nbsp;</td>
+
+	<input name="act" type="hidden" value="article_update" />
+
+	<input name="article_id" type="hidden" value="{$rows.article_id}" />
+
+    <td><input type="submit" name="Submit" value="修改"  class="btn"/></td>
+
+  </tr>
+
+</table>
+
+
+
+	</form>
+
+     </div>
+
+     </div>
+
+     </div>
+
+     <!--{/if}-->
+
+        
+
+        
+
+     <!--{if $action eq 'article_add'}-->
+
+         <script type="text/javascript" src="/js/transport.js"></script>
+
+      <div class="main" id="main">
+
+		<div class="maintop">
+
+			<img src="templates/images/title.png" /><span>{$info.suppliers_name}</span>
+
+		</div>
+
+      <div class="maincon">
+
+			<div class="contitleedit"><span>文章发布</span></div>
+
+			<div class="conbox"> 
+     <form action="suppliers.php"  class="edittable"  method="post" name="myform" onsubmit="return checkarticle();">
+
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="right">文章标题：</td>
+    <td><input name="title" type="text" size="40"class="input"  />*</td>
+  </tr>
+    <tr>
+    <td align="right">分类选择：</td>
+    <td> <select name="cat_id" id="cat_id" >
+	<option value="0">请选择</option>
+ {$goods_cat_list}
+</select>
+			</td>
+  </tr>
+  <tr>
+    <td align="right">作者：</td>
+    <td><input name="author" type="text"   class="input"   value="{$username}"/></td>
+
+  </tr>
+
+  <tr>
+
+    <td align="right">内容：</td>
+
+    <td>{$FCKeditor}</td>
+
+  </tr>
+
+  <tr>
+
+    <td align="right">&nbsp;</td>
+
+	<input name="act" type="hidden" value="article_insert" />
+
+    <td><input type="submit" name="Submit" value="提交"  class="btn"/></td>
+
+  </tr>
+
+</table>
+
+
+</form>
+
+     </div>
+
+     </div>
+
+     </div>
+
+     <!--{/if}-->
+
+      <!--{if $action eq 'article_list'}-->
+
+       <script type="text/javascript" src="/js/transport.js"></script>
+
+       <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title.png" /><span>{$info.suppliers_name}</span>
+		</div>
+     	<div class="maincon">
+			<div class="contitlelist">
+				<span>技术文章</span>
+   <div class="titleright"><a href="?act=article_add">添加文章</a></div>
+				<div class="searchdiv">
+
+					<form id="form1" name="form1" method="get" action="user.php" style="float:left; font-size:13px; line-height:48px">
+
+						<div>分类：</div>
+
+						<select name="cat_id" id="cat_id" >
+							<option value="0">请选择</option>
+                           {$cat_list}
+						</select>
+						<input type="text" value="" class="input" name="keywords">
+						<input name="act" type="hidden" value="article_list" />
+						<input type="submit" class="btn" name="Submit2" value="搜索">
+					</form>
+				</div>
+			</div>
+
+			<div class="conbox">
+
+      
+
+    <table cellspacing="0" cellpadding="0" class="listtable">
+
+      <tr>
+
+        <th class="left">标题</td>
+
+        <th class="left">作者</td>
+
+        <th class="left">更新时间</td>
+
+        <th class="right">操作</td>
+
+      </tr>
+
+      <!-- {foreach from=$list item=item} -->
+
+      <tr>
+
+        <td>{if $item.is_open}<a href="article.php?id={$item.article_id}" target="_blank" class="f6">{$item.title}</a>{else}{$item.title}[未审核]{/if}</td>
+
+        <td>{$item.author}</td>
+
+        <td>{$item.add_time}</td>
+
+        <td class="right"><!--<a href="suppliers.php?act=article_delete&id={$item.article_id}" onclick="if (!confirm('确定删除吗')) return false;">删除</a>-->&nbsp;&nbsp;<a href="suppliers.php?act=article_edit&id={$item.article_id}">编辑</a></td>
+
+      </tr>
+
+      <!--{/foreach}-->
+
+    </table>
+
+      </div>
+
+      </div>
+
+      </div>
+
+      <!--{/if}-->
+
+    
+
+   <!--{if $action eq 'edit_password'}-->
+
+    <div class="main" id="main">
+
+		<div class="maintop">
+
+			<img src="templates/images/title.png" /><span>{$info.suppliers_name}</span>
+
+		</div>
+
+		<div class="maincon">
+
+				<div class="contitleedit"><span>修改密码</span></div>
+
+			<div class="conbox">
+
+            <form name="formPassword" action="suppliers.php" method="post" onSubmit="return editPassword()" >
+
+     <table width="100%" border="0" cellpadding="5" class="edittable" cellspacing="1">
+
+        <tr>
+
+          <td  align="right" bgcolor="#FFFFFF">旧密码：</td>
+
+          <td align="left" bgcolor="#FFFFFF"><input name="old_password" type="password" size="25"  class="input" /></td>
+
+        </tr>
+
+        <tr>
+
+          <td align="right" bgcolor="#FFFFFF">新密码：</td>
+
+          <td align="left" bgcolor="#FFFFFF"><input name="new_password" type="password" size="25"  class="input"/></td>
+
+        </tr>
+
+
+        <tr>
+
+          <td  align="right" bgcolor="#FFFFFF">新密码确认：</td>
+
+          <td align="left" bgcolor="#FFFFFF"><input name="comfirm_password" type="password" size="25" class="input" /></td>
+
+        </tr>
+
+        <tr>
+
+        	<td>&nbsp;</td>
+
+          <td bgcolor="#FFFFFF"><input name="act" type="hidden" value="act_edit_password" />
+
+            <input name="submit" type="submit" class="btn" style="border:none;" value="确认修改" />
+
+          </td>
+
+        </tr>
+
+      </table>
+
+    </form>
+
+			</div>
+
+		</div>
+
+</div>
+
+   
+
+   <!--{/if}-->
+
+	<!--{if $action eq 'default'}-->
+	 <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title.png" /><span>{$info.suppliers_name}</span>
+		</div>
+		<div class="maincon">
+			<div class="contitle">
+				<img src="templates/images/ico01.png" /><span>统计信息</span>
+			</div>
+			<div class="condiv">
+            <!--{if $smarty.session.role_id eq ''}-->
+				<a href="suppliers.php?act=my_goods">
+					<span>本店商品数量&nbsp;&nbsp;<b>{$goodsnum}</b></span>
+					<img src="templates/images/ico12.png"/>
+				</a>
+				<a href="suppliers.php?act=my_goods">
+					<span>停售商品数量&nbsp;&nbsp;<b>{$nogoodsnum}</b></span>
+					<img src="templates/images/ico12.png"/>
+				</a>
+				{if 0}
+				<a href="suppliers.php?act=article_list">
+					<span>技术文章数量&nbsp;&nbsp;<b>{$articlenum}</b></span>
+					<img src="templates/images/ico12.png"/>
+				</a>
+				{/if}
+                <!--{/if}--> 
+				<a href="suppliers.php?act=delivery_list">
+					<span>待发货订单数量&nbsp;&nbsp;<b>{$delivery_count}</b></span>
+					<img src="templates/images/ico12.png"/>
+				</a>
+                 <!--{if $smarty.session.role_id eq ''}-->
+               <a href="suppliers.php?act=my_order&settlement_status=3">
+					<span>已完成结算订单&nbsp;&nbsp;<b>{$receive_count}</b></span>
+					<img src="templates/images/ico12.png"/>
+				</a>
+				<a href="suppliers.php?act=my_order&settlement_status=1">
+					<span>待商家审核结算&nbsp;&nbsp;<b>{$unpay_count}</b></span>
+					<img src="templates/images/ico12.png"/>
+				</a>
+    <!--{/if}-->
+<!--
+                <a href="suppliers.php?act=order_code_list">
+
+					<span>待验证订单&nbsp;&nbsp;<b>{$tuan_buy_count}</b></span>
+
+					<img src="templates/images/ico12.png"/>
+
+				</a>-->
+
+			</div>
+
+		</div>
+
+	</div>
+
+	<!--{/if}-->
+	<!--{if $action eq 'add_goods' or $action eq 'edit_goods'}-->
+    <script type="text/javascript" src="../../js/goods_cat_region.js"></script>
+    <!--<script type="text/javascript" src="templates/js/jquery_common.min.js"></script>-->
+   <script type="text/javascript" src="/js/transport.js"></script>
+    <script>
+	region.isAdmin = true;
+		function checkgoodsinfo()
+		{
+			var goods_desc = document.getElementById('desc_num').value;
+			//var is_promote = document.myform.is_promote.checked;
+			//var promote_price = document.myform.promote_price.value;
+			var goods_number  = document.myform.goods_number.value;
+			var goods_img_url  = document.getElementById('goods_img_url').value;
+			var city_id  = document.myform.city_id.value;
+			
+		    var msg = '';
+		  if(document.myform.goods_name.value=='')
+		  {
+			msg += '请输入商品名称。\n';
+		  }
+		  
+ 		 if(document.myform.city_id.value=='')
+		  {
+			msg += '请选择城市。\n';
+		  }		  
+		  if(document.myform.shop_price.value =='')
+		  {
+			msg += '请输入商品价格。\n';
+		  }
+		  
+		 //  else if(document.myform.shop_price.value < 0.01)
+		 //  {
+			// msg += '商品价格不能小于0.01。\n';
+		 //  }
+			//if(is_promote == true)
+//			{
+//				if(promote_price <= 0)
+//				{
+//					msg += '商品促销价格不能为零。\n';
+//				}
+//			}
+			
+			
+			if(goods_number =='' || goods_number <= 0)
+			{
+				msg += '请输入商品库存。\n';
+			}
+			
+			
+			
+			if(goods_img_url.length < 40)
+			{
+		
+				msg += '请上传一张图片。\n';
+			}
+			
+			
+			
+			if(goods_desc < 5)
+			{
+				msg += '请输入详细描述最少不得少于5个字。\n';
+			}
+			
+			
+			if (msg.length > 0)
+			{
+			   alert(msg);
+			   return false;
+			}
+			else
+			{
+			   return true;
+			}
+			
+			
+		}
+
+    </script>
+ 	<div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_addgoods.png" /><span>商品管理</span>
+		</div>
+		<div class="maincon" style="color:#000;">
+			<div class="contitleedit"><span>{if $action eq 'add_goods'}新增信息{else}编辑信息{/if}</span></div>
+            <ul class="listtab">
+        <li id='nav1'class="act" class="act"><a href="javascript:;" onclick="show_html(1,4);">详细描述</a></li>
+        <li id='nav2'><a href="javascript:;" onclick="show_html(2,4);">商品相册</a></li>        
+                <li id='nav3'><a href="javascript:;" onclick="show_html(3,4);">商品属性</a></li>
+                <li id='nav4'><a href="javascript:;" onclick="show_html(4,4);">运费设置</a></li>
+      </ul>
+      		<form action="suppliers.php" enctype="multipart/form-data" method="post" name="myform" onsubmit="return checkgoodsinfo();">
+		    <div class="conbox" style="display:block;" id="show_html1">
+				<table cellspacing="0" cellpadding="0" class="edittable">
+					<tr>
+						<td class="right" width="100">商品名称：</td>
+						<td><input type="text" value="{$goods.goods_name}" name="goods_name" class="input" size="35"><font style="color:#F00">*</font></td>
+					</tr>
+          <tr>
+            <td class="right" width="100">商品简单描述：</td>
+            <td><textarea name="goods_brief" id="goods_brief" cols="35" rows="2">{$goods.goods_brief}</textarea></td>
+          </tr>
+
+                     <tr>
+						<td class="right">区域选择：</td>
+                        <td>
+                  
+
+		  <select name="city_id" id="selCities"  onchange="region.changed(this, 3, 'selDistricts')">
+
+          <option value='1'>全国</option>
+
+            {foreach from=$cities item=region}
+
+              <option value="{$region.region_id}" {if $region.region_id eq $goods.city_id}selected="selected"{/if}>{$region.region_name}</option>
+
+            {/foreach}
+
+        </select>
+         <select name="district_id" id="selDistricts">
+
+				<option value="0">请选择</option>
+
+				{foreach from=$district_list item=district}
+
+				<option value="{$district.region_id}" {if $district.region_id eq $goods.district_id}selected="selected"{/if}  >{$district.region_name}</option>
+
+				{/foreach}
+
+		</select>                
+                        </td>
+					</tr>
+
+                   
+                     
+                      <tr>
+						<td class="right">商品分类：</td>
+						<td>
+                        <select name="cat_id">
+            				<option value="0">请选择...</option>
+            				{$cat_list}
+            			</select>
+                        </td>
+					</tr>
+                  
+                    <tr>
+						<td class="right">商品价格：</td>
+						<td><input type="text" value="{$goods.shop_price}" name="shop_price" class="input" size="35"><font style="color:#F00">*</font>
+                        </td>
+					</tr>
+          <tr>
+            <td class="right">市场价格：</td>
+            <td><input type="text" value="{$goods.market_price}" name="market_price" class="input" size="35"><font style="color:#F00">*</font>
+                        </td>
+          </tr>
+          <tr>
+            <td class="right">销售方式：</td>
+            <td>
+              <input type="checkbox" name="is_best" value="1" {if $goods.is_best}checked="checked"{/if} />精品 
+              <input type="checkbox" name="is_new" value="1" {if $goods.is_new}checked="checked"{/if} />新品
+              <input type="checkbox" name="is_hot" value="1" {if $goods.is_hot}checked="checked"{/if} />热销
+
+              <input type="checkbox" name="is_mall" value="1" {if $goods.is_mall eq 1}checked{/if}>单独购
+              <input type="checkbox" name="is_zero" value="1" {if $goods.is_zero eq 1}checked{/if}>零元购
+              <input type="checkbox" name="is_team" value="1" {if $goods.is_team eq 1}checked{/if}>拼团
+              <input type="checkbox" name="is_tejia" value="1" {if $goods.is_tejia eq 1}checked{/if}>特价
+              <input type="checkbox" name="is_fresh" value="1" {if $goods.is_fresh eq 1}checked{/if}>新人专享
+            </td>
+          </tr>  
+          <tr>
+            <td class="right">零元购邮费：</td>
+            <td><input type="text" value="{$goods.shipping_fee}" name="shipping_fee" class="input" size="35">
+                        </td>
+          </tr>          
+           <tr>
+            <td class="label">是否关注后购买:</td>
+            <td>
+            <input type="radio" name="subscribe" value="0" {if $goods.subscribe eq 0}checked="checked"{/if}>否 
+            <input type="radio" name="subscribe" value="1" {if $goods.subscribe eq 1}checked="checked"{/if}>是 &nbsp;若选择是，必须是关注的会员才能购买
+            </td>
+          </tr>
+                      <tr>
+						<td class="right">商品规格：</td>
+						<td><input type="text" value="{$goods.guige}" name="guige" class="input" size="35">
+                        </td>
+					</tr>
+                    <tr>
+            <td class="right">商品重量：</td> 
+            <td><input type="text" name="goods_weight" value="{$goods.goods_weight_by_unit}" size="20" /> <select name="weight_unit">{html_options options=$unit_list selected=$weight_unit}</select></td>
+          </tr>         
+                    <tr>
+						<td class="right">商品库存：</td>
+						<td><input type="text" value="{$goods.goods_number}" name="goods_number" class="input" size="35">
+                        </td>
+					</tr>
+					<tr>
+			            <td class="right">参团人数：</td>
+			            <td><input type="text" name="team_num" value="{if $form_act eq 'insert_goods'}5{else}{$goods.team_num}{/if}" size="20" />
+			             <font style="color:#F00">*</font></td>
+			          </tr>
+			          <tr>
+			            <td class="right">团购价格：</td>
+			            <td><input type="text" name="team_price" value="{$goods.team_price}" size="20" />
+			            <font style="color:#F00">*</font></td>
+			          </tr>
+			          <tr>
+			            <td class="right">团购销量：</td>
+			            <td><input type="text" name="sales_num" value="{$goods.sales_num}" size="20" /></td>
+			          </tr>
+            <tr>
+            <td class="right">团购限购数量：</td>
+            <td><input type="text" name="limit_buy_bumber" value="{$goods.limit_buy_bumber}" size="20"> 如果是团购请设置，为0表示不限购，如果是团长免单或团长优惠请确认是否要限制购买次数</td>
+          </tr>
+          <tr>
+            <td class="right">团购限制次数：</td>
+            <td>
+            <input type="radio" name="limit_buy_one" value="0"  {if $goods.limit_buy_one eq 0}checked="checked"{/if}>否 
+            <input type="radio" name="limit_buy_one" value="1" {if $goods.limit_buy_one eq 1}checked="checked"{/if}>是
+              &nbsp;一个会员只能购买一次
+            </td>
+          </tr>                      
+            <tr>
+            <td class="right">团长优惠：</td>
+            <td>
+              <select name="discount_type" onchange="change_discount_type(this.value)">
+                  <option value="0">无优惠</option>
+                  <option value="1" {if $goods.discount_type eq 1}selected='selected'{/if}>团长免单</option>
+                  <option value="2" {if $goods.discount_type eq 2}selected='selected'{/if}>团长优惠</option>
+                </select>
+                <span {if $goods.discount_type neq 2}style="display:none;"{/if} id="discount_amount">
+                优惠金额：<input type="text"  name="discount_amount" value="{$goods.discount_amount}" onblur="discount_amount_blur(this.value)" >
+                </span>
+            </td>
+          </tr> 
+          <tr>
+            <td class="right">是否允许使用优惠券：</td>
+            <td>
+                <label><input type="radio" name="bonus_allowed" value="1"{if $goods.bonus_allowed neq 0}checked='checked'{/if}>是</label>
+                <label><input type="radio" name="bonus_allowed" value="0"{if $goods.bonus_allowed eq 0}checked='checked'{/if}>否</label>
+            </td>
+          </tr>
+          <tr>
+            <td class="right">指定可用免单券：</td>
+            <td><select name="bonus_free_all"><option value="0">请选择</option>
+            {foreach from=$bonus_list item=bonus}
+            <option value="{$bonus.type_id}" {if $bonus.type_id eq $goods.bonus_free_all}selected{/if}>{$bonus.type_name}</option>
+            {/foreach}
+            </select></td>
+          </tr>
+          <tr>
+            <td class="label">是否允许分销：</td>
+            <td>
+                <label><input type="radio" name="allow_fenxiao" value="1"{if $goods.allow_fenxiao neq 0}checked='checked'{/if}>是</label>
+                <label><input type="radio" name="allow_fenxiao" value="0"{if $goods.allow_fenxiao eq 0}checked='checked'{/if}>否</label>
+            </td>
+          </tr>     
+          <tr>
+            <td class="label">分销金额：</td>
+            <td>
+                一级<input type="text" name="rate_1" value="{$goods.rate_1|default:0}">
+                二级<input type="text" name="rate_2" value="{$goods.rate_2|default:0}">
+                三级<input type="text" name="rate_3" value="{$goods.rate_3|default:0}">
+            </td>
+          </tr>       
+					<!--{if 0} -->
+                     <tr>
+						<td class="right">商品重量：</td>
+						<td><input type="text" value="{$goods.goods_weight}" name="goods_weight" class="input" size="35">kg
+                        </td>
+					</tr>
+                     <tr>
+						<td class="right">是否免费配送：</td>
+						<td>
+                        <input type="checkbox" name="is_shipping" value="1" {if $goods.is_shipping}checked="checked"{/if} />
+                        打勾表示此商品不会产生运费花销，否则按照正常运费计算。
+                        </td>
+					</tr> 
+                     <tr>
+						<td class="right">是否是套餐：</td>
+						<td>
+                        <input type="checkbox" name="is_package" value="1" {if $goods.is_package}checked="checked"{/if} />
+                        打勾表示此商品是多个商品打包成套餐销售。
+                        </td>
+					</tr> 
+                    <tr>
+						<td class="right">商品单位：</td>
+						<td><input type="text" value="{$goods.unit}" name="unit" class="input" size="2">
+                        </td>
+					</tr>
+					 
+                         <tr>
+						<td class="right">产品授权书：</td>
+						<td>
+                        <input name="goods_authorization" type="file" />
+                         {if $goods.goods_authorization}
+                <a href="/{$goods.goods_authorization}" target="_blank"><img src="templates/images/yes.gif" border="0" /></a>
+              {else}
+                <img src="templates/images/no.gif" />
+              {/if}&nbsp;&nbsp;大小建议800KB以下  
+                        </td>
+					</tr>
+					 <!--{/if} -->
+                  <!--  <tr>
+                      <td class="right">到店消费：</td>
+                      <td><input type="checkbox" name="is_consumption" id="is_consumption" {if $goods.is_consumption} checked="checked"{/if}  value="1"/></td>
+                    </tr>-->
+               <tr>
+                  <td class="right">商品图片：</td>
+                  <td>
+                <input type="text" size="40" id="goods_img_url" value="{$goods.goods_img}" style="color:#aaa;"  name="goods_img_url"/>
+               <a href="javascript:;" onclick="winopen('suppliers.php?act=get_pic&img_id=goods_img_url','600','500');" class="bnt">选择图片</a>
+              {if $goods.goods_img}
+                <a href="/{$goods.goods_img}" target="_blank"><img src="templates/images/yes.gif" border="0" /></a>
+              {else}
+                <img src="templates/images/no.gif" />
+              {/if} &nbsp;&nbsp;大小建议400像素*400像素  <font style="color:#F00">*</font> 
+                </td>
+              </tr>
+              
+              <tr>
+                  <td class="right">拼团矩形图：</td>
+                  <td>
+                <input type="text" size="40" id="little_img" value="{$goods.little_img}" style="color:#aaa;"  name="little_img"/>
+               <a href="javascript:;" onclick="winopen('suppliers.php?act=get_pic&img_id=little_img','600','500');" class="bnt">选择图片</a>
+              {if $goods.little_img}
+                <a href="/{$goods.little_img}" target="_blank"><img src="templates/images/yes.gif" border="0" /></a>
+              {else}
+                <img src="templates/images/no.gif" />
+              {/if} &nbsp;&nbsp;大小建议640像素*400像素   <font style="color:#F00">*</font>
+                </td>
+              </tr>
+              <!--{if 0} -->
+              <tr>
+            <td class="right">推荐描述：</td>
+            <td><textarea name="goods_brief" cols="40" rows="3">{$goods.goods_brief|escape}</textarea></td>
+          </tr>
+              <tr>
+            <td class="right">关键字：</td>
+            <td><textarea name="keywords" cols="40" rows="3">{$goods.keywords|escape}</textarea></td>
+          </tr>
+          <!--{/if} -->
+          <input type="hidden" id='desc_num' value='0' />
+          
+               <tr>
+                  <td class="right">详细描述：</td>
+                  <td>
+              {$FCKeditor}
+              </td>
+              </tr>
+               <!--{if 0} -->
+               <tr>
+                  <td class="right">厂家展示：</td>
+                  <td>
+              {$factory_desc}&nbsp;&nbsp;如果选择了厂家，可为空
+              </td>
+              </tr>
+               <!--{/if} -->
+                    </table>
+			</div>
+           <div id="show_html2" class="conbox" style="display:none;">
+          		<div style="padding:12px 25px">
+                 <!-- 图片列表 -->
+                <table width="90%"  align="center" class="edittable">
+                 <tr>
+                     <td>
+                     <!--'"+data+"','{$img.img_id}'-->
+              {foreach from=$img_list item=img}
+             <div id="gallery_{$img.img_id}" style="float:left; text-align:center; border: 1px solid #DADADA; margin: 4px; padding:2px;">
+             <a href="javascript:;" onclick="remove_img('{$img.img_id}')">[-]</a><br />
+             <a href="suppliers.php?act=show_image&img_url={$img.img_url}" target="_blank">
+                <img src="{if $img.thumb_url}../{$img.thumb_url}{else}{$img.img_url}{/if}" border="0" width="200" height="200" />
+                </a><br />
+              </div>
+              {/foreach}
+                </td>
+             </tr>
+            </table>
+               		<a href="javascript:;" onclick="winopen('suppliers.php?act=get_photo','600','500');" class="bnt">选择图片</a>
+				</div>
+         </div>
+        <div class="conbox" style="display:none;" id="show_html3">
+		<div style="padding:12px 25px">
+                 <!-- 图片列表 -->
+        <table width="100%" align="center" class="edittable">
+          <tr>
+              <td  width="100">商品类型</td>
+              <td align="left">
+                <select name="goods_type" onchange="getAttrList({if $goods.goods_id}{$goods.goods_id}{else}0{/if})">
+                  <option value="0">请选择商品类型</option>
+                  {$goods_type_list}
+                </select>
+              </td>
+          </tr>
+          <tr>
+            <td id="tbody-goodsAttr" colspan="2" style="padding:0">{$goods_attr_html}</td>
+          </tr>
+
+        </table>
+		  </div>
+			</div>
+
+<div class="conbox" style="display:none;" id="show_html4">
+    <div style="padding:12px 25px">
+        <table width="100%" align="center" class="edittable">
+          <tr id="spe-0">
+            <td class="label">指定区域（省）</td>
+            <td>
+              
+              <div id="area_province"></div>
+            </td>
+          </tr>
+          <tr id="spe-1">
+            <td class="label">指定区域（市）</td>
+            <td>
+              <div id="area_city"></div>
+            </td>
+          </tr>
+          <tr id="spe-2">
+            <td class="label">指定区域（区）</td>
+            <td>
+              <div id="area_region"></div>
+            </td>
+          </tr>    
+          <tr id="spe-3">
+            <td class="label">指定快递方式</td>
+            <td>
+              <select name="default_shipping_id" id="default_shipping_id">
+                <!-- <option value="0">用户自选</option> -->
+                <!-- {foreach from=$shipping_list item=item} -->
+                <option value="{$item.shipping_id}" code="{$item.shipping_code}">{$item.shipping_name}</option>
+                <!-- {/foreach} -->
+              </select>
+            </td>
+          </tr>
+          <tr id="spe-8">
+              <td class="label">费用计算方式:</td>
+              <td>
+                <label><input type="radio" checked="true" name="fee_compute_mode" value="by_weight">按重量计算</label>
+                <label><input type="radio" name="fee_compute_mode" value="by_number">按商品件数计算</label>
+              </td>
+           </tr>          
+           <!--<tr>
+            <td class="label">默认区域运费</td>
+            <td>
+              <input type="text" name="default_shipping_fee" value="{$goods.default_shipping_fee}" size="20" />
+            </td>
+          </tr>
+          <tr>
+            <td class="label">默认区域运费超出每次加价</td>
+            <td>
+              <input type="text" name="default_step_fee" value="{$goods.default_step_fee}" size="20" />
+            </td>
+          </tr> -->                
+          <tr id="spe-4">
+            <td class="label">指定区域运费</td>
+            <td>
+              <input type="text" name="spe_shipping_fee" value="{$goods.spe_shipping_fee}" size="20" />
+            </td>
+          </tr>
+          <tr id="spe-5">
+            <td class="label">指定区域运费超出每次加价</td>
+            <td>
+              <input type="text" name="spe_step_fee" value="{$goods.spe_step_fee}" size="20" />
+            </td>
+          </tr>
+          <tr>
+            <td class="label"></td>
+            <td>
+              <input type="button" id="spe-clear" value="添加" onclick="clearSpeFee()">
+              <input type="button" id="spe-6" value="确定" onclick="submitSpeFee()">
+              <input type="button" id="spe-7" value="取消" onclick="cancelSpeFee()">
+            </td>
+          </tr>
+          <tr>
+            <td class="label"></td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td class="label"></td>
+            <td>
+              <table width="100%" align="center">
+                <thead>
+                  <tr>
+                    <th width="40%" align="left">配送区域</th>
+                    <th width="15%" align="left">快递方式</th>
+                    <th width="15%" align="left">运费</th>
+                    <th width="15%" align="left">每次加价</th>
+                    <th width="15%" align="left">操作</th>
+                  </tr>
+                </thead>
+                <tbody id="express-items"></tbody>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </div>
+      </div>
+
+            <table class="edittable">
+				 <tr>
+						<td class="right">&nbsp;</td>
+						<td>
+                        <input name="goods_id" type="hidden" value="{$goods.goods_id}" />
+
+                        <input name="act" type="hidden" value="{$form_act}" />
+                        <input name="express_items" type="hidden" value="" />
+
+                        <input type="submit" value="保 存" class="btn"></td>
+					</tr>
+            </table>
+          </form>
+			<script type="text/javascript" language="javascript"> 
+  // 运费模板
+  var spe_region   = [{$goods.spe_region}];
+  var all_province = {$all_province};
+  var all_citys    = {$all_citys};
+  var all_regions  = {$all_regions};
+
+  var express_items = {$goods.express};
+
+  var method = null;
+  var row_id = 0;
+
+  f_createRows();
+  f_showhide(0);  
+
+  function clearSpeFee(){
+    document.getElementById('spe-clear').style.display='none';
+    var val = 1;
+    generateIpt(all_province,"area_province",'province-'+val,val,'spe_province[]','setCitys(this);');
+    method = 'add';
+    f_showhide(1);
+  }
+
+  function cancelSpeFee(){
+    document.getElementById('spe-clear').style.display = 'block';
+    document.getElementById('area_province').innerHTML = '';
+    document.getElementById('area_city').innerHTML     = '';
+    document.getElementById('area_region').innerHTML   = '';
+
+    method = null;
+    f_showhide(0);
+  }
+  // 创建
+  function submitSpeFee(){
+    var spe_provinces = document.forms['myform'].elements['spe_province[]'] || [];
+    var spe_citys     = document.forms['myform'].elements['spe_city[]'] || [];
+    var spe_regions   = document.forms['myform'].elements['spe_region[]'] || [];
+
+    var titles    = [];
+    var provinces = [];
+    var citys     = [];
+    var regions   = [];
+    // 处理省
+    // 可能会是一个，就不是数组格式
+    var len = spe_provinces.length;
+    if(typeof len == 'undefined'){
+        var ckd = spe_provinces.checked;
+        if(ckd)
+        {
+          provinces.push(parseInt(spe_provinces.value));
+        }
+    }    
+    for (var i = 0; i < len; i++) {
+        var ckd = spe_provinces[i].checked;
+        if(ckd)
+        {
+          provinces.push(parseInt(spe_provinces[i].value));
+          titles.push(spe_provinces[i].parentNode.innerText);
+        }
+    }
+    if(provinces.length==0){
+      alert('请设置省市区等相关信息');
+      return;
+    }    
+    // 处理citys
+    // 可能会是一个，就不是数组格式
+    var len = spe_citys.length;
+    if(typeof len == 'undefined'){
+        var ckd = spe_citys.checked;
+        if(ckd)
+        {
+          citys.push(parseInt(spe_citys.value));
+        }
+    }
+    for (var i = 0; i < len; i++) {
+        var ckd = spe_citys[i].checked;
+        if(ckd)
+        {
+          citys.push(parseInt(spe_citys[i].value));
+        }
+    }
+    // 处理区域
+    // 可能会是一个，就不是数组格式
+    var len = spe_regions.length;
+    if(typeof len == 'undefined'){
+        var ckd = spe_regions.checked;
+        if(ckd)
+        {
+          regions.push(parseInt(spe_regions.value));
+        }
+    }     
+    for (var i = 0; i < len; i++) {
+        var ckd = spe_regions[i].checked;
+        if(ckd)
+        {
+          regions.push(parseInt(spe_regions[i].value));
+        }
+    }
+
+
+    var title = titles.join(' ');
+    var ele          = document.forms['myform'].elements['default_shipping_id'];
+    var express_name  = ele.options[ele.selectedIndex].text;
+    var express_id   = ele.options[ele.selectedIndex].value;
+    var express_code = ele.options[ele.selectedIndex].getAttribute('code');
+    var spe_shipping_fee = document.forms['myform'].elements['spe_shipping_fee'].value;
+    var spe_step_fee = document.forms['myform'].elements['spe_step_fee'].value;
+
+    var fee_compute_mode = '';
+    var ele = document.forms['myform'].elements['fee_compute_mode'];
+    for (var i = 0; i < ele.length; i++) {
+        var ckd = ele[i].checked;
+        if(ckd)
+        {
+          fee_compute_mode = ele[i].value;
+        }
+    }
+    // 数据到数组
+    var row              = {};
+    row.title            = title;
+    row.spe_shipping_fee = spe_shipping_fee;
+    row.spe_step_fee     = spe_step_fee;
+    row.express_name     = express_name;
+    row.express_id       = express_id;
+    row.express_code     = express_code;
+    row.fee_compute_mode = fee_compute_mode;
+    row.provinces        = provinces;
+    row.citys            = citys;
+    row.regions          = regions;
+
+    // 添加 OR 编辑
+    if(method == 'add'){
+      express_items.push(row);
+    }
+    else{
+      express_items[row_id] = row;
+    }
+
+    document.forms['myform'].elements['express_items'].value = express_items.toJSONString();
+    // 重新生成行
+    f_createRows();
+    //隐藏
+    cancelSpeFee();
+  }
+  // 生成数据表格
+  function f_createRows(){
+    document.forms['myform'].elements['express_items'].value = express_items.toJSONString();
+    var ele = document.getElementById('express-items');
+    ele.innerHTML = '';
+    for (var i = 0; i < express_items.length; i++) {
+      var row = express_items[i];
+      var provinces = row.provinces;
+
+      var titles = [];
+      for (var n in provinces) {
+        titles.push(getRegion(all_province,provinces[n]));
+      }
+      var title = titles.join(' ');
+      // 创建行
+      var node = document.createElement('tr');
+      var td = document.createElement('td');
+      td.innerHTML = title;
+      node.appendChild(td);
+
+      var td0 = document.createElement('td');
+      td0.innerHTML = row.express_name;
+      node.appendChild(td0);
+
+      var td1 = document.createElement('td');
+      td1.innerHTML = row.spe_shipping_fee;
+      node.appendChild(td1);
+
+      var td2 = document.createElement('td');
+      td2.innerHTML = row.spe_step_fee;
+      node.appendChild(td2);
+
+      var td3 = document.createElement('td');
+
+      var btn_edit = document.createElement('input');
+      btn_edit.setAttribute('type','button');
+      btn_edit.setAttribute('value','编辑');
+      btn_edit.setAttribute('onclick','f_editRow('+i+')');
+      td3.appendChild(btn_edit);
+      var btn_del = document.createElement('input');
+      btn_del.setAttribute('type','button');
+      btn_del.setAttribute('value','删除');
+      btn_del.setAttribute('onclick','f_delRow('+i+')');
+      td3.appendChild(btn_del);
+
+      node.appendChild(td3);
+
+      ele.appendChild(node);      
+    }
+  }
+  // 编辑行
+  function f_editRow(id){
+    cancelSpeFee();
+
+    method = 'edit';
+    row_id = id;
+    var row = express_items[id];
+
+    var provinces = row.provinces;
+    var citys     = row.citys;
+    var regions   = row.regions;
+
+    var express_id       = row.express_id;
+    var spe_shipping_fee = row.spe_shipping_fee;
+    var spe_step_fee     = row.spe_step_fee;
+    var fee_compute_mode = row.fee_compute_mode;
+
+    var ele = document.forms['myform'].elements['fee_compute_mode'];
+    for (var i = 0; i < ele.length; i++) {
+        if(fee_compute_mode == ele[i].value)
+        {
+          ele[i].click();
+        }
+    }
+
+    // 设置select选中
+    var obj = document.getElementById("default_shipping_id");
+    for(var i=0;i<obj.length;i++){
+      if(obj[i].value == express_id)
+        obj[i].selected = true;
+    }
+    // 设置值
+    document.forms['myform'].elements['spe_shipping_fee'].value = spe_shipping_fee;
+    document.forms['myform'].elements['spe_step_fee'].value = spe_step_fee;
+    // 创建checkbox
+    var val = 1;
+    generateIpt(all_province,"area_province",'province-'+val,val,'spe_province[]','setCitys(this);'); 
+
+    for (var i = 0; i < provinces.length; i++) {
+      val = provinces[i];
+      var spe_provinces = document.forms['myform'].elements['spe_province[]'] || [];
+      for (var n = 0; n < spe_provinces.length; n++) {
+         var obj = spe_provinces[n];
+         if(obj.value == val){
+          obj.click();
+         }
+      }
+    }
+    for (var i = 0; i < citys.length; i++) {
+      val = citys[i];
+      var spe_citys     = document.forms['myform'].elements['spe_city[]'] || [];
+      var len = spe_citys.length;
+      if(typeof len == 'undefined'){
+          if(spe_citys.value == val)
+          {
+            spe_citys.click();
+          }
+      }
+      for (var n = 0; n < len; n++) {
+         var obj = spe_citys[n];
+         if(obj.value == val){
+          obj.click();
+         }
+      }
+    }
+    for (var i = 0; i < regions.length; i++) {
+      val = regions[i];
+      var spe_regions   = document.forms['myform'].elements['spe_region[]'] || [];
+      var len = spe_regions.length;
+      if(typeof len == 'undefined'){
+          if(spe_regions.value == val)
+          {
+            spe_regions.click();
+          }
+      }      
+      for (var n = 0; n < spe_regions.length; n++) {
+         var obj = spe_regions[n];
+         if(obj.value == val){
+          obj.click();
+         }
+      }
+    }
+    f_showhide(1);   
+  }
+  // 删除行
+  function f_delRow(id){
+    express_items.splice(id, 1);
+    document.forms['myform'].elements['express_items'].value = express_items.toJSONString();
+    cancelSpeFee();
+    f_createRows();
+  }
+  function f_resetCheckbox(){
+    var spe_regions = document.forms['myform'].elements['spe_region[]'];
+    for (var i in spe_regions) {
+        spe_regions[i].setAttribute('checked',false);
+    }
+  }
+
+  function f_showhide(val){
+    var display = val ? 'table-row' : 'none';
+    for (var i = 0; i < 9; i++) {
+      document.getElementById('spe-'+i).style.display=display;
+    }
+    var display = val ? 'none' : 'table-row';
+    document.getElementById('spe-clear').style.display=display;
+  }
+  // 设置要选的城市
+  function setCitys(ipt){
+    var val = parseInt(ipt.value);
+    var strs = '';
+    var checked = ipt.checked ? 1 : 0;
+    var existed = document.getElementById('city-'+val) == null ? 0 : 1;
+
+    if(checked && !existed){
+      generateIpt(all_citys,"area_city",'city-'+val,val,'spe_city[]','setRegion(this);');
+    }
+    else{
+      var obj = document.forms['myform'].elements['spe_city[]'];
+
+      var len = obj.length;
+      if(typeof len == 'undefined'){
+          if(obj.getAttribute('data-pid') == val && obj.checked)
+          {
+            obj.click();
+          }
+      }
+
+      for (var i = 0; i < len; i++) {
+        if(obj[i].getAttribute('data-pid') == val && obj[i].checked)
+        {
+          obj[i].click();
+        }
+      }
+
+      var node = document.getElementById('city-'+val);
+      document.getElementById("area_city").removeChild(node);
+    }
+  }
+
+  // 设置要选的区域
+  function setRegion(ipt){
+    var val = parseInt(ipt.value);
+    var strs = '';
+    var checked = ipt.checked ? 1 : 0;
+    var existed = document.getElementById('region-'+val) == null ? 0 : 1;
+
+    if(checked && !existed){
+       generateIpt(all_regions,"area_region",'region-'+val,val,'spe_region[]');
+    }
+    else{
+      var node = document.getElementById('region-'+val);
+      document.getElementById("area_region").removeChild(node);
+    }
+  }
+
+  function generateIpt(data,ele,id,pid,ipt_name,fun){
+      var node = document.createElement('div');
+      node.setAttribute('id',id);
+      for (var i = 0; i < data.length; i++) {
+        var parent_id = parseInt(data[i].parent_id);
+        if( parent_id == pid){
+          var label = document.createElement('label');
+          var input = document.createElement('input');
+          var name  = document.createTextNode(data[i].region_name);
+
+          input.setAttribute('type','checkbox');
+          input.setAttribute('name',ipt_name);
+          input.setAttribute('value',data[i].region_id);
+          input.setAttribute('data-pid',pid);
+          if(fun)
+            input.setAttribute('onclick',fun);
+
+          label.appendChild(input);
+          label.appendChild(name);
+
+          node.appendChild(label);
+        }
+      }
+      document.getElementById(ele).appendChild(node);
+  }
+
+  // 从数组中获取region_name
+  function getRegion(data,region_id){
+    for (var i = 0; i < data.length; i++) {
+      if(data[i].region_id == region_id){
+        return data[i].region_name;
+      }
+    }
+    return '';
+  }
+  //选中region
+  function handleCheckRegion()
+  {
+    var spe_regions = document.forms['myform'].elements['spe_region[]'];
+    for (var i in spe_regions) {
+      var val = spe_regions[i].value;
+      if(in_array(val,spe_region))
+      {
+        spe_regions[i].setAttribute('checked',true);
+      }
+    }
+  }
+
+  function in_array(stringToSearch, arrayToSearch) {
+   for (s = 0; s < arrayToSearch.length; s++) {
+    thisEntry = arrayToSearch[s].toString();
+    if (thisEntry == stringToSearch) {
+     return true;
+    }
+   }
+   return false;
+  }  
+  // 运费模板end
+  function getAttrList(goodsId)
+  {
+      var selGoodsType = document.forms['myform'].elements['goods_type'];
+      if (selGoodsType != undefined)
+      {
+          var goodsType = selGoodsType.options[selGoodsType.selectedIndex].value;
+		  Ajax.call('suppliers.php?act=get_attr', 'goods_id=' + goodsId + "&goods_type=" + goodsType, setAttrList, "GET", "JSON");
+      }
+  }
+  function setAttrList(result, text_result)
+  {
+    document.getElementById('tbody-goodsAttr').innerHTML = result.content;
+  }
+		function hideimg(imgId,imgurl)
+		 { 
+
+			   var imgid=document.getElementById(imgId);
+
+			  imgid.style.display='none';
+
+			  var imgurl=document.getElementById(imgurl);
+
+			  imgurl.value="";
+
+		}
+
+       function remove_img(id)
+	  {
+		getStatusUrl = 'suppliers.php?act=del_image&id='+id;
+		//getStatusUrl = 'suppliers.php?act=delete_pic&pic='+data+'&id='+id;
+		$.ajax(
+		{
+			  url: getStatusUrl,
+			  dataType: 'json',
+			  global: false,
+			  success: function(data)
+			  {
+				 $("#gallery_"+id).hide();
+				 $("#"+id+"").attr("checked",false);
+
+				//document.getElementById("pic_"+id).style.display = "none";
+
+			  },
+			  error: function(XMLHttpRequest,textStatus, errorThrown){
+
+							//alert(XMLHttpRequest.responsetext);
+
+							//alert(textStatus);
+
+							//alert(errorThrown);
+			  }
+
+		});	
+
+	 }
+  function change_discount_type(value){
+    var theForm=document.forms['myform'];
+    var team_price=parseFloat(theForm.team_price.value);
+    if( isNaN(team_price) || team_price<=0){
+      alert('请先填写团购价格');
+      theForm.discount_type.value='0';
+      theForm.team_price.focus();
+      return ;
+    } 
+    if(value==2){
+      document.getElementById('discount_amount').style.display='block';
+    }else{
+      document.getElementById('discount_amount').style.display='none';
+    }  
+  }
+  function discount_amount_blur(value){
+    var theForm=document.forms['myform'];
+    var team_price=theForm.team_price.value;
+    if(team_price==''){
+      alert('请先填写团购价格');
+      theForm.discount_type.value='0';
+      theForm.team_price.focus();
+      return ;
+    } 
+    if(value==''){
+      alert('请先填写优惠价格');
+      return ;
+    }
+    if(parseFloat(value)>=parseFloat(team_price)){
+      alert('优惠价格不能大于等于团购价格');
+      return ;
+    }
+    if(parseFloat(value)<=0){
+      alert('优惠价格不能小于等于0');
+      return ;
+    }
+  }
+			 </script>
+
+            
+
+            <!-- <div id="show_html3" style="width:1000px; height:400px; border:1px solid #000; margin-top:10px;display:none;margin-left:40px;">
+
+         <form action="" method="post"> &nbsp;&nbsp; &nbsp;&nbsp;
+
+          文章标题： &nbsp;&nbsp;<input type="text" name="title">&nbsp;&nbsp;
+
+          <input type="submit" name="subcheck" value="搜素">
+
+          
+
+          <ul style="margin-left:170px;">
+
+          <li style="list-style:none; float:left; padding-right:270px;">可选文章</li>
+
+           <li style="list-style:none; float:left; padding-right:270px;">操作</li>
+
+            <li style="list-style:none; float:left;">跟该商品关联的文章</li>
+
+          </ul>
+
+            </div>-->
+
+		</div>
+
+</div>
+
+
+    <!--{/if}-->
+   <!--{if $action eq 'goods_import' }-->
+      <script>
+		function search_companys(value)
+		{
+			window.location.href="suppliers.php?act=goods_import&companys_id="+value;
+		}
+	</script>
+
+ <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_goods.png" /><span>商品管理</span>
+		</div><div class="maincon">
+			<div class="contitlelist">
+            	<span>商品导入</span>
+                 <div class="searchdiv">
+             <form method="post" action="suppliers.php">
+              <div>厂家：</div>
+                 <select id="companys_id" name="companys_id" onchange="search_companys(this.value);">
+                	<option value="">请选择</option>
+                     <!--{foreach from=$company_list item=company}--> 
+                    <option value="{$company.companys_id}" {if $companys_id eq $company.companys_id} selected="selected"{/if} >{$company.companys_name}</option>
+                      <!--{/foreach}-->
+                </select>
+                <input type="hidden" name="act"  value="goods_import" />
+            </form>
+                        </div>
+            </div>
+
+            
+  <form method="post" action="suppliers.php">
+			<div class="conbox">
+				<table cellspacing="0" cellpadding="0" class="listtable">
+					<tr>
+					  <th><input type="checkbox" name="checkbox" value="checkbox"  onclick='listTable.selectAll(this, "goods_id")' /></th>
+					  <th class="left">商品名称</th>
+					<!--  <th>操作列</th>-->
+					</tr>
+                    {if $sql_list}
+                      <!--{foreach from=$sql_list item=goods}-->
+					<tr>
+					  <td class="checkbox"><input type="checkbox" name="goods_id[]" id="goods_id" value="{$goods.goods_id}" /></td>
+				
+					  <td>{$goods.goods_name}</td>
+					
+				
+					<!--  <td class="middle">
+                     
+                    <a href="?act=goods_import_show&goods_id={$goods.goods_id}">详情</a> </td>-->
+					</tr>
+
+					<!--{/foreach}-->
+                    {else}
+                    暂未找到商品
+                    {/if}
+
+				</table>
+                <input name="act" type="hidden" value="goods_import_act" />
+				 <input type="submit" class="button" name="" value="导入">	
+			</div>
+           
+            </form>
+
+			     <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+
+		</div>
+
+        </div>
+
+    <!--{/if}-->
+
+    <!--{if $action eq 'my_goods' }-->
+    <script>
+/**
+ * 切换状态
+ */
+listTable.supp_toggle = function(obj, act, id)
+{
+  var val = (obj.src.match(/yes.gif/i)) ? 0 : 1;
+  var res = Ajax.call(this.url, "act="+act+"&val=" + val + "&id=" +id, null, "POST", "JSON", false);
+  if (res.message)
+  {
+    alert(res.message);
+  }
+
+  if (res.error == 0)
+  {
+	if(res.content ==2)
+	{
+		obj.src='images/no.gif';
+	}
+	else
+	{
+		
+    	obj.src = (res.content > 0) ? '../../{$admin_path}/images/yes.gif' : '../../{$admin_path}/images/no.gif';
+	}
+  }
+}
+	</script>
+ <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_goods.png" /><span>商品管理</span>
+		</div><div class="maincon">
+			<div class="contitlelist">
+            	<span>我的商品</span>
+                 <div class="searchdiv">
+             <form method="post" action="suppliers.php">
+              <div>状态：</div>
+                 <select id="goods_status" name="goods_status">
+                	<option value="">请选择</option>
+                    <option value="0" {if $goods_status eq '0'} selected="selected"{/if}>已下架</option>
+                    <option value="1" {if $goods_status eq '1'} selected="selected"{/if}>已上架</option>
+                </select>
+                <!-- {if 0} -->
+                <div>促销：</div>
+                 <select id="is_promote" name="is_promote">
+                	<option value="">请选择</option>
+                    <option value="1" {if $is_promote eq '1'} selected="selected"{/if}>是</option>
+                    <option value="0" {if $is_promote eq '0'} selected="selected"{/if}>否</option>
+                </select>
+                <div>当季：</div>
+                 <select id="is_season" name="is_season">
+                	<option value="">请选择</option>
+                    <option value="1" {if $is_season eq '1'} selected="selected"{/if}>是</option>
+                    <option value="0" {if $is_season eq '0'} selected="selected"{/if}>否</option>
+                </select>
+                <!-- {/if} -->
+                 <div>审核：</div>
+                 <select id="is_check" name="is_check">
+                	<option value="">请选择</option>
+                    <option value="0" {if $is_check eq '0'} selected="selected"{/if}>审核中</option>
+                    <option value="1" {if $is_check eq '1'} selected="selected"{/if}>已审核</option>
+                    <option value="2" {if $is_check eq '2'} selected="selected"{/if}>未审核</option>
+                </select>
+                <!-- {if 0} -->
+    			 <div>推荐：</div>
+                 <select id="is_supp_top" name="is_supp_top">
+                	<option value="">请选择</option>
+                    <option value="1" {if $is_supp_top eq '1'} selected="selected"{/if}>是</option>
+                    <option value="0" {if $is_supp_top eq '0'} selected="selected"{/if}>否</option>
+                </select>                
+                <!-- {/if} -->
+                <input type="text"   value="" class="input" name="keywords">
+                <input type="hidden" name="act"  value="my_goods" />
+                <input type="submit" class="btn" name="" value="搜索">
+            </form>
+                        </div>
+            </div>
+
+            
+
+			<div class="conbox">
+<form method="post" action="">
+				<table cellspacing="0" cellpadding="0" class="listtable">
+
+					<tr>
+
+					  <th><input onclick="listTable.selectAll(this, 'checkbox');" type="checkbox" name="checkbox" value="checkbox" /></th>
+
+					  <th>货号</th>
+
+					  <th class="left">商品名称</th>
+
+					  <th class="left">商品价格</th>
+ 
+					  <th class="left">团购价格</th>
+                      
+                      <th class="left">团购人数</th>
+
+					  <th class="right">审核状态</th>
+
+                      <th class="right">上架</th>
+					  <th>操作列</th>
+					</tr>
+                      <!--{foreach from=$goods_list item=goods}-->
+					<tr>
+					  <td class="checkbox"><input type="checkbox" name="checkbox[]" value="{$goods.goods_id}" /></td>
+					  <td class="middle">{$goods.goods_sn}</td>
+					  <td>{if $goods.is_on_sale eq 1}<a href="/goods.php?id={$goods.goods_id}" class="link" target="_blank" title='{$goods.goods_name}'>{$goods.goods_name|truncate:30}</a>{else}{$goods.goods_name|truncate:30}{/if}{if $goods.gmt_end_time}<font color="#FF0000">[促销]</font>{/if}</td>
+					  <td>{$goods.shop_price}</td>
+					  <td>
+                      <!-- 
+                     <img src="../../{$admin_path}/images/{if $goods.is_season}yes{else}no{/if}.gif" onclick="listTable.supp_toggle(this, 'is_season', {$goods.goods_id})" /> 
+                       -->
+                      {$goods.team_price}</td>
+                      
+                       <td> {$goods.team_num}</td>
+                       <!-- 
+                       <img src="../../{$admin_path}/images/{if $goods.is_supp_top}yes{else}no{/if}.gif" onclick="listTable.supp_toggle(this, 'is_supp_top', {$goods.goods_id})" />
+                        -->
+					  <td class="right"> 
+                      
+                       {if $goods.is_check eq '0'}审核中...{elseif $goods.is_check eq 1}已审核{else}<span style="color:#F00;">未通过</span>{/if}
+                      {if $goods.is_check eq 2 and $goods.check_desc neq ''}<span style="color:#F00;">[{$goods.check_desc}]</span>{/if}
+                      
+                      
+                      
+                      </td>
+                      <td class="right">
+                      {if $goods.is_check eq 1}<a href='?act=goods_on_sale&goods_id={$goods.goods_id}&id={$goods.is_on_sale}' onclick="return confirm('确定要继续此操作吗？')">{if $goods.is_on_sale eq 0}上架{else}取消上架{/if}</a>{else}    {if $goods.is_on_sale eq 0}未上架{else}已上架{/if}  {/if}
+                       </td>
+					  <td class="middle">
+                       <a href="?act=edit_goods&goods_id={$goods.goods_id}">编辑</a>| <a href="?act=delete_goods&goods_id={$goods.goods_id}" onclick="return confirm('确定要此操作吗');">回收站</a>
+                      
+                       </td>
+					</tr>
+
+					<!--{/foreach}-->
+
+				</table>
+<input name="act" type="hidden" value="my_goods_batch" />
+<input name="page" type="hidden" value="{$pager.page}" />
+
+<table border="0">
+	<tr>
+	<td>
+		<input class="button" type="submit" value="批量删除"  name="remove">
+	</td>
+	<td>
+		<input class="button" type="submit" value="批量上架"  name="up_sale">
+	</td>
+	<td>
+		<input class="button" type="submit" value="批量下架"  name="down_sale">
+	</td>
+	</tr>
+</table>
+</form> 
+			</div>
+
+			     <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+
+		</div>
+
+        </div>
+
+    <!--{/if}-->
+
+    
+    
+    
+    
+    
+        <!--{if $action eq 'goods_trash' }-->
+    
+ <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_goods.png" /><span>商品管理</span>
+		</div><div class="maincon">
+			<div class="contitlelist">
+            	<span>商品回收站</span>
+                
+            </div>
+
+            
+
+			<div class="conbox">
+
+				<table cellspacing="0" cellpadding="0" class="listtable">
+
+					<tr>
+
+					
+
+					  <th>货号</th>
+
+					  <th class="left">商品名称</th>
+
+					  <th class="left">商品价格</th>
+
+					
+					  <th>操作列</th>
+					</tr>
+                      <!--{foreach from=$goods_list item=goods}-->
+					<tr>
+					  <td class="middle">{$goods.goods_sn}</td>
+                      <td>{$goods.goods_name}</td>
+					  <td>{$goods.shop_price}</td>
+                     
+              
+					  <td class="middle">
+                      <!--<a href="/goods.php?id={$goods.goods_id}">预览</a>
+                      | -->
+                       <a href="?act=restore_goods&goods_id={$goods.goods_id}" onclick="return confirm('确定要还原次商品吗');">还原</a>|
+                      <a href="?act=drop_goods&goods_id={$goods.goods_id}" onclick="return confirm('确定要把该商品删除吗');">删除</a>  
+					</tr>
+
+					<!--{/foreach}-->
+
+				</table>
+
+			</div>
+
+			     <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+
+		</div>
+
+        </div>
+
+    <!--{/if}-->
+    
+    
+
+{if $action eq 'supp_info'}
+
+    <script type="text/javascript" src="/js/transport.js"></script>
+    <script>
+	region.isAdmin = true;
+	</script>
+
+  <div class="main" id="main">
+
+		<div class="maintop">
+
+			<img src="templates/images/title_article.png" /><span>店铺资料</span>
+
+		</div>
+		<div class="maincon">
+				<div class="contitleedit"><span>资料更新</span></div>
+			<div class="conbox">
+            <form action="suppliers.php" enctype="multipart/form-data" method="post" name="myform">
+           <table cellspacing="0" cellpadding="0" class="edittable">
+					<tr>
+						<td class="right">商家名称：</td>
+						<td>{if $supp_list.is_check eq 1} {$supp_list.suppliers_name} {else}
+                           <input name="suppliers_name" type="text" size="40" id="suppliers_name"  class="input" value="{$supp_list.suppliers_name}" />
+                           {/if}
+                        
+                        </td>
+					</tr>
+                        <tr>
+                  <td  align="right">店铺logo：</td>
+                  <td>
+                  <input name="supp_logo" type="file"  size="40" />
+                  &nbsp;&nbsp;大小建议158像素*86像素&nbsp;&nbsp;   {if $supp_list.supp_logo}<a  href="./../{$supp_list.supp_logo}" target="_blank">查看</a>{/if}
+                  </td>
+                </tr>
+                
+                
+                  <tr>
+<!-- 						<td class="right">经度：</td>
+						<td>
+            <input name="longitude" type="text" size="10" id="longitude"  class="input" value="{$supp_list.longitude}" />                      </td>
+					</tr>
+                    <tr>
+						<td class="right">纬度：</td>
+						<td>
+            <input name="latitude" type="text" size="10" id="latitude"  class="input" value="{$supp_list.latitude}" />
+                      <a href="http://api.map.baidu.com/lbsapi/getpoint/" target="_blank">获取坐标</a>               </td>
+					</tr> -->
+                
+                 
+          
+               
+
+<!--           <tr>
+           	<td width="30%" align="right">店铺形象照片：</td>
+            <td>
+      <input name="supp_banner" type="file"  size="40" />&nbsp;&nbsp;大小建议1200像素*200像素&nbsp;&nbsp;
+
+                  {if $supp_list.supp_banner}<a  href="./../{$supp_list.supp_banner}" target="_blank">查看</a>{/if}
+            </td>
+          </tr> -->
+         
+        
+        
+                     <tr>
+						<td class="right">区域选择：</td>
+                        <td>
+                  
+
+		  <select name="city_id" id="selCities"  onchange="region.changed(this, 3, 'selDistricts')">
+
+          <option value=''>请选择</option>
+
+            {foreach from=$cities item=region}
+
+              <option value="{$region.region_id}" {if $region.region_id eq $supp_list.city_id}selected="selected"{/if}>{$region.region_name}</option>
+
+            {/foreach}
+
+        </select>
+         <select name="district_id" id="selDistricts">
+
+				<option value="0">请选择</option>
+
+				{foreach from=$district_list item=district}
+
+				<option value="{$district.region_id}" {if $district.region_id eq $supp_list.district_id}selected="selected"{/if}  >{$district.region_name}</option>
+
+				{/foreach}
+
+		</select>                
+                        </td>
+					</tr>
+                   
+                   <tr>
+                
+          <td width="30%" align="right">详细地址：</td>
+          <td>
+          <input name="address" type="text" size="40" id="address"  class="input"  value="{$supp_list.address}"/>
+          </td>
+
+        </tr>
+		<tr>
+
+          <td align="right">客服QQ：</td>
+
+          <td>
+
+          <input name="qq" type="text"  size="40" class="input"  value="{$supp_list.qq}" />
+
+            <span style="color:#FF0000" id="password_notice"> *</span>
+
+          </td>
+
+        </tr>
+         <tr>
+
+          <td width="30%" align="right">邮箱：</td>
+
+          <td>
+
+          <input name="email" type="text" size="40" id="email" class="input"  value="{$supp_list.email}" />
+
+          </td>
+
+        </tr>
+        <!-- {if 0} -->
+        <tr>
+          <td width="30%" align="right">备用邮箱：</td>
+          <td>
+          <input name="email1" type="text" size="40" id="email1" class="input"  value="{$supp_list.email1}" />
+          </td>
+        </tr>
+        <!-- {/if} -->
+        
+        <tr>
+          <td width="30%" align="right">手机号码：</td>
+          <td>
+          <input name="phone" type="text" size="40" id="phone" class="input"  value="{$supp_list.phone}" />
+          </td>
+        </tr>
+        
+        <!-- {if 0} -->
+         <tr>
+          <td width="30%" align="right">备用手机号码：</td>
+          <td>
+          <input name="phone1" type="text" size="40" id="phone1"   class="input"  value="{$supp_list.phone1}"  />
+            <span id="phone_notice" style="color:#FF0000"> *</span>
+          </td>
+        </tr>
+
+           
+           <tr>
+             <td align="right">地图坐标：</td>
+             <td><input type="text" name="map_info"  class="input"   id="map_info" value="{$supp_list.map_info}" /> <a href="http://api.map.soso.com/doc/tooles/picker.html" target="_blank">地图坐标拾取</a></td>
+           </tr>
+
+     	 {if $supp_type eq 'user'}
+         
+         	
+            <tr>
+          <td align="right">身份证正反复印件：</td>
+          <td>
+          {if $supp_list.is_check neq 1}
+            <input name="business_license" id="business_license" type="file" >
+          {/if}
+          {if $supp_list.business_license}
+          <a href="/{$supp_list.business_license}"><img src="/{$supp_list.business_license}" width="50" height="50"></a>
+          {/if}
+          </td>
+        </tr>
+        
+        
+         <tr>
+          <td align="right">本人手持身份证：</td>
+          <td>
+          {if $supp_list.is_check neq 1}
+            <input name="business_scope" id="business_scope" type="file" >
+          {/if}
+          {if $supp_list.business_scope}
+          <a href="/{$supp_list.business_scope}"><img src="/{$supp_list.business_scope}" width="50" height="50"></a>
+          {/if}
+          </td>
+        </tr>
+        
+        
+         {else}
+         
+         <tr>
+          <td align="right">企业营业执照：</td>
+          <td>
+          {if $supp_list.is_check neq 1}
+            <input name="business_license" id="business_license" type="file" >
+          {/if}
+          {if $supp_list.business_license}
+          <a href="/{$supp_list.business_license}"><img src="/{$supp_list.business_license}" width="50" height="50"></a>
+          {/if}
+          </td>
+        </tr>
+        
+        
+         <tr>
+          <td align="right">组织机构代码证：</td>
+          <td>
+          {if $supp_list.is_check neq 1}
+            <input name="business_scope" id="business_scope" type="file" >
+          {/if}
+          {if $supp_list.business_scope}
+          <a href="/{$supp_list.business_scope}"><img src="/{$supp_list.business_scope}" width="50" height="50"></a>
+          {/if}
+          </td>
+        </tr>
+        
+         <tr>
+          <td align="right">企业法人身份证：</td>
+          <td>
+          {if $supp_list.is_check neq 1}
+            <input name="cards" id="cards" type="file" >
+          {/if}
+          {if $supp_list.cards}
+          <a href="/{$supp_list.cards}"><img src="/{$supp_list.cards}" width="50" height="50"></a>
+          {/if}
+          </td>
+        </tr>
+        
+         <tr>
+          <td align="right">税务登记证：</td>
+          <td>
+          {if $supp_list.is_check neq 1}
+            <input name="certificate" id="certificate" type="file" >
+          {/if}
+          {if $supp_list.certificate}
+          <a href="/{$supp_list.certificate}"><img src="/{$supp_list.certificate}" width="50" height="50"></a>
+          {/if}
+          </td>
+        </tr>
+        {/if}
+        <!-- {/if} -->
+            <tr>
+          <td align="right">商家描述：</td>
+          <td>
+        {$FCKeditor}
+          </td>
+        </tr>
+        
+        
+                     <tr>
+
+						<td class="right">&nbsp;</td>
+
+						<td>
+
+                        <input type="hidden" name="suppliers_id" value="{$supp_list.suppliers_id}">
+
+                        <input name="act" type="hidden" value="supp_update">
+
+                        <input type="submit" value="保 存" class="btn" name="subsupp"></td>
+
+					</tr>
+
+                    </table>
+
+                   
+
+                    </form>
+
+              
+
+            
+
+ 
+
+             </div>
+
+  </div>
+
+  </div>         
+
+  {/if}
+
+
+    
+
+    
+
+<script>
+
+function get_cat_list(id,type)
+
+{
+
+  Ajax.call('user.php', 'act=get_cat_list&id=' + id+'&type='+type, get_cat_listResponse, 'GET', 'JSON');
+
+}
+
+function get_cat_listResponse(result)
+
+{
+
+
+
+	if(document.getElementById('show_cat_list_'+result.type))
+
+	{
+
+		document.getElementById('show_cat_list_'+result.type).innerHTML = result.html;
+
+		//alert(result.html);
+
+	}
+
+}
+
+
+
+
+
+
+
+ /**
+
+   * 鏂板?涓€涓??鏍
+
+   */
+
+  function addSpec(obj)
+
+  {
+
+      var src   = obj.parentNode.parentNode;
+
+      var idx   = rowindex(src);
+
+      var tbl   = document.getElementById('attrTable');
+
+      var row   = tbl.insertRow(idx + 1);
+
+      var cell1 = row.insertCell(-1);
+
+      var cell2 = row.insertCell(-1);
+
+      var regx  = /<a([^>]+)<\/a>/i;
+
+
+
+      cell1.className = 'label';
+
+      cell1.innerHTML = src.childNodes[0].innerHTML.replace(/(.*)(addSpec)(.*)(\[)(\+)/i, "$1removeSpec$3$4-");
+
+      cell2.innerHTML = src.childNodes[1].innerHTML.replace(/readOnly([^\s|>]*)/i, '');
+
+  }
+
+
+
+  /**
+
+   * 鍒犻櫎瑙勬牸鍊
+
+   */
+
+  function removeSpec(obj)
+
+  {
+
+      var row = rowindex(obj.parentNode.parentNode);
+
+      var tbl = document.getElementById('attrTable');
+
+
+
+      tbl.deleteRow(row);
+
+  }
+
+  
+
+  
+
+function checkpic_category()
+
+{
+
+	if(document.myform.cat_name.value=='')
+
+	{
+
+		alert('请输入分类名称');
+
+		return false;
+
+	}
+
+	return true;
+
+}
+
+
+
+function editPassword()
+
+{
+
+  var frm              = document.forms['formPassword'];
+
+  var old_password     = frm.elements['old_password'].value;
+
+  var new_password     = frm.elements['new_password'].value;
+
+  var confirm_password = frm.elements['comfirm_password'].value;
+
+
+
+  var msg = '';
+
+  var reg = null;
+
+
+
+  if (old_password.length == 0)
+
+  {
+
+    msg +=  '旧密码不能为空\n';
+
+  }
+
+
+
+  if (new_password.length == 0)
+
+  {
+
+    msg +=  '新密码不能为空\n';
+
+  }
+
+
+
+  if (confirm_password.length == 0)
+
+  {
+
+    msg += '确认密码不能为空\n';
+
+  }
+
+
+
+  if (new_password.length > 0 && confirm_password.length > 0)
+
+  {
+
+    if (new_password != confirm_password)
+
+    {
+
+      msg +=   '新密码俩次输入不一致\n';
+
+    }
+
+  }
+  if (msg.length > 0)
+  {
+    alert(msg);
+    return false;
+
+  }
+  else
+  {
+    return true;
+  }
+}	
+function checkarticle()
+{
+	if(document.myform.title.value=='')
+	{
+		alert('请输入标题');
+		return false;
+	}
+	if(document.myform.cat_id.value=='')
+	{
+		alert('请选择分类');
+		return false;
+	}
+	return true;
+}
+
+
+
+
+
+	
+
+/**
+
+ * 添加图片
+
+**/
+
+  function addImg(obj)
+
+  {
+
+	 
+
+	  var src  = obj.parentNode.parentNode; 
+
+	 
+
+	  var idx  = rowindex(src);
+
+      var tbl  = document.getElementById('gallery-table');
+
+      var row  = tbl.insertRow(idx + 1);
+
+	
+
+      //var cell = row.insertCell(-1);
+
+      row.innerHTML = src.innerHTML.replace(/(.*)(addImg)(.*)(\[)(\+)/i, "$1removeImg$3$4-");
+
+	  
+
+    
+
+  }
+
+  
+
+  
+
+  function removeImg(obj)
+
+  {
+
+      var row = rowindex(obj.parentNode.parentNode);
+
+      var tbl = document.getElementById('gallery-table');
+
+      tbl.deleteRow(row);
+
+  }
+
+
+
+
+
+  /**
+
+   * 删除已上传图片
+
+   */
+
+  function dropImg(imgId)
+
+  {
+
+    Ajax.call('suppliers.php?act=drop_image', "img_id="+imgId, dropImgResponse, "GET", "JSON");
+
+  }
+
+
+
+  function dropImgResponse(result)
+
+  {
+
+      if (result.error == 0)
+
+      {
+
+          document.getElementById('gallery_' + result.content).style.display = 'none';
+
+      }
+
+  }
+//提货单打印
+  function de_print()
+  {
+	  window.open("suppliers.php?act=delivery_info_print&delivery_id={$delivery_order.delivery_id}");
+  }
+ //切换
+  function toggle(obj, act, id)
+  {
+    var val = (obj.innerHTML.match(/是/i)) ? 0 : 1;
+ 
+    var res = Ajax.call(this.url, "act="+act+"&val=" + val + "&id=" +id, null, "POST", "JSON", false);
+
+    if (res.message)
+    {
+      alert(res.message);
+    }
+    if (res.error == 0)
+    {
+      obj.innerHTML = (res.content > 0) ? '是' : '否';
+    }
+  }
+
+  function account_detail_sub(){
+		var remark=document.getElementById('remark').value;		
+		if(remark==''){
+			alert('请填写内容');
+			return false;
+		}
+		$.ajax({
+			  type:"post",//请求类型
+			  url:"suppliers.php",//服务器页面地址
+			  data:"remark="+remark+"&act=account_detail_form&id={$suppliers_accounts_id}",//参数(可有可无)
+			  dataType:"json",//服务器返回结果类型(可有可无)
+			  error:function(data){//错误处理函数(可有可无)
+			     alert("ajax出错啦");
+			  },
+			  success:function(data){
+				  alert(data.content);			    
+			  }
+			});
+		return false;				
+ }
+ function account_confirm(id,type)
+ {
+	 var remark=document.getElementById('accounts_desc').value;		
+		$.ajax({
+			  type:"post",//请求类型
+			  url:"suppliers.php",//服务器页面地址
+			  data:"remark="+remark+"&act="+type+"&id="+id,//参数(可有可无)
+			  dataType:"json",//服务器返回结果类型(可有可无)
+			  error:function(data){//错误处理函数(可有可无)
+			     alert("ajax出错啦");
+			  },
+			  success:function(data){
+				  alert('操作成功');
+				 window.location.href='suppliers.php?act=account_detail&suppliers_accounts_id='+id;
+				 //account_detail&suppliers_accounts_id=46 my_order
+			  }
+			});
+		return false;				
+ }
+ 
+</script>
+
+</body>
+
+</html>

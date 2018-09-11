@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>提货单信息打印</title>
+</head>
+<body>
+<style type="text/css">
+body,td {font-size:13px;}
+</style>
+
+<h1 align="center">提货单信息</h1>
+<table width="100%" cellpadding="1">
+    <tr>
+        <td width="8%">发货单流水号：</td>
+        <td>{$delivery_order.delivery_sn}</td>
+        <td align="right">{$lang.label_shipping_time}</td>
+        <td>{$delivery_order.formated_update_time}</td>
+        <td align="right">{$lang.label_order_sn}</td>
+        <td>{$delivery_order.order_sn}{if $delivery_order.extension_code eq "group_buy"}{$lang.group_buy}{elseif $delivery_order.extension_code eq "exchange_goods"}{$lang.exchange_goods}{/if}</td>
+        <td align="right">{$lang.label_order_time}</td>
+        <td>{$delivery_order.formated_add_time}</td>
+    </tr>
+    <tr>
+        <td>{$lang.label_user_name}</td>
+        <td>{$delivery_order.user_name|default:$lang.anonymous}</td>
+        <td align="right">{$lang.label_mobile}</td>
+        <td>{$delivery_order.mobile|escape}</td>
+        <td align="right">{$lang.label_consignee}</td>
+        <td>{$delivery_order.consignee|escape}</td>
+        <td align="right">{$lang.label_email}</td>
+        <td>{$delivery_order.email}</td>
+    </tr>
+    <tr>
+        <td>{$lang.label_address}</td>
+        <td >
+        [{$delivery_order.region}] {$delivery_order.address|escape}
+         </td>
+         <td align="right">{$lang.label_zipcode}</td>
+        <td>{$delivery_order.zipcode|escape}</td>
+        <td align="right">{$lang.label_tel}</td>
+        <td>{$delivery_order.tel}</td>
+        <td align="right"></td>
+        <td></td>         
+    </tr>
+</table>
+<table width="100%" border="1" style="border-collapse:collapse;border-color:#000;">
+    <tr align="center">
+        <td bgcolor="#cccccc">{$lang.goods_name_brand} </td>
+        <td bgcolor="#cccccc">{$lang.goods_sn}</td>
+        <td bgcolor="#cccccc">{$lang.product_sn}</td>
+        <td bgcolor="#cccccc">{$lang.goods_attr} </td>
+        <td bgcolor="#cccccc">{$lang.label_send_number}</td>
+        <!-- <td bgcolor="#cccccc">单价</td>
+        <td bgcolor="#cccccc">小计</td>-->
+    </tr>
+    {foreach from=$goods_list item=goods}
+   <tr>
+        <td>{$goods.goods_name}{if $goods.brand_name}[ {$goods.brand_name} ]{/if}</td>
+        <td>{$goods.goods_sn}</td>
+        <td>{$goods.product_sn}</td>
+        <td >{$goods.goods_attr|nl2br}</td>
+        <td >{$goods.send_number}</td>
+       <!--   <td >{$goods.shop_price}</td>
+        <td >{$goods.amount}</td>-->
+    </tr>
+  {/foreach}
+       <!-- 
+        <tr>
+        <td colspan="3"></td>
+        <td colspan="2" align="right">商品总金额：{$.}</td> 
+    	</tr> -->
+</table>
+<!-- 
+<table width="100%" border="0">
+    <tr align="right">
+        <td>                                        
+        = 订单总金额：￥0.20        </td>
+    </tr>
+    <tr align="right">
+        <td>    
+        - 已付款金额：￥0.20
+        = 应付款金额：￥0.00        </td>
+    </tr>
+</table> -->
+<table width="100%" border="0">           
+    <tr>
+        <td > </td>
+    </tr>
+    <tr >
+        <td align="right">提货人签字：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    </tr>
+</table><div style="PAGE-BREAK-AFTER:always"></div>
+
+</body>
+</html>

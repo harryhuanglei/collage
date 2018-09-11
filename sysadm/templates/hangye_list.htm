@@ -1,0 +1,85 @@
+<!-- $Id: area_list.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+<div class="form-div">
+<form method="post" action="hangye.php" name="theForm" onsubmit="return insert()">
+添加行业：
+<input type="text" name="name" maxlength="150" size="40" />
+<input type="hidden" name="pid" value="{$pid}" />
+<input type="submit" value="{$lang.button_submit}" class="button" />
+</form>
+</div>
+
+<!-- start category list -->
+<div class="list-div">
+<table cellspacing='1' cellpadding='3' id='listTable'>
+  <tr>
+    <th>{$area_here}</th>
+  </tr>
+</table>
+</div>
+<div class="list-div" id="listDiv">
+{/if}
+
+<table cellspacing='1' cellpadding='3' id='listTable'>
+  <tr>
+    {foreach from=$hangyes item=list name=area_name}
+      {if $smarty.foreach.area_name.iteration > 1 and ($smarty.foreach.area_name.iteration-1) % 3 eq 0}
+      </tr><tr>
+      {/if}
+      <td class="first-cell" align="left">
+       <span onclick="listTable.edit(this, 'edit_name', '{$list.id}'); return false;">{$list.name|escape:"html"}</span>
+       <span class="link-span">
+       {if $pid eq 0}
+       <a href="hangye.php?act=list&pid={$list.id}" title="管理">
+         管理</a>&nbsp;&nbsp;
+       {/if}
+       <a href="javascript:listTable.remove({$list.id}, '确定删除该行业吗？', 'remove')" title="{$lang.drop}">{$lang.drop}</a>
+       </span>
+      </td>
+    {/foreach}
+  </tr>
+</table>
+
+{if $full_page}
+</div>
+
+{literal}
+<script language="JavaScript">
+<!--
+
+onload = function() {
+  document.forms['theForm'].elements['region_name'].focus();
+  // 开始检查订单
+  startCheckOrder();
+}
+
+/**
+ * 新建区域
+ */
+function insert()
+{
+    var name = Utils.trim(document.forms['theForm'].elements['name'].value);
+    var pid   = Utils.trim(document.forms['theForm'].elements['pid'].value);
+
+    if (name.length == 0)
+    {
+        alert('行业名称不能为空');
+    }
+    else
+    {
+      Ajax.call('hangye.php?is_ajax=1&act=insert',
+        'pid=' + pid + '&name=' + name,
+        listTable.listCallback, 'POST', 'JSON');
+    }
+
+    return false;
+}
+
+//-->
+</script>
+{/literal}
+
+{include file="pagefooter.htm"}
+{/if}

@@ -1,0 +1,3 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+{insert_scripts files='utils.js'}
+<div class="total">运费：¥<span class="shipping_fee">{$total.shipping_fee}</span> 合计：¥<span class="amount_fee">{$total.amount_fee}</span>

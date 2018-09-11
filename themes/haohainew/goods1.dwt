@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/flexslider.css" rel="stylesheet" />
+{* 包含脚本文件 *}
+{insert_scripts files='jquery.js,haohaios.js,jquery.flexslider-min.js'}
+</head>
+<body>
+<div class="container">
+    <div class="flexslider">
+        <ul class="slides">
+            <!-- {foreach from=$pictures item=picture name=ptab}-->
+            <li><img src="{$picture.img_url}"/></li>
+            <!--{/foreach}-->
+        </ul>
+        {if $share_info}
+        <div class="g_fx">
+            <div class="g_fx_bg"></div>
+            <div class="g_fx_con"><img src="{$share_info.headimgurl}"/>来自"{$share_info.user_name}"的分享</div>
+        </div>
+        {/if} </div>
+    <script type="text/javascript">
+        $(function() {
+            $('.flexslider').flexslider({
+                animation: "slide",
+                slideDirection: "horizontal"
+            });
+        });
+    </script> 
+    {if $goods.is_miao eq 1}
+    {if $goods.promote_end_date gt $now_time && $goods.promote_start_date lt $now_time}
+    {insert_scripts files='lefttime.js'}
+    <div class="lefttime">
+        <div class="g_fx_bg"></div>
+        <font id="leftTime">{$lang.please_waiting}</font> </div>
+    {/if}
+    {/if}
+    <div class="tuan_info">
+        <form action="javascript:addToCart({$goods.goods_id})" method="post" name="HHS_FORMBUY" id="HHS_FORMBUY" >
+            <div class="g_name"{if $goods.allow_fenxiao} style="padding-right:70px;"{/if}> {$goods.goods_name}
+                {if $goods.allow_fenxiao}<a id="share_button" href="javascript:void(0);" onclick="document.getElementById('share_img').style.display='';" class="fx_btn"><em></em><i class="fa fa-sitemap"></i><font>分销</font></a>{/if} </div>
+            <div class="g_brief">{$goods.goods_brief}</div>
+            <div class="blank"></div>
+            {if $goods.is_team}
+            <div class="g_price"><font>¥{$goods.team_price}</font> <del>¥{$goods.market_price}</del> <span>已售：{$buy_num}{if $goods.guige}{$goods.guige}{else}件{/if}</span></div>
+            {elseif $goods.is_zero}
+            <div class="g_price"><font>¥{$goods.shop_price}</font> <del>市场价：¥{$goods.market_price}</del> <span>已领取：{$buy_num}{if $goods.guige}{$goods.guige}{else}件{/if}</span></div>
+            <div class="g_price">剩余：{$goods.goods_number}{if $goods.is_zero}<span>运费：¥{$goods.shipping_fee}</span>{/if}</div>
+			{elseif $goods.is_miao}
+            <div class="g_price"><font>¥<b>{$goods.promote_price}</b></font> <del>市场价：¥{$goods.market_price}</del> <span>已售：{$buy_num}{if $goods.guige}{$goods.guige}{else}件{/if}</span></div>
+            {else}
+            <div class="g_price"><font>¥<b>{$goods.shop_price}</b></font> <del>市场价：¥{$goods.market_price}</del> <span>已售：{$buy_num}{if $goods.guige}{$goods.guige}{else}件{/if}</span></div>
+            {/if}
+            <div class="blank"></div>
+            <div class="line"></div>
+            <div class="blank"></div>
+            <div class="td2_info"> {if $goods.lab_qgby}
+                <p>{$goods.lab_qgby}</p>
+                {/if}
+                {if $goods.lab_zpbz}
+                <p>{$goods.lab_zpbz}</p>
+                {/if}
+                {if $goods.lab_qtth}
+                <p>{$goods.lab_qtth}</p>
+                {/if}
+                {if $goods.lab_jkbs}
+                <p>{$goods.lab_jkbs}</p>
+                {/if} </div>
+                
+            <div id="speBg" style="display:none; z-index: 90000;"></div>
+            <div id="speDiv" class="speDiv" style="bottom:50px; display:none;">
+                <div id="sku-head"> <img id="sku-image" class="image" src="{$goods.goods_thumb}">
+                    <div id="sku-detail">
+                        <div class="sku-name">{$goods.goods_name}</span></div>
+                        <div class="sku-price2-depends" id="HHS_GOODS_AMOUNT"></div>
+                        
+                        {if $goods.limit_buy_bumber neq 1 || $goods.is_zero neq 1}
+                        <div><span id="sku-msg">请选择商品{if $specification}属性{/if}{if $goods.is_zero neq 1}数量{/if}</span></div>
+                        {/if}
+                        </div>
+                        <a href="javascript:showhide();" id="sku-quit"></a>
+                </div>
+                {if $specification}
+                <div class="sku-info"> {foreach from=$specification item=spec key=spec_key}
+                    <div class="sku-type">{$spec.name}</div>
+                    {foreach from=$spec.values item=value key=key}
+                    <input class="goods" id="spec_value_{$value.id}" type="radio" name="spec_{$spec_key}" value="{$value.id}" {if $key eq 0}checked{/if} onclick="changePrice()" />
+                    <label for="spec_value_{$value.id}">{$value.label}</label>
+                    {/foreach}
+                    <input type="hidden" name="spec_list" value="{$key}" />
+                    {/foreach} </div>
+                {/if}
+                {if $goods.limit_buy_bumber eq 1 || $goods.is_zero eq 1}
+                <input name="number"  type="hidden" id="number" class="text" value="1"/>
+                {elseif  $goods.limit_buy_bumber eq 0}
+                <div class="sku-amount">
+                    <div class="sku-text"> <a>购买数量</a>
+                        <div class="nbox">
+                            <i class="fa fa-minus" onclick="goods_cut();changePrice()"></i>
+                            <input name="number" type="text" id="number" class="num" value="1" size="4" onblur="changePrice();"/>
+                            <i class="fa fa-plus" onclick="goods_add();changePrice()"></i>
+                        </div>
+                        <!--div class="sku-buy-amount-increase" onclick="goods_add();changePrice()"><span>+</span></div>
+                        <input name="number" type="text" id="number" class="sku-input-text" value="1" size="4" onblur="changePrice();"/>
+                        <div class="sku-buy-amount-reduce" onclick="goods_cut();changePrice()"><span>−</span></div-->
+                    </div>
+                </div>
+                {else}
+                <div class="sku-amount">
+                    <div class="sku-text"> <a>购买数量</a>
+                        <div class="sku-buy-amount-increase" onclick="goods_add();changePrice()"><span>+</span></div>
+                        <input name="number" type="text" id="number" class="sku-input-text" value="1" size="4" onblur="changePrice();"/>
+                        <div class="sku-buy-amount-reduce" onclick="goods_cut();changePrice()"><span>−</span></div>
+                        <span>限购{$goods.limit_buy_bumber}{if $goods.guige}{$goods.guige}{else}件{/if}</span> </div>
+                </div>
+                {/if} </div>
+            <div class="ftbuy"> <a href="index.php" class="ftbuy_index">
+                <div class="ftbuy_index_img"> <img src="images/index-38d3d45c2c.png"> </div>
+                <div class="ftbuy_index_text">首页</div>
+                </a> <a href="javascript:collect({$goods.goods_id})" class="ftbuy_like">
+                <div class="ftbuy_index_img">
+                    <div class="ftbuy_index_img_bg {$liked}"></div>
+                </div>
+                <div class="ftbuy_index_text">收藏</div>
+                </a> <a class="ftbuy_message" target="_blank" href="{$qq}">
+                <div class="ftbuy_message_img"> </div>
+                <div class="ftbuy_message_text">客服</div>
+                </a> 
+                
+                <!-- {if $goods.is_zero eq 1 || $goods.is_team eq 0} --> 
+                
+                {if $goods.is_zero} <a href="javascript:showhide();" id="btn-pre-buy" class="ftbuy_item out" style="width:60%; line-height:50px; font-size:16px;"> 立即领取 </a> <a href="javascript:addToCart({$goods.goods_id},0,0,5)" id="btn-buy" class="ftbuy_item out" style="width:60%; line-height:50px; font-size:16px;"> 立即领取 </a> {else} <a href="javascript:showhide();" id="btn-pre-buy" class="ftbuy_item out" style="width:60%; line-height:50px; font-size:16px;"> 马上购买 </a> <a href="javascript:addToCart({$goods.goods_id})" id="btn-buy" class="ftbuy_item out" style="width:60%; line-height:50px; font-size:16px;"> 马上购买 </a> {/if} 
+                
+                <!-- {else} --> 
+                
+                <!-- {if $goods.is_miao eq 1} --> 
+                {if $goods.promote_start_date gt $now_time} <a href="javascript:;" class="ftbuy_item out" style="background-color: #acacac;">
+                <div class="ftbuy_price"><span id="tuan_more_price">¥&nbsp;{$goods.team_price}</span>{if $goods.guige}{$goods.guige}{else}件{/if}</div>
+                <div class="ftbuy_btn"><b>尚未开始</b></div>
+                </a> {elseif $goods.promote_end_date gt $now_time} <a href="javascript:showhide(1);" id="btn-pre-buy1" class="ftbuy_item out">
+                <div class="ftbuy_price"><b id="tuan_more_price">¥&nbsp;{$goods.team_price}</b><i>/</i>{if $goods.guige}{$goods.guige}{else}件{/if}</div>
+                <div class="ftbuy_btn"><b id="tuan_more_number">{$goods.team_num}人团</b></div>
+                </a> <a href="javascript:addToCart({$goods.goods_id},0,0,5)" id="btn-buy1" class="ftbuy_item out" style="display:none;">
+                <div class="ftbuy_btn" id="tuan_one_number" style="height:50px;top: 0;line-height:50px; font-size:16px;">确定</div>
+                </a> {else} <a href="javascript:alert('已经结束');" class="ftbuy_item out">
+                <div class="ftbuy_price">¥<b>{$goods.team_price}</b><i>/</i>{if $goods.guige}{$goods.guige}{else}件{/if}</div>
+                <div class="ftbuy_btn">{$goods.team_num}人团 ></div>
+                </a> {/if} 
+                <!-- {else} --> 
+                {if $bonus_free_all gt 0}
+                {if $goods.bonus_free_all gt 0} <a href="javascript:addToCart({$goods.goods_id},0,0,5)" class="ftbuy_item out" style="width:62%; line-height:50px; font-size:16px;"> 团长免单 </a> {/if}
+                {else} <a href="javascript:showhide(1);" id="btn-pre-buy1" class="ftbuy_item out">
+                <div class="ftbuy_price"><b id="tuan_more_price">¥&nbsp;{$goods.team_price}</b><i>/</i>{if $goods.guige}{$goods.guige}{else}件{/if}</div>
+                <div class="ftbuy_btn"><b id="tuan_more_number">{$goods.team_num}人团</b></div>
+                </a> <a href="javascript:addToCart({$goods.goods_id},0,0,5)" id="btn-buy1" class="ftbuy_item out" style="display:none;">
+                <div class="ftbuy_btn" id="tuan_one_number" style="height:50px;top: 0;line-height:50px; font-size:16px;">确定</div>
+                </a> {/if} 
+                <!-- {/if} --> 
+                <a href="javascript:showhide();" id="btn-pre-buy" class="ftbuy_item ftbuy_item_buy"{if $bonus_free_all gt 0}{if $goods.bonus_free_all gt 0} style="display:none;"{/if}{/if}>
+                <div class="ftbuy_price">
+                    <div><b id="tuan_one_price">¥&nbsp;{$goods.shop_price}</b><i>/</i>{if $goods.guige}{$goods.guige}{else}件{/if}</div>
+                </div>
+                <div class="ftbuy_btn" id="tuan_one_number">单独购买</div>
+                </a> <a href="javascript:addToCart({$goods.goods_id});" id="btn-buy" class="ftbuy_item ftbuy_item_buy" style="display:none;">
+                <div class="ftbuy_btn" id="tuan_one_number" style="height:50px;top: 0;line-height:50px; font-size:16px;">确定</div>
+                </a>
+                </li>
+                
+                <!-- {/if} --> 
+            </div>
+        </form>
+    </div>
+    {if $goods.suppliers_id}
+    <div class="blank"></div>
+    <div class="mall_goods"> <a href="store.php?id={$goods.suppliers_id}">
+        <div class="mall_img"><img src="{$stores_info.supp_logo}"></div>
+        <div class="mall_sub">
+            <h3>{$stores_info.suppliers_name}</h3>
+            <p>商品:{$stores_info.goods_num}  销量:{$stores_info.sales_num}</p>
+            </span> </div>
+        <div class="enter_button"> <span><img src="images/mall_icon.png"></span> <em>进入店铺</em> </div>
+        </a> </div>
+    {/if}        
+    
+    {if $goods.is_team}
+    <div class="g_tip">支付开团并邀请好友参团，未成团自动退款<a href="tuan_rule.php">开团介绍</a></div>
+    {/if} 
+    <!-- {if $goods.is_nearby }--> 
+    <!-- {if $group_list }-->
+    <div id="more_tuan">
+        <div class="ht">
+            <div class="ht_tit">小伙伴正在发起的团购，您可以直接参与</div>
+            <div class="ht_list" id="near_team"> 
+                <!--{foreach name=name from=$group_list item=group}-->
+                <div class="ht_item" onclick="location.href='share.php?team_sign={$group.team_sign}';">
+                    <div class="ht_avatar"> <img src="{$group.headimgurl}" alt="团长头像"> </div>
+                    <div class="ht_info">
+                        <div class="ht_name">{$group.uname}</div>
+                        <div class="ht_time">{$group.finish_str}</div>
+                    </div>
+                    <a href="javascript:;" class="ht_btn"> <span class="ht_price"><i>￥</i>{$goods.team_price} / {if $goods.guige}{$goods.guige}{else}件{/if}</span> <span class="ht_btn_go">还差{$group.progress}人成团，去参团</span> </a> </div>
+                <!-- {/foreach} --> 
+            </div>
+        </div>
+    </div>
+    <!-- {/if} --> 
+    <!-- {/if} --> 
+    
+    {if $comments}
+    <div class="detail-comments-container">
+        <div class="detail-comments-title">
+            <div class="detail-comments-all">用户评价</div>
+            <img class="detail-comments-arrow" src="images/personal_arrow-dd13467d78.png">
+            <div class="detail-comments-amount"> <a href="comments.php?id={$goods.goods_id}">共<span>{$comments_nums}</span>条评论</a> </div>
+        </div>
+        <div class="goods-comments-list"> {foreach from=$comments item=item}
+            <div class="goods-comments-detail"> <img class="goods-comments-avatar" src="{$item.headimgurl}">
+                <div class="goods-comments-name">{$item.username}</div>
+                <div class="goods-comments-time">{$item.add_time}</div>
+                <div class="goods-comments-stars"> {if $item.rank==1}
+                    <div class="goods-comments-stars-show"></div>
+                    {elseif $item.rank==2}
+                    <div class="goods-comments-stars-show"></div>
+                    <div class="goods-comments-stars-show"></div>
+                    {elseif $item.rank==3}
+                    <div class="goods-comments-stars-show"></div>
+                    <div class="goods-comments-stars-show"></div>
+                    <div class="goods-comments-stars-show"></div>
+                    {elseif $item.rank==4}
+                    <div class="goods-comments-stars-show"></div>
+                    <div class="goods-comments-stars-show"></div>
+                    <div class="goods-comments-stars-show"></div>
+                    <div class="goods-comments-stars-show"></div>
+                    {elseif $item.rank==5}
+                    <div class="goods-comments-stars-show"></div>
+                    <div class="goods-comments-stars-show"></div>
+                    <div class="goods-comments-stars-show"></div>
+                    <div class="goods-comments-stars-show"></div>
+                    <div class="goods-comments-stars-show"></div>
+                    {/if} </div>
+                <div class="goods-comments-content"><em></em>{$item.content}</div>
+            </div>
+            {foreachelse}
+            暂无评论
+            {/foreach} </div>
+    </div>
+    {/if}
+    <div class="blank"></div>
+    <div class="pro_detial">
+        <h3><i></i>图文详情</h3>
+        <div class="pro_con"> {$goods.goods_desc} </div>
+    </div>
+    <div class="recommend_grid_wrap">
+        <div id="recommend" class="grid">
+            <div class="recommend_head">你可能还喜欢</div>
+            <div class="bd">
+                <ul>
+                    {foreach from=$rands_goods item = goods}
+                    <li>
+                        <div class="recommend_img"><a href="goods.php?id={$goods.goods_id}"><img  src="{if $goods.goods_img}{$goods.goods_img}{else}images/no_picture.gif{/if}"></a></div>
+                        <div class="recommend_title"><a href="goods.php?id={$goods.goods_id}">{$goods.goods_name}</a></div>
+                        <div class="recommend_price">￥<span>{$goods.team_price}</span></div>
+                        <!-- {if $goods.rec_id gt 0} -->
+                        <div class="like_click"> <a href="javascript:;" class="recommend_like liked"></a> </div>
+                        <!-- {else} -->
+                        <div class="like_click"> <a href="javascript:collect({$goods.goods_id})" class="recommend_like"></a> </div>
+                        <!-- {/if} --> 
+                    </li>
+                    {/foreach}
+                </ul>
+            </div>
+        </div>
+        <div class="recommend_bottom">
+            <div class="line"></div>
+            <p>已经到底部了</p>
+        </div>
+    </div>
+    <div class="blank"></div>
+    <div id="share_img" class="share_img" style="display:none;" onclick="document.getElementById('share_img').style.display='none';">
+        <p><img class="arrow" src="images/share.png" ></p>
+        <p style="margin-top:30px; margin-right:50px;">点击右上角，</p>
+        <p style="margin-right:50px;">将此商品分享给好友</p>
+    </div>
+</div>
+<a href="flows.php?step=cart" class="gw-cart-p" id="cat"><i class="iconfont-cart"></i> <span id="HHS_CARTINFO" class="gw-cart">{insert name='cart_num'}</span> </a>
+<div class="back-top"><span uigs="wap_to_top">顶部</span></div>
+</body>
+<script type="text/javascript">
+var fuck_team = true;
+var goods_id = {$goods_id};
+var goodsattr_style = {$cfg.goodsattr_style|default:1};
+var gmt_end_time = {$promote_end_time|default:0};
+{foreach from=$lang.goods_js item=item key=key}
+var {$key} = "{$item}";
+{/foreach}
+var goodsId = {$goods_id};
+var now_time = {$now_time};
+
+onload = function(){
+  changePrice();
+  try { onload_leftTime(); }
+  catch (e) {}
+}
+function goods_cut(){
+	var num_val=document.getElementById('number');
+	var new_num=num_val.value;
+	 if(isNaN(new_num)){alert('请输入数字');return false}
+	var Num = parseInt(new_num);
+	if(Num>1)Num=Num-1;
+	num_val.value=Num;
+}
+function goods_add(){
+	var num_val=document.getElementById('number');
+	var new_num=num_val.value;
+	 if(isNaN(new_num)){alert('请输入数字');return false}
+	var Num = parseInt(new_num);
+	Num=Num+1;
+	num_val.value=Num;
+}
+function changeAtt(t) {
+t.lastChild.checked='checked';
+for (var i = 0; i<t.parentNode.childNodes.length;i++) {
+        if (t.parentNode.childNodes[i].className == 'cattsel') {
+            t.parentNode.childNodes[i].className = '';
+        }
+    }
+t.className = "cattsel";
+changePrice();
+}
+function changePrice()
+{
+  var attr = getSelectedAttributes(document.forms['HHS_FORMBUY']);
+ 
+  var qty = document.forms['HHS_FORMBUY'].elements['number'].value;
+  Ajax.call('goods.php', 'act=price&id=' + goodsId + '&attr=' + attr + '&number=' + qty, changePriceResponse, 'GET', 'JSON');
+}
+
+function changePriceResponse(res)
+{
+  if (res.err_msg.length > 0)
+  {
+    //alert(res.err_msg);
+	layer.open({
+		    content: res.err_msg,
+			btn: ['嗯']
+		});
+	document.forms['HHS_FORMBUY'].elements['number'].value = res.number;
+  }
+  else
+  {
+    document.forms['HHS_FORMBUY'].elements['number'].value = res.qty;
+    var fuck_price = fuck_team !== true ? res.result : res.team_price;
+    if (document.getElementById('HHS_GOODS_AMOUNT')){
+      document.getElementById('HHS_GOODS_AMOUNT').innerHTML = '￥'+fuck_price;
+    }
+  }
+}
+</script>
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script language="javascript" type="text/javascript">
+
+	wx.config({
+	    debug: false,//这里是开启测试，如果设置为true，则打开每个步骤，都会有提示，是否成功或者失败
+	    appId: '{$appid}',
+	    timestamp: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+	    nonceStr: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+	    signature: '{$signature}',
+	    jsApiList: [
+	      // 所有要调用的 API 都要加到这个列表中
+	        'onMenuShareTimeline',
+	        'onMenuShareAppMessage',
+	        'onMenuShareQQ',
+	        'onMenuShareWeibo',
+	        'checkJsApi',
+	        'openLocation',
+	        'getLocation'
+	    ]
+	});
+	
+	var title="{$title}";
+	var link= "{$link}";
+	var imgUrl="{$imgUrl}";
+	var desc= "{$desc}";
+	wx.ready(function () {
+	    wx.onMenuShareTimeline({//朋友圈
+	        title: title, // 分享标题
+	        link: link, // 分享链接
+	        imgUrl: imgUrl, // 分享图标
+	        success: function () { 
+	            // 用户确认分享后执行的回调函数
+	        	statis(2,1);
+	        },
+	        cancel: function () { 
+	            // 用户取消分享后执行的回调函数
+	        	statis(2,2);
+	        }
+	    });
+	    wx.onMenuShareAppMessage({//好友
+	        title: title, // 分享标题
+	        desc: desc, // 
+	        link: link, // 分享链接
+	        imgUrl: imgUrl, // 分享图标
+	        type: '', // 分享类型,music、video或link，不填默认为link
+	        dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+	        success: function () { 
+	        	// 用户确认分享后执行的回调函数
+	            statis(1,1);    
+	        },
+	        cancel: function () { 
+	            // 用户取消分享后执行的回调函数
+	        	statis(1,2);
+	        }
+	    });
+	  
+	    wx.onMenuShareQQ({
+	        title: title, // 分享标题
+	        desc: desc, // 分享描述
+	        link: link, // 分享链接
+	        imgUrl: imgUrl, // 分享图标
+	        success: function () { 
+	           // 用户确认分享后执行的回调函数
+	        	statis(4,1);
+	        },
+	        cancel: function () { 
+	           // 用户取消分享后执行的回调函数
+	        	statis(4,2);
+	        }
+	    });
+	    wx.onMenuShareWeibo({
+	        title: title, // 分享标题
+	        desc: desc, // 分享描述
+	        link: link, // 分享链接
+	        imgUrl: imgUrl, // 分享图标
+	        success: function () { 
+	           // 用户确认分享后执行的回调函数
+	        	statis(3,1);
+	        },
+	        cancel: function () { 
+	            // 用户取消分享后执行的回调函数
+	        	statis(3,2);
+	        }
+	    });
+	    {if $goods.is_nearby }
+	    wx.checkJsApi({
+	    	
+	        jsApiList: [
+	            'getLocation'
+	        ],
+	        success: function (res) {
+	             //alert(JSON.stringify(res));
+	            // alert(JSON.stringify(res.checkResult.getLocation));
+	            if (res.checkResult.getLocation == false) {
+	                alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
+	                return;
+	            }
+	        }
+	    });
+	    wx.getLocation({
+	        success: function (res) {
+	            var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+	            var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+	            var speed = res.speed; // 速度，以米/每秒计
+	            var accuracy = res.accuracy; // 位置精度
+	            $.ajax({
+	                type:"post",//请求类型
+	                url:"goods.php",//服务器页面地址
+	                data:"act=save_location&lat="+latitude+"&lng="+longitude,
+	                dataType:"json",//服务器返回结果类型(可有可无)
+	                error:function(){//错误处理函数(可有可无)
+	                    //alert("ajax出错啦");
+	                },
+	                success:function(data){
+	                    if(data.error==1){
+	                        //alert('错误'+data.message);
+	                    }else{
+	                    	//document.getElementById('loading').style.display='none';
+	                		
+	                    }
+	                }
+	            });
+	        },
+	        cancel: function (res) {
+	            alert('用户拒绝授权获取地理位置');
+	        }
+	    });
+	    {/if}	
+	    
+	});
+	function statis(share_type,share_status){
+		$.ajax({
+            type:"post",//请求类型
+            url:"share.php",//服务器页面地址
+            data:"act=link&share_status="+share_status+"&share_type="+share_type+"&link_url={$link2}",
+            dataType:"json",//服务器返回结果类型(可有可无)
+            error:function(){//错误处理函数(可有可无)
+                //alert("ajax出错啦");
+            },
+            success:function(data){
+                
+            }
+        });
+	}
+</script>
+</html>

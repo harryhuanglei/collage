@@ -1,0 +1,88 @@
+<!-- $Id: link_info.htm 16752 2009-10-20 09:59:38Z wangleisvn $ -->
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js,../js/region.js"}
+<div class="main-div">
+<form action="site.php" method="post" name="theForm" enctype="multipart/form-data" onSubmit="return validate()">
+<table width="100%" id="general-table">
+  <tr>
+    <td class="label">站点城市</td>
+    <td> <select name="province_id" id="selProvinces" onchange="region.changed(this, 2, 'selCities')">
+           <option value=''>{$lang.select_please}</option>
+             {foreach from=$provinces item=region}
+               <option value="{$region.region_id}" {if $region.region_id eq $link_arr.province_id} selected="selected"{/if}> {$region.region_name}</option>
+             {/foreach}
+         </select>
+		  <select name="city_id" id="selCities" >
+          <option value=''>{$lang.select_please}</option>
+            {foreach from=$cities item=region}
+              <option value="{$region.region_id}" {if $region.region_id eq $link_arr.city_id}selected="selected"{/if}>{$region.region_name}</option>
+            {/foreach}
+        </select>
+      </td>
+  </tr>
+
+  <tr>
+    <td class="label">站点状态</td>
+    <td>&nbsp;
+    开通<input name="close" type="radio" value="1" {if $link_arr.close neq 0} checked{/if}>关闭<input name="close" {if $link_arr.close eq '0'} checked{/if} type="radio" value="0">
+    </td>
+  </tr>
+  <tr>
+    <td class="label">站点关键字</td>
+    <td>
+      <input type='text' name='keywords' value='{$link_arr.keywords}' size="60"  />
+    </td>
+  </tr>
+  <tr>
+    <td class="label">站点描述</td>
+    <td><textarea name="textarea" id="description" cols="45" rows="5">{$link_arr.description}</textarea>
+    
+    </td>
+  </tr>
+
+  <!--tr>
+    <td class="label">站点LOGO</td>
+    <td>
+      <input type='file' name='site_logo' size="35" />{if $link_arr.site_logo}<a href="{$link_arr.site_logo}">查看</a>{/if}
+    </td>
+  </tr-->
+ 
+
+ 
+  <tr>
+    <td class="label">&nbsp;</td>
+    <td>
+      <input type="submit" value="{$lang.button_submit}" class="button" />
+      <input type="reset" value="{$lang.button_reset}" class="button" />
+      <input type="hidden" name="act" value="{$form_act}" />
+      <input type="hidden" name="id" value="{$link_arr.id}" />
+      <input type="hidden" name="type" value="{$type}" />
+    </td>
+  </tr>
+</table>
+</form>
+</div>
+{insert_scripts files="../js/utils.js,validator.js"}
+<script language="JavaScript">
+<!--
+region.isAdmin = true;
+{literal}
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+    validator = new Validator("theForm");
+	validator.required("city_id",       '请选择站点城市');
+    return validator.passed();
+}
+
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+{/literal}
+//-->
+</script>
+{include file="pagefooter.htm"}

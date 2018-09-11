@@ -1,0 +1,110 @@
+<!-- $Id: agency_list.htm 14216 2008-03-10 02:27:21Z testyang $ -->
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js,../js/region.js"}
+<div class="form-div">
+  <!-- <form action="javascript:search_supp()" name="searchForm">
+    <img src="images/icon_search.gif" width="26" height="22" border="0" alt="SEARCH" />
+    关键字： <input type="text" name="suppliers_name" id='suppliers_name' size="15" />
+    <input type="submit" value="{$lang.button_search}" class="button" />
+  </form> -->
+</div>
+<form method="post" action="" name="listForm" onsubmit="return confirm(batch_drop_confirm);">
+<div class="list-div" id="listDiv">
+{/if}
+  <table cellpadding="3" cellspacing="1">
+    <tr>
+      <th>订单号</th>
+      <th>下单时间</th>
+      <th>支付时间</th>
+      <th>收货人</th>
+      <th>总金额</th>
+      <th>应付金额</th>
+      <th>订单状态</th>
+      <th>购买类型</th>
+      <th>商品ID</th>
+      <th>商品名称</th>
+      <th>商品数量</th>
+      <th>商品价格</th>
+      <th>微信单号</th>
+      <th>操作</th>
+    </tr>
+    {foreach from=$order_list item=order}
+    <tr>
+      <td align="center">
+        <a href="order.php?act=info&order_id={$order.order_id}">
+          {$order.order_sn}
+          {if $order.extension_code eq "exchange_goods"}<br/>
+            <div align="center">{$lang.exchange_goods}</div>
+          {/if}
+        </a>
+      </td>
+      <td align="center">{$order.uname}<br/>{$order.add_time}</td>
+      <td align="center">{if $order.pay_time}{$order.pay_time}{else}无{/if}</td>
+      <td align="center" valign="top">
+          {if $order.point_id eq 0}
+          [{$order.consignee}]<br/>
+          {$order.address|escape}<br/>
+          {else}
+          到店自提<br/>
+          {/if}
+          {$order.consignee|escape}{if $order.mobile} [TEL: {$order.mobile|escape}]{/if}
+      </td>
+      <td align="center" valign="top" nowrap="nowrap">{$order.total_fee}</td>
+      <td align="center" valign="top" nowrap="nowrap">{$order.order_amount}</td>
+      <td align="center" valign="top" nowrap="nowrap">
+        {$lang.os[$order.order_status]},{$lang.ps[$order.pay_status]},{$lang.ss[$order.shipping_status]}
+      </td>
+      <td align="center" valign="top" nowrap="nowrap">
+          {if $order.extension_code eq 'team_goods'}团购【{$lang.team_status[$order.team_status]}】{else}单独购买{/if} {if $order.point_id gt 0}
+          自提{/if} {if $order.package_one eq 1} 同楼购{/if}
+      </td>
+      <td align="center">{$order.goods_id}</td>
+      <td align="center">{$order.goods_name}</td>
+      <td align="center">{$order.goods_number}</td>
+      <td align="center">{$order.goods_price}</td>
+      <td align="center">{if $order.transaction_id}{$order.transaction_id}{else}无{/if}</td>
+      <td width="120" class="bnt_a">
+          <a href="order.php?act=info&order_id={$order.order_id}">查看</a>
+      </td>
+    </tr>
+    {foreachelse}
+    <tr><td class="no-records" colspan="21">暂无信息</td></tr>
+    {/foreach}
+  </table>
+<table id="page-table" cellspacing="0">
+  <tr>
+    <td align="right" nowrap="true">
+      {include file="page.htm"}
+    </td>
+  </tr>
+</table>
+{if $full_page}
+</div>
+</form>
+<script language="JavaScript">
+function search_supp()
+{
+
+    /*listTable.filter['suppliers_name'] = Utils.trim(document.forms['searchForm'].elements['suppliers_name'].value);*/
+    listTable.filter['page'] = 1;
+    listTable.loadList();
+}
+</script>
+<script type="text/javascript" language="javascript">
+  region.isAdmin = true;
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+  {literal}
+  onload = function()
+  {
+      // 开始检查订单
+      startCheckOrder();
+  }
+  {/literal}
+</script>
+{include file="pagefooter.htm"}
+{/if}

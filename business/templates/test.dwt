@@ -1,0 +1,1161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>医流商城供货商管理平台</title>
+	<link href="templates/css/layout.css" rel="stylesheet" type="text/css" />
+	
+
+<script type="text/javascript" src="/7cai/js/calendar.php?lang={$cfg_lang}"></script>
+<script type="text/javascript" src="/7cai/js/common.js"></script>
+<script type="text/javascript" src="/7cai/js/user.js"></script>
+<script type="text/javascript" src="/7cai/js/region.js"></script>
+  
+<script type="text/javascript" src="templates/js/main.js"></script>
+<script type="text/javascript" src="templates/js/supp.js"></script>
+<script type="text/javascript" src="templates/js/jquery.min.js"></script>
+
+  
+    <script>
+	
+	var process_request = "{$lang.process_request}";
+	</script>
+   
+</head>
+<body onload="pageheight()">
+	<div class="headcon">
+		<h1 title="医流商城供货商管理平台">医流商城供货商管理平台</h1>
+		<div class="headright">
+			<div class="welcome">{$info.user_name}，欢迎登录！</div>
+			<div class="operate"><a href="?act=logout">退出登录</a>&nbsp;&nbsp;<a href="suppliers.php?act=edit_password">修改密码</a></div>
+		</div>
+	</div>
+	<div class="leftcon" id="leftcon">
+		<ul class="menu">
+			<li {if $action eq 'default'} class="act"{/if}>
+				<a href="suppliers.php">欢迎页</a>
+			</li>
+			<li  {if $action eq 'my_goods'} class="act"{/if}>
+				<a href="?act=my_goods" class="goods">我的商品</a>
+			</li>
+			<li {if $action eq 'add_goods'} class="act"{/if}>
+				<a href="?act=add_goods" class="addgoods"  onclick="show_html(1,2);">新增商品</a>
+            
+			</li>
+			<li {if $action eq 'category'} class="act"{/if}>
+				<a href="?act=category" class="article">商品分类管理</a>
+			</li>
+			
+            
+			<li  {if $action eq 'pic_list' or $action eq 'edit_pic' or $action eq 'pic_add' or $action eq 'pic_category' or $action eq 'pic_category_add'} class="act"{/if}>
+				<a href="?act=pic_list" class="pics">图片管理</a>
+			</li>
+			<li>
+				<a href="?act=supp_info" class="datum">企业资料</a>
+			</li>
+		</ul>
+	</div>
+    
+    
+      <!--{if $action eq 'goods_category'}-->
+      <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_article.png" /><span>商品分类管理</span>
+		</div>
+		<div class="maincon">
+			
+			<div class="contitlelist">
+            <span>分类管理</span>
+            <a href="?act=add_cate">添加分类</a>
+            </div>
+			<div class="conbox">
+				<table cellspacing="0" cellpadding="0" class="listtable">
+					<tr>
+					  <th class="center">分类名称</th>
+					  <th class="center">是否显示</th>
+					  <th class="center">排序</th>
+					  <th>操作列</th>
+					</tr>
+                      <!--{foreach from=$cate_list item=cate}-->
+					<tr>
+					  <td align="center">{$cate.cat_name}</td>
+					  <td align="center">{if $cate.is_show eq 1}显示{else}不显示{/if}</td>
+					  <td align="center">{$cate.sort_order}</td>
+					  <td align="center">
+                       <a href="?act=edit_cate&cat_id={$cate.cat_id }">编辑</a> |
+                       <a href="?act=delete_cate&cat_id={$cate.cat_id}" onclick="return confirm('确定要此操作吗');">删除</a>
+                       
+                        </td>
+					</tr>
+					<!--{/foreach}-->
+				</table>
+                
+			</div>
+		</div>
+        </div>
+      <!--{/if}--> 
+      
+      
+      <!--{if $action eq 'edit_cate' || $action eq 'add_cate' }-->
+     <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_datum.png" /><span>商品分类管理</span>
+		</div>
+		<div class="maincon">
+        		{if $action eq 'edit_cate'}
+				<div class="contitlelist"><span>编辑分类</span></div>
+                {else}
+                <div class="contitlelist"><span>添加分类</span></div>
+                {/if}
+			<div class="conbox">
+           
+            <form action="suppliers.php" enctype="multipart/form-data" method="post" name="myform">
+            
+           <table cellspacing="0" cellpadding="0" class="edittable">
+					<tr>
+						<td class="right">分类名称：</td>
+						<td> <input type="text" name="cat_name" value="{$cat_info.cat_name}" class="input" size="35" /></td>
+					</tr>
+                    
+                   
+                    <tr>
+						<td class="right">是否显示：</td>
+						<td>
+                        
+                        {if $cat_info.is_show eq 1}
+     是 <input type='radio'  name="is_show"  value="1" checked="checked">
+                        
+      否 <input type='radio' name="is_show" value="0">
+                        
+                        
+                        {else}
+        是 <input type='radio' name="is_show" value="1" >
+                        
+       否 <input  type='radio' name="is_show" value="0" checked="checked">                 
+                        
+                        {/if}
+                        
+                        </td>
+					</tr>
+                    
+                     <tr>
+						<td class="right">排序：</td>
+						<td>
+                        <input type="text" name="sort_order" value="{$cat_info.sort_order}"class="input" size="35"  />
+                        
+                        </td>
+					</tr>
+                     
+					
+                    <tr>
+						<td class="right">&nbsp;</td>
+						<td>
+                        <input type="hidden" name="cat_id" value="{$cat_info.cat_id}">
+                        <input type="hidden" name="act"  value="{$status}">
+                        <input type="submit" value="修 改" class="btn" name="subsupp"></td>
+					</tr>
+                    </table>
+                   
+                    </form>
+              
+            
+ 
+             </div>
+  </div>
+  </div>         
+      <!--{/if}--> 
+      
+      
+      
+      
+    <!--{if $action eq 'pic_category_add' or $action eq 'pic_category_edit'}-->
+     <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_pics.png" /><span>图片管理</span>
+		</div>
+      <div class="maincon">
+			<div class="contitleedit"><span>{if $action eq 'pic_category_add'}分类添加{else}分类编辑{/if}</span></div>
+			<div class="conbox"> 
+     
+     <form action="suppliers.php" method="post" name="myform" onsubmit="return checkpic_category();">
+	<table cellspacing="0" cellpadding="0" class="edittable">
+      <tr>
+        <td align="right">分类名称：</td>
+        <td><input name="cat_name" type="text" class="input" value="{$rows.cat_name}" size="40"  />*</td>
+      </tr>
+     <tr>
+    <td align="right">&nbsp;</td>
+	<input name="act" type="hidden" value="{$form_act}" />
+	<input name="id" type="hidden" value="{$rows.id}" />
+    <td><input type="submit" name="Submit" value="提 交"  class="btn"/></td>
+  </tr>
+</table>
+
+	</form>
+     </div>
+     </div>
+     </div>
+    <!--{/if}-->
+      <!--{if $action eq 'pic_category'}-->
+      
+      <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_acticle.png" /><span>商品分类管理</span>
+		
+			<div class="contitlelist"><span>分类管理</span></div>
+			<div class="conbox">
+				<table cellspacing="0" cellpadding="0" class="listtable">
+					<tr>
+					  <th><input type="checkbox" name="checkbox" value="checkbox" /></th>
+					  <th>货号</th>
+					  <th class="left">商品名称</th>
+					  <th class="left">商品价格</th>
+					  <th class="left">批文号</th>
+					  <th class="right">审核状态</th>
+                      <th class="right">预览商品</th>
+					  <th>操作列</th>
+					</tr>
+                      <!--{foreach from=$goods_list item=goods}-->
+					<tr>
+					  <td class="checkbox"><input type="checkbox" name="checkbox" value="checkbox" /></td>
+					  <td class="middle">{$goods.goods_sn}</td>
+					  <td>{if $goods.is_on_sale neq 1}<a href="goods.php?id={$goods.goods_id}" class="link" target="_blank">{$goods.goods_name}</a>{else}{$goods.goods_name}{/if}</td>
+					  <td>{$goods.shop_price}</td>
+					  <td>{$goods.pass_number}</td>
+					  <td class="right">  {if $goods.is_on_sale}审核通过{else}审核中...{/if}</td>
+                      <td class="right">{if $goods.is_on_sale eq '0'}<a href="goods.php?act=look_goods&id={$goods.goods_id}" target="_blank">预览</a>{/if} </td>
+					  <td class="middle"><!--<a href="?act=delete_goods&goods_id={$goods.goods_id}" onclick="return confirm('确定要此操作吗');">删除</a> | --><a href="?act=edit_goods&goods_id={$goods.goods_id}" onclick="return confirm('如果此商品已经审核，编辑商品后需重新审核，要继续此操作吗？')">编辑</a> </td>
+					</tr>
+					<!--{/foreach}-->
+				</table>
+                
+			</div>
+		</div>
+        </div>
+      <!--{/if}--> 
+      
+      
+      
+      <!--{if $action eq 'edit_pic'}-->
+            <link href="themes/xaphp2013/style/uploadify.css" rel="stylesheet" type="text/css" />
+          {insert_scripts files='jquery_common.min.js,jquery.uploadify.min.js'}
+      <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_pics.png" /><span>图片管理</span>
+		</div>
+      <div class="maincon">
+			<div class="contitleedit">
+				<span>图片更换</span>
+				<div class="titleright">
+					<a href="?act=pic_list">返回我的图片</a>
+				</div>
+			</div>
+			<div class="conbox"> 
+     
+    <form action="suppliers.php"  enctype="multipart/form-data"  method="post" name="myform" onsubmit="return checkpic_info();">
+	<table cellspacing="0" cellpadding="0" class="edittable">
+      <tr>
+        <td align="right">选择分类：</td>
+        <td><select id="cat_id" name="cat_id">
+        <option value="">请选择</option>
+             <!-- {foreach from=$cat_list item=item} -->
+        	<option value="{$item.id}" {if $item.id eq $rows.cat_id} selected="selected"{/if}>{$item.cat_name}</option>
+            <!--{/foreach}-->
+        </select>
+        *</td>
+      </tr>
+      <tr>
+      	<td align="right">图片：</td>
+        <td>
+        <img src="{$rows.pic}" width="200" height="200">
+        <input name="pic" type="file" />
+		</td>
+     </tr>
+     <tr>
+		<td align="right">&nbsp;</td>
+		<input name="act" type="hidden" value="{$form_act}" />
+		<input name="id" type="hidden" value="{$rows.id}" />
+		<td><input type="submit" name="Submit" value="提 交" class="btn"/></td>
+	 </tr>
+	</table>
+	</form>
+     </div>
+     </div>
+     </div>
+    <script>
+	function checkpic_info()
+	{
+		if($("#cat_id").attr("value") =='')
+		{
+			alert('请选择分类');
+			return false;	
+		}
+	
+		return true;
+		
+	}
+	
+</script>
+
+      
+      <!--{/if}-->
+<!--{if $action eq 'pic_add'}-->
+      <link href="themes/xaphp2013/style/uploadify.css" rel="stylesheet" type="text/css" />
+          {insert_scripts files='jquery_common.min.js,jquery.uploadify.min.js'}
+      
+      <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_pics.png" /><span>图片管理</span>
+		</div>
+      <div class="maincon">
+			<div class="contitleedit">
+				<span>图片添加</span>
+				<div class="titleright">
+					<a href="?act=pic_list">返回我的图片</a>
+				</div>
+			</div>
+			<div class="conbox"> 
+     
+    <form action="suppliers.php" method="post" name="myform" onsubmit="return checkpic_info();">
+	<table cellspacing="0" cellpadding="0" class="edittable">
+      <tr>
+        <td align="right">选择分类：</td>
+        <td><select id="cat_id" name="cat_id">
+        <option value="">请选择</option>
+             <!-- {foreach from=$cat_list item=item} -->
+        	<option value="{$item.id}">{$item.cat_name}</option>
+            <!--{/foreach}-->
+        </select>
+        *</td>
+      </tr>
+      <tr>
+      	<td align="right">图片：</td>
+        <td><input id="file_upload" name="file_upload" type="file" multiple="true">
+           	<div>
+				<ul id="url" class="picupload">
+                </ul>
+            </div>
+		</td>
+     </tr>
+     <tr>
+		<td align="right">&nbsp;</td>
+		<input name="act" type="hidden" value="{$form_act}" />
+		<input name="id" type="hidden" value="{$rows.id}" />
+		<td><input type="submit" name="Submit" value="提 交" class="btn"/></td>
+	 </tr>
+	</table>
+	</form>
+     </div>
+     </div>
+     </div>
+    <script type="text/javascript" language="javascript">
+	function checkpic_info()
+	{
+		if($("#cat_id").attr("value") =='')
+		{
+			alert('请选择分类');
+			return false;	
+		}
+		if($("input[name='pics[]']").val()=='')
+		{
+			alert('请选择上传图片');
+			return false;	
+		}
+		return true;
+		
+	}
+	$(function() {
+			$('#file_upload').uploadify({
+				//校验数据
+				'formData'     	: {
+					'timestamp' : '{$timestamp}',
+					'token'     : '{$unique_salt}'//声明令牌
+				},
+				'swf'         	: 'themes/xaphp2013/uploadify.swf',			//指定上传控件的主体文件，默认‘uploader.swf’
+				'uploader'    	: 'uploadify.php',			//指定服务器端上传处理文件，默认‘upload.php’
+				'auto'        	: true,					//手动上传
+				'buttonImage' 	: 'themes/xaphp2013/images/uploadify-browse.png',	//浏览按钮背景图片
+				//'cancelImg'     : '/{$temp_dir}images/cancel.png',
+				'multi'       	: true,					//单文件上传
+				'removeCompleted' : true,//是否消失进度
+				'fileTypeExts'	: '*.gif; *.jpg; *.png; *.flv',	//允许上传的文件后缀
+				'fileSizeLimit'	: '300MB',					//上传文件的大小限制，单位为B, KB, MB, 或 GB
+				'successTimeout': 30,						//成功等待时间
+				'onUploadSuccess' : function(file, data, response) {//每成功完成一次文件上传时触发一次
+				  $('#url').append("<li id=pic_"+file.id+" ><input type=checkbox name=pics[] id='"+file.id+"'  checked value="+data+" class='checkinput'><img src="+data+"><span>名称：</span><input type='text' name='pic_name[]' class='textinput'><a href='javascript:;'  onclick=del_img('"+data+"','"+file.id+"')  >删除</a></li>");
+
+
+		        },
+		        'onUploadError'   : function(file, data, response) {//当上传返回错误时触发
+		            $('#url').append("<li>"+data+"</li>");
+		        }
+			});
+		});
+		
+	function del_img(data,id)
+	{
+		getStatusUrl = 'suppliers.php?act=delete_pic&pic='+data+'&id='+id;
+		$.ajax(
+		{
+			  url: getStatusUrl,
+			  dataType: 'json',
+			  global: false,
+			  success: function(data)
+			  {
+				 $("#pic_"+id).hide();
+				 $("#"+id+"").attr("checked",false);
+				//document.getElementById("pic_"+id).style.display = "none";
+			  },
+			  error: function(XMLHttpRequest,textStatus, errorThrown){
+							//alert(XMLHttpRequest.responsetext);
+							//alert(textStatus);
+							//alert(errorThrown);
+			  }
+		});		
+	}
+	
+		
+		</script>  
+      <!--{/if}-->
+        <!--{if $action eq 'pic_list'}-->
+        <LINK href="themes/xaphp2013/style/jquery.lightbox-0.5.css" type=text/css rel=stylesheet>
+      {insert_scripts files='jquery_common.min.js,jquery.lightbox-0.5.min.js'}
+      <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_pics.png" /><span>图片管理</span>
+		</div>
+		<div class="maincon">
+			<div class="contitlelist">
+				<span>我的图片</span>
+				<div class="searchdiv">
+					<form id="" name="" method="get" action="suppliers.php">
+						<div>分类：</div>
+						<select id="cat_id" name="cat_id">
+        <option value="">请选择</option>
+             <!-- {foreach from=$cat_list item=item} -->
+        	<option value="{$item.id}">{$item.cat_name}</option>
+            <!--{/foreach}-->
+        </select>
+						<div id="show_cat_list_2"></div>
+						<div id="show_cat_list_3"></div>
+						<input type="text" value="" class="input" name="">
+						<input name="act" type="hidden" value="pic_list" />
+						<input type="submit" class="btn" name="" value="搜索">
+					</form>
+				</div>
+				<div class="titleright">
+					<a href="?act=pic_add">图片添加</a>
+					<a href="?act=pic_category">图片分类</a>
+				</div>
+			</div>
+			<div class="conbox">
+				<ul class="picbox"  id="photo">
+					<!-- #BeginLibraryItem "/library/pic_list.lbi" --><!-- #EndLibraryItem -->
+               	</ul> 
+			</div>
+            <div id="pages">
+			<!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+            </div>
+		</div>
+
+	</div>
+ <script language="JavaScript" >
+ function drop_delete_pic(id)
+ {
+		getStatusUrl = 'suppliers.php?act=drop_delete_pic&id='+id;
+		$.ajax(
+		{
+			  url: getStatusUrl,
+			  dataType: 'json',
+			  global: false,
+			  success: function(data)
+			  {
+				 document.getElementById('photo').innerHTML =data.pic_list;
+				 document.getElementById('pages').innerHTML =data.pages;
+			  },
+			  error: function(XMLHttpRequest,textStatus, errorThrown){
+			  }
+		});		
+ }
+(function($){
+	$(function()
+	{
+		$('#photo a.photo').lightBox({fixedNavigation:true});
+	});
+})(jQuery);
+</script>
+		<!--{/if}-->
+        
+        <!--{if $action eq 'article_edit'}-->
+         <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title.png" /><span>{$info.suppliers_name}</span>
+		</div>
+      <div class="maincon">
+			<div class="contitleedit"><span>文章编辑</span></div>
+			<div class="conbox"> 
+     
+     <form action="suppliers.php" method="post" name="myform" onsubmit="return checkarticle();">
+		<table cellspacing="0" cellpadding="0" class="edittable">
+  <tr>
+    <td align="right">文章标题：</td>
+    <td><input name="title" type="text" value="{$rows.title}" size="40"  />*</td>
+  </tr>
+    <tr>
+    <td align="right">分类选择：</td>
+    <td> 
+		  
+		  <select name="cat_id" id="cat_id" onchange="get_cat_list(this.value,1)">
+			<option value="0">请选择</option>
+			{$goods_cat_list}
+		</select>
+			<span id="show_cat_list_2">{if $cat_list1}
+		<select name="cat_id_3" id="cat_id" ><option value="0">{$lang.select_please}</option>{$cat_list1}</select>
+		{/if}</span>
+			<span id="show_cat_list_3"></span>
+			*
+		  </td>
+  </tr>
+  <tr>
+    <td align="right">关键字： </td>
+    <td><input name="keywords" type="text" id="keywords" value="{$rows.keywords}" size="50" />*
+    用空格或半角逗号隔开，不超过30个字</td>
+  </tr>
+  <tr>
+    <td align="right">文章摘要：</td>
+    <td><textarea name="description" cols="30" rows="5">{$rows.description}</textarea>*不超过90个字</td>
+  </tr>
+  <tr>
+    <td align="right">作者：</td>
+    <td><input name="author" type="text"  value="{$rows.author}"/></td>
+  </tr>
+  <tr>
+    <td align="right">内容：</td>
+    <td>{$FCKeditor}</td>
+  </tr>
+  <tr>
+    <td align="right">&nbsp;</td>
+	<input name="act" type="hidden" value="article_update" />
+	<input name="article_id" type="hidden" value="{$rows.article_id}" />
+    <td><input type="submit" name="Submit" value="修改"  class="btn"/></td>
+  </tr>
+</table>
+
+	</form>
+     </div>
+     </div>
+     </div>
+     <!--{/if}-->
+        
+        
+     <!--{if $action eq 'article_add'}-->
+         <script type="text/javascript" src="/7cai/js/transport.js"></script>
+      <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title.png" /><span>{$info.suppliers_name}</span>
+		</div>
+      <div class="maincon">
+			<div class="contitleedit"><span>文章发布</span></div>
+			<div class="conbox"> 
+     
+     <form action="suppliers.php"  class="edittable"  method="post" name="myform" onsubmit="return checkarticle();">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="right">文章标题：</td>
+    <td><input name="title" type="text" size="40"class="input"  />*</td>
+  </tr>
+  <tr>
+    <td align="right">关键字： </td>
+    <td><input name="keywords" type="text" id="keywords" class="input"  size="50" />*
+      用空格或半角逗号隔开，不超过30个字</td>
+  </tr>
+  <tr>
+    <td align="right">文章摘要：</td>
+    <td><textarea name="description" cols="30" rows="5" class="input" ></textarea>*不超过90个字</td>
+  </tr>
+    <tr>
+    <td align="right">分类选择：</td>
+    <td> <select name="cat_id" id="cat_id" onchange="get_cat_list(this.value,1)">
+			<option value="0">请选择</option>
+			{$goods_cat_list}
+		</select>
+			<span id="show_cat_list_2">{if $cat_list1}
+		<select name="cat_id_3" id="cat_id" ><option value="0">{$lang.select_please}</option>{$cat_list1}</select>
+		{/if}</span>
+			<span id="show_cat_list_3"></span>
+			</td>
+  </tr>
+
+  <tr>
+    <td align="right">作者：</td>
+    <td><input name="author" type="text"   class="input"   value="{$username}"/></td>
+  </tr>
+  <tr>
+    <td align="right">内容：</td>
+    <td>{$FCKeditor}</td>
+  </tr>
+  <tr>
+    <td align="right">&nbsp;</td>
+	<input name="act" type="hidden" value="article_insert" />
+    <td><input type="submit" name="Submit" value="提交"  class="btn"/></td>
+  </tr>
+</table>
+</form>
+     </div>
+     </div>
+     </div>
+     <!--{/if}-->
+      <!--{if $action eq 'article_list'}-->
+       <script type="text/javascript" src="/7cai/js/transport.js"></script>
+       <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title.png" /><span>{$info.suppliers_name}</span>
+		</div>
+     	<div class="maincon">
+			<div class="contitlelist">
+				<span>技术文章</span>
+				<div class="searchdiv">
+					<form id="form1" name="form1" method="get" action="user.php" style="float:left; font-size:13px; line-height:48px">
+						<div>分类：</div>
+						<select name="cat_id" id="cat_id" onchange="get_cat_list(this.value,1)">
+							<option value="0">请选择</option>
+							{$goods_cat_list}
+						</select>
+						<div id="show_cat_list_2">
+							{if $cat_list1}
+							<select name="cat_id_3" id="cat_id" ><option value="0">{$lang.select_please}</option>{$cat_list1}</select>
+							{/if}
+						</div>
+						<div id="show_cat_list_3"></div>
+						<input type="text" value="" class="input" name="keywords">
+						<input name="act" type="hidden" value="article_list" />
+						<input type="submit" class="btn" name="Submit2" value="搜索">
+					</form>
+				</div>
+			</div>
+			<div class="conbox">
+      
+    <table cellspacing="0" cellpadding="0" class="listtable">
+      <tr>
+        <th class="left">标题</td>
+        <th class="left">作者</td>
+        <th class="left">更新时间</td>
+        <th class="right">操作</td>
+      </tr>
+      <!-- {foreach from=$list item=item} -->
+      <tr>
+        <td>{if $item.is_open}<a href="article.php?id={$item.article_id}" target="_blank" class="f6">{$item.title}</a>{else}{$item.title}[未审核]{/if}</td>
+        <td>{$item.author}</td>
+        <td>{$item.add_time}</td>
+        <td class="right"><!--<a href="suppliers.php?act=article_delete&id={$item.article_id}" onclick="if (!confirm('确定删除吗')) return false;">删除</a>-->&nbsp;&nbsp;<a href="suppliers.php?act=article_edit&id={$item.article_id}">编辑</a></td>
+      </tr>
+      <!--{/foreach}-->
+    </table>
+      </div>
+      </div>
+      </div>
+      <!--{/if}-->
+    
+   <!--{if $action eq 'edit_password'}-->
+    <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title.png" /><span>{$info.suppliers_name}</span>
+		</div>
+		<div class="maincon">
+				<div class="contitleedit"><span>修改密码</span></div>
+			<div class="conbox">
+            <form name="formPassword" action="suppliers.php" method="post" onSubmit="return editPassword()" >
+     <table width="100%" border="0" cellpadding="5" class="edittable" cellspacing="1">
+        <tr>
+          <td  align="right" bgcolor="#FFFFFF">旧密码：</td>
+          <td align="left" bgcolor="#FFFFFF"><input name="old_password" type="password" size="25"  class="input" /></td>
+        </tr>
+        <tr>
+          <td align="right" bgcolor="#FFFFFF">新密码：</td>
+          <td align="left" bgcolor="#FFFFFF"><input name="new_password" type="password" size="25"  class="input"/></td>
+        </tr>
+        <tr>
+          <td  align="right" bgcolor="#FFFFFF">新密码确认：</td>
+          <td align="left" bgcolor="#FFFFFF"><input name="comfirm_password" type="password" size="25" class="input" /></td>
+        </tr>
+        <tr>
+        	<td>&nbsp;</td>
+          <td bgcolor="#FFFFFF"><input name="act" type="hidden" value="act_edit_password" />
+            <input name="submit" type="submit" class="btn" style="border:none;" value="确认修改" />
+          </td>
+        </tr>
+      </table>
+    </form>
+			</div>
+		</div>
+</div>
+   
+   <!--{/if}-->
+	<!--{if $action eq 'default'}-->
+	 <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title.png" /><span>{$info.suppliers_name}</span>
+		</div>
+		<div class="maincon">
+			<div class="contip">
+				<p>此处显示提示信息，或者活动信息，或者公告信息类，可一行显示，也可以滚动显示。 <a href="">也可显示链接文字，滑过出现下划线。</a></p>
+			</div>
+			<div class="contitle">
+				<img src="templates/images/ico01.png" /><span>主页信息模块</span>
+			</div>
+			<div class="condiv">
+				<a href="suppliers.php?act=my_goods">
+					<span>商品数量&nbsp;&nbsp;<b>{$goodsnum}</b></span>
+					<img src="templates/images/ico11.png"/>
+				</a>
+				<a href="suppliers.php?act=article_list">
+					<span>文章数量&nbsp;&nbsp;<b>{$articlenum}</b></span>
+					<img src="templates/images/ico12.png"/>
+				</a>
+				
+			</div>
+			
+		</div>
+	</div>
+	<!--{/if}-->
+	
+	<!--{if $action eq 'add_goods' or $action eq 'edit_goods'}-->
+    <script type="text/javascript" src="templates/js/jquery_common.min.js"></script>
+ 	<div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_addgoods.png" /><span>商品管理</span>
+		</div>
+		<div class="maincon" style="color:#000;">
+        	
+			<div class="contitleedit"><span>{if $action eq 'add_goods'}新增信息{else}编辑信息{/if}</span></div>
+                
+            <ul class="listtab">
+				<li id='nav1'class="act" class="act"><a href="javascript:;" onclick="show_html(1,2);">详细描述</a></li>
+				<li id='nav2'><a href="javascript:;" onclick="show_html(2,2);">商品相册</a></li>
+			</ul>
+           
+      		<form action="suppliers.php" enctype="multipart/form-data" method="post" name="myform" onsubmit="return checkgoodsinfo();">
+
+		    <div class="conbox" style="display:block;" id="show_html1">
+				<table cellspacing="0" cellpadding="0" class="edittable">
+					<tr>
+						<td class="right">商品名称：</td>
+						<td><input type="text" value="{$goods.goods_name}" name="goods_name" class="input" size="35">*</td>
+					</tr>
+			     <!-- <tr>
+						<td class="right">商品货号：</td>
+						<td><input type="text" value="{$goods.goods_sn}" name="goods_sn" class="input" size="35">
+                        <!--如果您不输入商品货号，系统将自动生成一个唯一的货号。-->
+                        </td>
+					</tr>-->
+                    
+                    <tr>
+						<td class="right">商品数量：</td>
+						<td><input type="text" value="{$goods.goods_number}" name="goods_number" class="input" size="35">
+                      
+                        </td>
+					</tr>
+                    
+                     <tr>
+						<td class="right">商品重量：</td>
+						<td><input type="text" value="{$goods.goods_weight}" name="goods_weight" class="input" size="35">
+                      
+                        </td>
+					</tr>
+                      
+            
+                   
+                    
+                    <tr>
+                      
+						<td class="right">有效期：</td>
+                       
+						<td><input type="text" value="{$goods.term_of_validity}" name="term_of_validity" class="input" size="35">
+                   &nbsp;&nbsp;日期格式如：2014-01-01
+                      </td>
+                    </tr>
+                   
+				
+               <tr>
+                  <td class="right">商品图片：</td>
+                  <td>
+     
+                  <input type="text" size="40" id="goods_img_url" value="{$goods.goods_img}" style="color:#aaa;"  name="goods_img_url"/>
+               <a href="javascript:;" onclick="winopen('suppliers.php?act=get_pic','600','500');">选择图片</a>
+              {if $goods.goods_img}
+                <a href="{$goods.goods_img}" target="_blank"><img src="/admin_nx_gl/images/yes.gif" border="0" /></a>
+              {else}
+                <img src="/admin_nx_gl/images/no.gif" />
+              {/if} &nbsp;&nbsp;大小建议600像素*600像素   
+                </td>
+              </tr> 
+               <tr>
+                  <td class="right">详细描述：</td>
+                  <td>
+              {$FCKeditor}
+              
+              </td>
+              </tr>
+					<tr>
+						<td class="right">&nbsp;</td>
+						<td>
+                        <input name="goods_id" type="hidden" value="{$goods.goods_id}" />
+                        <input name="act" type="hidden" value="{$form_act}" />
+                        <input type="submit" value="保 存" class="btn"></td>
+					</tr>
+				</table>
+             </option>
+            
+			</div>
+            
+            <div id="show_html2" class="conbox" style="display:none;">
+          		<div style="padding:12px 25px">
+                 <!-- 图片列表 -->
+                <table width="90%" id="gallery-table"  align="center">
+                 <tr>
+                     <td>
+                     <!--'"+data+"','{$img.img_id}'-->
+              {foreach from=$img_list item=img}
+            
+              <div id="gallery_{$img.img_id}" style="float:left; text-align:center; border: 1px solid #DADADA; margin: 4px; padding:2px;">
+              
+              <a href="javascript:;" onclick="remove_img('{$img.img_id}')">[-]</a><br />
+              
+                <a href="suppliers.php?act=show_image&img_url={$img.img_url}" target="_blank">
+                <img src="../{if $img.thumb_url}{$img.thumb_url}{else}{$img.img_url}{/if}" border="0" width="200" height="200" />
+                </a><br />
+               
+              </div>
+              {/foreach}
+                </td>
+             </tr>
+
+            </table>
+               		<a href="javascript:;" onclick="winopen('suppliers.php?act=get_photo','600','500');">选择图片</a>
+				</div>
+          
+         </div>
+            
+               
+           </form>
+		   
+			<script type="text/javascript" language="javascript"> 
+			function hideimg(imgId,imgurl)
+		 { 
+			   var imgid=document.getElementById(imgId);
+			  imgid.style.display='none';
+			  var imgurl=document.getElementById(imgurl);
+			  imgurl.value="";
+		}
+		
+		
+		
+          function remove_img(id)
+	  {
+		getStatusUrl = 'suppliers.php?act=del_image&id='+id;
+		//getStatusUrl = 'suppliers.php?act=delete_pic&pic='+data+'&id='+id;
+		$.ajax(
+		{
+			  url: getStatusUrl,
+			  dataType: 'json',
+			  global: false,
+			  success: function(data)
+			  {
+				  
+				 $("#gallery_"+id).hide();
+				 $("#"+id+"").attr("checked",false);
+				//document.getElementById("pic_"+id).style.display = "none";
+			  },
+			  error: function(XMLHttpRequest,textStatus, errorThrown){
+							//alert(XMLHttpRequest.responsetext);
+							//alert(textStatus);
+							//alert(errorThrown);
+			  }
+		});	
+	 }
+
+			 
+			 
+			 </script>
+            
+            <!-- <div id="show_html3" style="width:1000px; height:400px; border:1px solid #000; margin-top:10px;display:none;margin-left:40px;">
+         <form action="" method="post"> &nbsp;&nbsp; &nbsp;&nbsp;
+          文章标题： &nbsp;&nbsp;<input type="text" name="title">&nbsp;&nbsp;
+          <input type="submit" name="subcheck" value="搜素">
+          
+          <ul style="margin-left:170px;">
+          <li style="list-style:none; float:left; padding-right:270px;">可选文章</li>
+           <li style="list-style:none; float:left; padding-right:270px;">操作</li>
+            <li style="list-style:none; float:left;">跟该商品关联的文章</li>
+          </ul>
+            </div>-->
+		</div>
+</div>
+    <!--{/if}-->
+    <!--{if $action eq 'my_goods' }-->
+     <script type="text/javascript" src="/7cai/js/transport.js"></script>
+ <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_goods.png" /><span>商品管理</span>
+		</div>
+		<div class="maincon">
+			
+			<div class="contitlelist"><span>我的商品</span></div>
+			<div class="conbox">
+				<table cellspacing="0" cellpadding="0" class="listtable">
+					<tr>
+					  <th><input type="checkbox" name="checkbox" value="checkbox" /></th>
+					  <th>货号</th>
+					  <th class="left">商品名称</th>
+					  <th class="left">商品价格</th>
+					  <th class="left">批文号</th>
+					  <th class="right">审核状态</th>
+                      <th class="right">预览商品</th>
+					  <th>操作列</th>
+					</tr>
+                      <!--{foreach from=$goods_list item=goods}-->
+					<tr>
+					  <td class="checkbox"><input type="checkbox" name="checkbox" value="checkbox" /></td>
+					  <td class="middle">{$goods.goods_sn}</td>
+					  <td>{if $goods.is_on_sale neq 1}<a href="goods.php?id={$goods.goods_id}" class="link" target="_blank">{$goods.goods_name}</a>{else}{$goods.goods_name}{/if}</td>
+					  <td>{$goods.shop_price}</td>
+					  <td>{$goods.pass_number}</td>
+					  <td class="right">  {if $goods.is_on_sale}审核通过{else}审核中...{/if}</td>
+                      <td class="right">{if $goods.is_on_sale eq '0'}<a href="goods.php?act=look_goods&id={$goods.goods_id}" target="_blank">预览</a>{/if} </td>
+					  <td class="middle"><!--<a href="?act=delete_goods&goods_id={$goods.goods_id}" onclick="return confirm('确定要此操作吗');">删除</a> | --><a href="?act=edit_goods&goods_id={$goods.goods_id}" onclick="return confirm('如果此商品已经审核，编辑商品后需重新审核，要继续此操作吗？')">编辑</a> </td>
+					</tr>
+					<!--{/foreach}-->
+				</table>
+                
+			</div>
+			     <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+		</div>
+        </div>
+    <!--{/if}-->
+    
+    
+{if $action eq 'supp_info'}
+    <script type="text/javascript" src="/7cai/js/transport.js"></script>
+    <script>
+	region.isAdmin = false;
+	</script>
+  <div class="main" id="main">
+		<div class="maintop">
+			<img src="templates/images/title_datum.png" /><span>企业资料</span>
+		</div>
+		<div class="maincon">
+				<div class="contitleedit"><span>资料更新</span></div>
+			<div class="conbox">
+           
+            <form action="suppliers.php" enctype="multipart/form-data" method="post" name="myform">
+            
+           <table cellspacing="0" cellpadding="0" class="edittable">
+					<tr>
+						<td class="right">供货商名称：</td>
+						<td> {$supp_list.suppliers_name} </td>
+					</tr>
+                    
+                    <!--
+                    <tr>
+						<td class="right">医疗器戒经营许可证：</td>
+						<td>
+                        <input type="file" name="enterprise_license">
+                        {if $supp_list.enterprise_license}<a  href="../{$supp_list.enterprise_license}" target="_blank">查看</a>{/if}
+                        </td>
+					</tr>
+                    -->
+                    <tr>
+						<td class="right">医疗器械经营有效期</td>
+						<td><input type="text"  name="term_validity" value="{$supp_list.term_validity}" class="input" size="35">日期形式：2014-01-01</td>
+					</tr>
+                     <tr>
+						<td class="right">企业法人营业执照：</td>
+						<td>
+                        <input type="file" name="business_license">
+                        {if $supp_list.business_license}<a  href="./../{$supp_list.business_license}" target="_blank">查看</a>{/if}
+                        </td>
+					</tr>
+                     <tr>
+						<td class="right">区域选择：</td>
+                        <td>
+                         <select name="province_id" id="selProvinces" onchange="region.changed(this, 2, 'selCities')">
+           <option value=''>请选择</option>
+             {foreach from=$provinces item=region}
+               <option value="{$region.region_id}" {if $region.region_id eq $supp_list.province_id} selected="selected"{/if}> {$region.region_name}</option>
+             {/foreach}
+         </select>
+		  <select name="city_id" id="selCities"  onchange="region.changed(this, 3, 'selDistricts')">
+          <option value=''>请选择</option>
+            {foreach from=$cities item=region}
+              <option value="{$region.region_id}" {if $region.region_id eq $supp_list.city_id}selected="selected"{/if}>{$region.region_name}</option>
+            {/foreach}
+        </select>
+                        
+                        
+                        </td>
+						
+					</tr>
+                     
+                     <tr>
+						<td class="right">供货商描述：</td>
+						<td><textarea  name="suppliers_desc"  rows="3" cols="40">{$supp_list.suppliers_desc}</textarea></td>
+					</tr>
+                     
+                    <tr>
+						<td class="right">&nbsp;</td>
+						<td>
+                        <input type="hidden" name="suppliers_id" value="{$supp_list.suppliers_id}">
+                        <input name="act" type="hidden" value="supp_update">
+                        <input type="submit" value="保 存" class="btn" name="subsupp"></td>
+					</tr>
+                    </table>
+                   
+                    </form>
+              
+            
+ 
+             </div>
+  </div>
+  </div>         
+  {/if}
+    
+    
+<script>
+function get_cat_list(id,type)
+{
+  Ajax.call('user.php', 'act=get_cat_list&id=' + id+'&type='+type, get_cat_listResponse, 'GET', 'JSON');
+}
+function get_cat_listResponse(result)
+{
+
+	if(document.getElementById('show_cat_list_'+result.type))
+	{
+		document.getElementById('show_cat_list_'+result.type).innerHTML = result.html;
+		//alert(result.html);
+	}
+}
+function checkpic_category()
+{
+	if(document.myform.cat_name.value=='')
+	{
+		alert('请输入商品名称');
+		return false;
+	}
+	return true;
+}
+function checkgoodsinfo()
+{
+	if(document.myform.goods_name.value=='')
+	{
+		alert('请输入商品名称');
+		return false;
+	}
+	if(document.myform.cat_id_3.value=='')
+	{
+		alert('请选择对应的三级分类');
+		return false;
+	}
+	if(document.myform.shop_price.value=='')
+	{
+		alert('请输入商品价格');
+		return false;
+	
+	}
+	return true;
+}
+function editPassword()
+{
+  var frm              = document.forms['formPassword'];
+  var old_password     = frm.elements['old_password'].value;
+  var new_password     = frm.elements['new_password'].value;
+  var confirm_password = frm.elements['comfirm_password'].value;
+
+  var msg = '';
+  var reg = null;
+
+  if (old_password.length == 0)
+  {
+    msg +=  '旧密码不能为空\n';
+  }
+
+  if (new_password.length == 0)
+  {
+    msg +=  '新密码不能为空\n';
+  }
+
+  if (confirm_password.length == 0)
+  {
+    msg += '确认密码不能为空\n';
+  }
+
+  if (new_password.length > 0 && confirm_password.length > 0)
+  {
+    if (new_password != confirm_password)
+    {
+      msg +=   '新密码俩次输入不一致\n';
+    }
+  }
+
+  if (msg.length > 0)
+  {
+    alert(msg);
+    return false;
+  }
+  else
+  {
+    return true;
+  }
+}	
+function checkarticle()
+{
+	if(document.myform.title.value=='')
+	{
+		alert('请输入标题');
+		return false;
+	}
+	if(document.myform.cat_id_3.value=='')
+	{
+		alert('请选择对应的三级分类');
+		return false;
+	}
+	if(document.myform.description.value=='')
+	{
+		alert('文章摘要不能为空');
+		return false;
+	
+	}
+	if(document.myform.keywords.length>30)
+	{
+	
+		alert('关键字不大于30个字');
+		return false;
+	}
+	if(document.myform.description.length>90)
+	{
+	
+		alert('描述不大于90个字');
+		return false;
+	}
+	
+	return true;
+
+}
+	
+/*** 删除图片
+   */
+  function dropImg(imgId)
+  {
+    Ajax.call('suppliers.php?is_ajax=1&act=drop_image', "img_id="+imgId, dropImgResponse, "GET", "JSON");
+  }
+
+  function dropImgResponse(result)
+  {
+      if (result.error == 0)
+      {
+          document.getElementById('gallery_' + result.content).style.display = 'none';
+      }
+  }
+			
+</script>
+</body>
+</html>

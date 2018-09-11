@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>商家管理平台</title>
+<link href="templates/css/mobile.css" rel="stylesheet" type="text/css" />
+</head>
+<body >
+<!--{if $action eq 'default'}-->
+<div class="container">
+    <div class="main">
+        <h1>{$info.suppliers_name}</h1>
+        <div class="mbox">
+            <h3>今日概况</h3>
+            <ul class="ult">
+                <li>订单数（个）<br/>{$today_order}<br/><span>昨日：{$yestoday_order}</span></li>
+                <li>成团数（个）<br/>{$teamtoday}<br/><span>昨日：{$team_yestoday}</span></li>
+                <li>成交额（元）<br/>{$today_money}<br/><span>昨日：{$yestoday_money}</span></li>
+            </ul>
+        </div>
+        <div class="mbox">
+            <h3>整体概况</h3>
+            <ul class="ulb">
+                <li>商品总数<br/>{$goodsnum}</li>
+                <li>共成团<br/>{$totle_team}</li>
+                <li>总成交额<br/>{$totle_money}</li>
+                <li>总订单量<br/>{$totle_count}</li>
+                <li><a href="?composite_status=101&act=goods_order2&op=order">待核销订单<br/>{$weihe}</a></li>
+                <li>已核销订单<br/>{$yihe}</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="footer">
+    <ul>
+        <li><a href="?op=main&act=default" class="cur">首页</a></li>
+        <li><a href="?composite_status=101&act=goods_order&op=order">待发货订单</a></li>
+        <li><a href="?composite_status=101&act=goods_order2&op=order">待核销订单</a></li>
+    </ul>
+</div>
+<!--{/if}-->
+</body>
+</html>

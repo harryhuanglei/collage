@@ -1,0 +1,10 @@
+<!-- {foreach from=$pic_list item=item} -->
+<li>
+     <a href="{$item.pic}"  target="_blank">  <img src="{$item.pic}" width="100" height="100"></a>
+      <a href="" class="name">{$item.pic_name}</a>
+      <input type="checkbox" name="photo[]"  value="/business/{$item.pic}" /></option>
+</li>
+<!--{/foreach}-->
+<!--li>
+      <a href="javascript:;" onClick="choice_photo()">确定</a>
+      </li-->

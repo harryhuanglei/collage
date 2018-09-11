@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html class="" lang="zh-CN" >
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="" />
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="cleartype" content="on">
+     <link rel="dns-prefetch" href="//imgqn.koudaitong.com/" />
+    <link rel="dns-prefetch" href="//b.yzcdn.cn/" />
+    <link rel="shortcut icon" href="http://b.yzcdn.cn/v2/image/yz_fc.ico" />
+    <title>找人代付 - 分享</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="http://b.yzcdn.cn/v2/build_css/stylesheets/wap/base_aa818edeb8.css" >    
+    <link rel="stylesheet" href="http://b.yzcdn.cn/v2/build_css/stylesheets/wap/projects/trade_c74fb12925.css" onerror="_cdnFallback(this)">        </head>
+<body class=" ">
+    
+    <div class="container js-page-content wap-page-order">
+                <div class="content peerpay-gift">
+	<div class="app app-order">
+		<div class="app-inner inner-order">
+	
+<div class="message-container center" style="background-color:#a0bf54;">
+    
+
+<div class="wrapper">
+    <div class="outer-wrapper">
+        <div class="table-wrapper">
+            <div class="table-cell-wrapper message">
+                <span class="time-line-title" id="wxdesc" style="color:#ffffff;">
+                		{$order_info.wxdesc}         
+                </span>
+            </div>
+        </div>
+    </div>
+</div>    <div class="avatar avatar-peerpay center">
+        <img class="circular" src="http://b.yzcdn.cn/v2/image/wap/peerpay/avatar2.png">
+        <p class="js-counter-msg">
+            <span class="txt-status" style="color:#ffffff;">
+                            等待真爱路过...                        </span>
+        </p>
+    </div>
+    <div class="bottom-arrow"></div>
+</div>
+
+
+			<!-- 进度条 -->
+            <!---->
+            <div class="block progress">
+	<div class="progress-bar">
+		<span style="width:{$progress}%;"></span>
+	</div>
+	<div class="progress-txt">
+		<span class="pull-left">已完成：<em>{$progress}%</em></span>
+        		<span class="pull-right">
+            还差：<em>{$order_info.order_amount}元</em></span>
+        	</div>
+</div>            <!---->
+
+			<!-- 行动点 -->
+			<div class="action-container" id="peerpay-share-btn" style="margin-top:30px;"  onclick="document.getElementById('share_img').style.display='';">
+				<button type="button" class=" btn btn-block btn-green">找小伙伴帮忙付款</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- wx分享-图片设置 -->
+<span style="display:none;" id="wxcover" data-wxcover="http://img.yzcdn.cn/upload_files/2015/05/29/FsqsS47p04slZ96JNtk-lE5Nta_c.png!100x100.jpg"></span>    </div>
+
+    <div class="footer">
+        <!-- <textarea id="footer-delay" style="display:none;"> -->
+	<div class="footer">
+	  
+	</div>
+<!-- </textarea> -->
+    </div>
+    <div id="share_img" style="position:fixed;top:0;left:0;z-index:999;display:none; background:#000;opacity:0.8;filter:alpha(opacity=80);  width:100%;height:100%; text-align:right; " onclick="document.getElementById('share_img').style.display='none';"><img class="arrow" src="themes/haohaios/images/share-it.png" ></div>
+    
+    <script src="js/youzan/common_452e0e827f.js"></script>
+    <script src="js/youzan/base_133b82eb14.js" ></script>
+    
+
+    <script type="text/javascript">
+		//$('#peerpay-share-btn button').click();
+	</script>    
+    <script>
+    /*
+window.addEventListener('load', function () {
+  var _hmt = _hmt || [];
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?96801ca9ab090e6db01b2b8377a4e979";
+  hm.async = true;
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+});*/
+</script></body>
+</html>
+
+
+
+	

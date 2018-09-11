@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/faq.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+
+{* 包含脚本文件 *}
+{insert_scripts files='jquery.js,haohaios.js'}
+</head>
+<body id="user">
+<div class="container">
+    <div class="faq-wrap" avalonctrl="root">
+        <div>
+            <div class="faq-header">{$article.title|escape:html}</div>
+            <div class="faq-textinfo">{$article.content}</div>
+        <div style="height: 50px; visibility: hidden;"></div>
+    </div>
+</div>   
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+</html>

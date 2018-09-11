@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$shop_name}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/share.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,user.js'}
+</head>
+<body>
+    {if $team_info.team_status eq 1 }
+    <div class="tips">
+        <i class="tips_succ"></i>
+        {if $is_team eq 1}
+        快来入团吧就差你了
+        {else}
+        {if $order.team_first eq 1}
+        开团成功快去邀请好友加入吧
+        {else}
+        参团成功快去邀请好友加入吧
+        {/if}
+        {/if}
+    </div>
+    {/if} 
+    {if $team_info.team_status eq 2 }
+    {if $is_teammen gt 0}
+    <div class="tips">
+        <i class="tips_succ"></i>团购成功 我们会尽快为您发货
+    </div>
+    {else}
+    <div class="tips">
+        <i class="tips_err"></i>来晚了一步 此团满员啦
+    </div>
+    {/if}
+    {/if}
+    {if $team_info.team_status eq 3 or $team_info.team_status eq 4}
+    {if $is_teammen gt 0}
+    <div class="tips">
+        <i class="tips_err"></i>团购失败
+    </div>
+    {else}
+    <div class="tips">
+        <i class="tips_err"></i>来晚了一步！
+    </div>
+    {/if}
+    {/if}
+
+
+    <div id="group_detail" class="tm {if $team_info.team_status eq 1}{elseif $team_info.team_status eq 2}tm_succ{else}tm_err{/if}">
+        {foreach from=$goods_list item=goods}
+        <div class="td tuanDetailWrap">
+            <div class="td_img"><img src="{$goods.goods_thumb}"></div>
+            <div class="td_info">
+                <p class="td_name">{$goods.goods_name}</p>
+                <p class="td_mprice"><span>{$team_info.team_num}人团</span><i>¥</i><b>{$goods.goods_price}</b><i> /件</i></p>
+            </div>
+        </div>
+        {/foreach}
+    </div>
+    <div class="pp">
+        <div class="pp_users" id="pp_users"> 
+            {foreach from=$team_mem item=item}
+            <p class="pp_users_item pp_users_normal"><img src="{$item.headimgurl}"></p> 
+            {/foreach}
+            {foreach from=$d_num_arr item=item}
+            {if $team_info.is_luck neq 1}<p class="pp_users_item pp_users_blank"><img src="themes/haohainew/images/avatar_4_64.png"></p>{/if} 
+            {/foreach}
+        </div>
+    </div>
+    
+    <div class="pp_box">
+        {if $team_info.team_status eq 2}
+        <div class="pp_tips" id="flag_1_a" >对于诸位大侠的相助，团长感激涕零</div>
+        {else}
+        <div class="pp_tips" id="flag_1_a" >{$group_share_ads}</div>
+        {/if}
+        {if $team_info.team_status eq 1}
+        <div class="pp_tips" id="flag_0_a" >还差{if $team_info.is_luck eq 1}<b>{$db_num}</b>份{else}<b>{$d_num}</b>人{/if}，盼你如南方人盼暖气~</div>
+        <div class="pp_state" id="flag_0_b" >
+            <div class="pp_time"> 剩余<font id="time"></font>结束 </div>
+        </div>
+        {/if}
+    </div>
+    
+    <div class="pp_list">
+        <div id="showYaoheList"> 
+            {foreach from=$team_mem item=item name=name}
+            {if $item.team_first eq 1}
+            <div class="pp_list_item"> <img class="pp_list_avatar" alt="" src="{$item.headimgurl}">
+                <div class="pp_list_info" id="pp_list_info"> <span class="pp_list_name">团长<b>{$item.uname}</b></span> <span class="pp_list_time">{$item.date} 开团 {if $item.is_lucker eq 1} <font color="red">幸运者</font>{/if}</span> </div>
+            </div>
+            {else}
+            <div class="pp_list_item"> <img class="pp_list_avatar" alt="" src="{$item.headimgurl}">
+                <div class="pp_list_info" id="pp_list_info"> <span class="pp_list_name"><b>{$item.uname}</b></span> <span class="pp_list_time">{$item.date} 参团 {if $item.is_lucker eq 1} <font color="red">幸运者</font>{/if}</span> </div>
+            </div>
+            {/if}
+            {/foreach}
+        </div>
+        {if $team_info.team_status eq 1}
+        <div id="chamemeber" class="pp_list_blank" > 还差
+            {if $team_info.is_luck eq 1}<span>{$db_num}</span>份{else}<span>{$d_num}</span>人{/if}，让小伙伴们都来{if $team_info.is_luck eq 1}夺宝{else}组团{/if}吧！ </div>
+        {/if}
+    </div>
+
+        
+
+    
+
+
+
+
+</body>
+<script type="text/javascript">
+{foreach from=$lang.clips_js item=item key=key}
+var {$key} = "{$item}";
+{/foreach}
+{if $team_info.team_status eq 1}
+var daysms = 24 * 60 * 60 * 1000;
+var hoursms = 60 * 60 * 1000;
+var Secondms = 60 * 1000;
+var microsecond = 1000;
+var DifferHour = 0;
+var DifferMinute = 0;
+var DifferSecond = 0;
+var systime={$systime};
+var team_start={$team_start}*1000;
+var team_end={$team_start}*1000+{$team_suc_time}*24*3600*1000;
+setInterval("systime_clock()",1000);
+function systime_clock(){
+	systime++;
+}
+function clock()
+{	
+  var time = new Date();
+  time.setTime(systime*1000);
+  var Diffms = team_end - time.getTime();
+  var Diffms1=Diffms;
+  var a='';
+  var b='';
+  var c='';
+  var d='';
+  DifferHour = Math.floor(Diffms / daysms);
+  Diffms -= DifferHour * daysms;
+  DifferMinute = Math.floor(Diffms / hoursms);
+  Diffms -= DifferMinute * hoursms;
+  DifferSecond = Math.floor(Diffms / Secondms);
+  Diffms -= DifferSecond * Secondms;
+  var dShhs = Math.floor(Diffms / microsecond);
+  if(Diffms1>=0){
+	   a="还剩<strong class='tcd-h'>"+DifferHour+"</strong>天";
+	   b="<span >"+DifferMinute+"</span>时";
+	   c="<span >"+DifferSecond+"</span>分";
+	   d="<span>"+dShhs+"</span>秒";
+	  document.getElementById('time').innerHTML =a+b+c+d;
+  }else{
+	  window.location.reload();
+  }
+}
+window.setInterval("clock()", 1000); 
+{/if}
+</script>
+
+</html>

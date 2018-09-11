@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,jquery.lazyload.js'}
+</head>
+<body >
+<div class="container">
+    <div class="nav_fixed rank_nav">
+        <a href="rank.php?act=hot" {if $act eq 'hot' }class="cur"{/if}><span>热门拼团</span></a>
+        <a href="rank.php?act=new" {if $act eq 'new' }class="cur"{/if}><span>热门精品</span></a>
+    </div>
+    <div class="blank4"></div>
+    <!-- {if $act eq 'hot' } -->
+    <div class="good_list">
+        <div class="tuan_list" style="padding-top:10px;">
+        <!--{foreach name=goods_list from=$goods_list item=goods}-->
+        <div class="tuan_g">
+            
+                <div class="tuan_g_img">
+                    <a href="{$goods.url}&uid={$uid}">
+                    <img data-original="{$goods.little_img}" src="images/loading640x350.gif" class="lazy">
+                    </a>
+                    {if $uid}
+                        {if $goods.collect}
+                        <div class="like_click_button" data-id="{$goods.goods_id}">
+                            <img src="images/is_liked.png" data-isLiked="1">
+                        </div>
+                        {else}
+                        <div class="like_click_button" data-id="{$goods.goods_id}">
+                            <img src="images/no_liked.png" data-isLiked="0">
+                        </div>
+                        {/if}
+                    {/if}
+                    {if $goods.goods_number lt 1}
+                       <span class="sell_f"></span>
+                    {elseif  $goods.is_miao=1  and $goods.promote_end_date lt $nowtime and $goods.promote_end_date}
+                       <span class="sell_o"></span>
+                    {/if}
+                </div>
+                <div class="tuan_g_info">
+                    <p class="tuan_g_name">{$goods.goods_name}</p>
+                </div>
+                <div class="tuan_g_core">
+                     <p class="tuan_g_num">{$goods.team_num}人团</p>
+                     <div class="line"></div>
+                    <div class="tuan_g_price"><i>¥</i>{$goods.team_price}</div>
+                    <del class="tuan_g_mprice"><i>￥</i>{$goods.shop_price}</del>
+                    <a href="{$goods.url}&uid={$uid}">
+                    <div class="tuan_g_btn">立即开团</div>
+                    </a>
+                </div>
+            <img src="images/shade.png" style="display: block;width: 100%">
+        </div>
+        <!--{/foreach}-->
+        </div>
+    </div>
+    <!-- {/if} -->
+    <!-- {if $act eq 'new' } -->
+    <div class="good_list">
+        <div class="blank"></div>
+        <ul class="list_B">
+            <!--{foreach name=goods_list from=$goods_list item=goods}-->
+            <li>
+                <a href="{$goods.url}&uid={$uid}"><img goods_id="{$goods.goods_id}" data-original="{$goods.goods_thumb}" src="images/loading.gif" class="lazy"></a>
+                <p class="tit"><a href="{$goods.url}&uid={$uid}">{$goods.goods_name}</a></p>
+                <p>
+                    <font class="price">¥<b>{$goods.shop_price}</b></font>
+                    
+                     {if $goods.attr}
+                     <a class="mai iproduct_{$goods.goods_id}" id="iproduct_{$goods.goods_id}" href="javascript:addToCart({$goods.goods_id},0,1,0,0,1)">买</a>
+                     {else}
+					 {if $goods.goods_number > 0}
+                     <a class="mai" id="iproduct_{$goods.goods_id}" href="javascript:addToCart({$goods.goods_id},0,1,0,0,1)">买</a>
+					 {else}
+                     <a class="mai hui" href="javascript:;">缺货</a>
+                   {/if}
+                     {/if}
+                     
+
+                </p>
+            </li>
+            <!--{/foreach}-->
+        </ul>
+    </div>
+    <!-- {/if} -->
+</div>
+<div class="blank"></div>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+<script>
+	window.onload=function(){
+        $("img.lazy").lazyload({
+                effect: "fadeIn",
+                threshold : 200
+        });
+        $("img.lazy:eq(0)").attr('src',$("img.lazy:eq(0)").attr('data-original'));
+		
+      var user_id = {$uid};
+
+    $(".like_click_button").on("click", function(e) {
+
+        e.preventDefault();
+        var goodsId = $(this).attr("data-id");
+        var img = $(this).find("img");
+        if (img.attr("data-isLiked") == "1") {
+            $.get('user.php', {
+                act: "del_collection",
+                collection_id: goodsId,
+                user_id: user_id
+            }).done(function(e) {
+                img.attr("src", "themes/haohainew/images/no_liked.png");
+                img.attr("data-isLiked", 0)
+            })
+        } else {
+            $.get('user.php', {
+                act: "collect",
+                id: goodsId,
+                user_id: user_id
+            }).done(function(e) {
+                img.attr("src", "themes/haohainew/images/is_liked.png");
+                img.attr("data-isLiked", 1)
+            })
+
+        }
+    })
+		
+	}
+var btn_buy = "{$lang.btn_buy}";
+var btn_add_to_cart = "{$lang.btn_add_to_cart}";
+var is_cancel = "{$lang.is_cancel}";
+var select_spe = "{$lang.select_spe}";
+</script>
+<script type="text/javascript">
+function getElementLeft(element){
+　　　　var actualLeft = element.offsetLeft;
+　　　　var current = element.offsetParent;
+        
+　　　　while ( current !== null ){
+　　　　　　actualLeft += current.offsetLeft;
+　　　　　　current = current.offsetParent;
+
+　　　　}
+
+　　　　return actualLeft;
+　　}
+
+function getElementTop(element){
+　　　　var actualTop = element.offsetTop;
+　　　　var current = element.offsetParent;
+
+　　　　while (current !== null){
+　　　　　　actualTop += current.offsetTop;
+　　　　　　current = current.offsetParent;
+　　　　}
+
+　　　　return actualTop;
+　　}　　
+
+    var Cart = {
+      id: 'cat',
+      addProduct: function(cpid, num, t ) {
+        //添加商品
+        var cat =document.getElementById('cat');  
+        var catLeft=getElementLeft(cat);
+        var catTop=getElementTop(cat);
+        var sTop=document.body.scrollTop+document.documentElement.scrollTop;
+
+
+        var op = $("[id=iproduct_"+cpid+"]").parents("li").find("img");
+        var goods_id = $(op).attr("goods_id");
+
+        if(op.length>0) {
+            var np = op.clone().css({"position":"absolute", "top": op.offset().top, "left": op.offset().left, width: 50, height:50, "z-index": 999999999}).show();
+            np.appendTo("body").animate({top:  catTop + sTop , left: $("#cat").offset().left +30 , width: 20, height:20}, {duration: 1000,
+                    callback:function(){}, complete: function(){np.remove();addToCart(goods_id,0,1 ,0,0,1 );} });
+        }
+       }
+    }
+
+    $(function() {
+        $('[id^=iproduct_]').click(function() {
+            var id = $(this).attr("id");
+            var tmp = id.split('_');
+            var goods_id = tmp[1];
+
+            //var cpid = this.id.replace('iproduct_'+goods_id,goods_id);
+
+             Cart.addProduct(goods_id, 1, 0  );
+
+            return false;
+        });
+     });
+</script>
+</body>
+</html>
+

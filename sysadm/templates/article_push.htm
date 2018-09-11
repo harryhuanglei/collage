@@ -1,0 +1,113 @@
+
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+<div class="form-div">推送标题：&nbsp;&nbsp;&nbsp;<span>{$article.title}</span></div>
+
+<form method="POST" action="article.php" name="listForm">
+<!-- start cat list -->
+  <div class="list-div" id="listDiv">
+  {/if}
+
+    <table cellspacing='1' cellpadding='3' id='list-table'>
+      <tr>
+        <th><input onclick='listTable.selectAll(this, "checkboxes")' type="checkbox">APP用户</th>
+        <th>推送标识</th>
+        <!-- <th>推送时间</th> -->
+        <th>{$lang.handler}</th>
+      </tr>
+      {foreach from=$user_list item=list}
+      <tr>
+        <td align="center"><span><input name="checkboxes[]" type="checkbox" value="{$list.article_id}"/>{$list.user_name}</span></td>
+        <td align="center">{$list.devicetoken}</td>
+        <!-- <td align="center"></td> -->
+        <td align="center" nowrap="true" class="bnt_a">
+          <a href="article.php?act=push_act&id={$article.article_id}&tokens={$list.devicetoken}" title="单元推送">推送</a>
+        </td>
+      </tr>
+      {foreachelse}
+      <tr><td colspan="10" align="center" class="no-records">没有可推送的用户</td></tr>
+      {/foreach}
+      <tr>&nbsp;
+        <td align="right" nowrap="true" colspan="8">{include file="page.htm"}</td>
+      </tr>
+    </table>
+
+  {if $full_page}
+  </div>
+
+  <div>
+    <input type="hidden" name="act" value="push_act" />
+    <!-- <input type="submit" value="批量推送" id="btnSubmit" name="btnSubmit" class="button" disabled="true" /> -->
+  </div>
+</form>
+<!-- end cat list -->
+<script type="text/javascript" language="JavaScript">
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+  {literal}
+
+  onload = function()
+  {
+    // 开始检查订单
+    startCheckOrder();
+  }
+  /**
+   * @param: bool ext 其他条件：用于转移分类
+   */
+  function confirmSubmit(frm, ext)
+  {
+      if (frm.elements['type'].value == 'button_remove')
+      {
+          return confirm(drop_confirm);
+      }
+      else if (frm.elements['type'].value == 'not_on_sale')
+      {
+          return confirm(batch_no_on_sale);
+      }
+      else if (frm.elements['type'].value == 'move_to')
+      {
+          ext = (ext == undefined) ? true : ext;
+          return ext && frm.elements['target_cat'].value != 0;
+      }
+      else if (frm.elements['type'].value == '')
+      {
+          return false;
+      }
+      else
+      {
+          return true;
+      }
+  }
+   function changeAction()
+  {
+
+      var frm = document.forms['listForm'];
+
+      // 切换分类列表的显示
+      frm.elements['target_cat'].style.display = frm.elements['type'].value == 'move_to' ? '' : 'none';
+
+      if (!document.getElementById('btnSubmit').disabled &&
+          confirmSubmit(frm, false))
+      {
+          frm.submit();
+      }
+  }
+
+ /* 搜索文章 */
+ function searchArticle()
+ {
+    listTable.filter.keyword = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+    listTable.filter.cat_id = parseInt(document.forms['searchForm'].elements['cat_id'].value);
+    listTable.filter.page = 1;
+    listTable.loadList();
+ }
+
+ {/literal}
+</script>
+{include file="pagefooter.htm"}
+{/if}

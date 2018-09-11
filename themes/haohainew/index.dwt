@@ -1,0 +1,756 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/index.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/font-awesome.min.css" rel="stylesheet" />
+<link href="{$hhs_css_path}/swiper.min.css" rel="stylesheet" />
+<link href="//at.alicdn.com/t/font_1469771107_0897112.css" rel="stylesheet" />
+{insert_scripts files='jquery.js,haohaios.js,index.js,swiper.min.js,jquery.lazyload.js'}
+<link href="/js/dropload/dropload.min.css" rel="stylesheet" >
+<script src="/js/dropload/dropload.min.js"></script>
+</head><body id="index">
+<div id="loading">{$loading}</div>
+<div class="container" id="container" style="display:none;">
+    <div class="topbox">
+        <header class="index-header"> 
+            <div class="city_txt"><a href="javascript:void(0);"><i class="iconfont icon-weizhi"></i><b id="show_index_cityname">{if $site_name eq ''}加载..{else}{$site_name}{/if}</b></a> </div>
+            <div class="index-search-box">
+                <form id="searchForm" name="searchForm" method="get" action="search.php" onSubmit="return checkSearchForm()">
+                    <input name="keywords" id="keyword" type="text" class="index-search-input" placeholder="请输入查找的商品" onclick="openSearch();">
+                    <a href="javascript:openSearch();" class="submit">搜索</a>
+                </form>
+            </div>
+        </header>
+    </div>
+    <div class="city">
+        <div class="city-title">
+            <p class="city_tit_l"><b>选择地区</b></p>
+            <p class="city_tit_r"><a href="javascript:void(0);" class="close-city"><img src="images/city_close.gif"></a></p>
+        </div>
+        <div class="city-content">
+            <dl>
+                <dt><a href="?site_id=1"{if $site_id eq 1} class="cur"{/if}>中国</a></dt>
+                <dd>&nbsp;</dd>
+            </dl>
+            {foreach from=$site_list item=site name=site}
+            <dl>
+                <dt><a href="?site_id={$site.city_id}"{if $site.city_id eq $site_id} class="cur"{/if}>{$site.region_name}</a></dt>
+                <dd> {foreach from=$site.dis item=dis name=dis} <a href="?site_id={$dis.region_id}"{if $dis.region_id eq $site_id} class="cur"{/if}>{$dis.region_name}</a> {/foreach} </dd>
+            </dl>
+            {/foreach} </div>
+    </div>
+    <div class="city-bg"></div>
+<script>
+function openSearch(){
+    $("#searchForm").submit();
+}
+function checkSearchForm(){
+    var val = $("#searchForm input").val();
+    return val.length > 0 ? true : false;
+}
+$(function () {
+    H_login = {};
+    H_login.openLogin = function(){
+        $('.city_txt a').click(function(){
+            $('.city').show();
+            $('.city-bg').show();
+        });
+    };
+    H_login.closeLogin = function(){
+        $('.close-city').click(function(){
+            $('.city').hide();
+            $('.city-bg').hide();
+        });
+    };
+    H_login.run = function () {
+        this.closeLogin();
+        this.openLogin();
+    };
+    H_login.run();
+});
+</script>
+<script>
+var Tday = new Array();
+var daysms = 24 * 60 * 60 * 1000
+var hoursms = 60 * 60 * 1000
+var Secondms = 60 * 1000
+var microsecond = 1000
+var DifferHour = -1
+var DifferMinute = -1
+var DifferSecond = -1
+function clock(key)
+  {
+   var time = new Date()
+   var hour = time.getHours()
+   var minute = time.getMinutes()
+   var second = time.getSeconds()
+   var timevalue = ""+((hour > 12) ? hour-12:hour)
+   timevalue +=((minute < 10) ? ":0":":")+minute
+   timevalue +=((second < 10) ? ":0":":")+second
+   timevalue +=((hour >12 ) ? " PM":" AM")
+   var convertHour = DifferHour
+   var convertMinute = DifferMinute
+   var convertSecond = DifferSecond
+   var Diffms = Tday[key].getTime() - time.getTime()
+   DifferHour = Math.floor(Diffms / daysms)
+   Diffms -= DifferHour * daysms
+   DifferMinute = Math.floor(Diffms / hoursms)
+   Diffms -= DifferMinute * hoursms
+   DifferSecond = Math.floor(Diffms / Secondms)
+   Diffms -= DifferSecond * Secondms
+   var dSecs = Math.floor(Diffms / microsecond)
+  
+   if(convertHour != DifferHour) a="<b>"+DifferHour+"</b>天";
+   if(convertMinute != DifferMinute) b="<b>"+DifferMinute+"</b>时";
+   if(convertSecond != DifferSecond) c="<b>"+DifferSecond+"</b>分"
+     d="<b>"+dSecs+"</b>秒"
+     if (DifferHour>0) {a=a}
+     else {a=''}
+   document.getElementById("leftTime"+key).innerHTML =a + b + c + d; //显示倒计时信息
+ 
+  }
+</script>
+  <script>
+   $(function(){
+    $('.app-tips span').click(function(){
+      $('.app-tips').hide();
+    });
+   });
+</script>
+    <!--app download tips star-->
+    <div class="app-tips">微营销原生app体验更优!
+      <a href="">点击下载</a>
+      <span></span>
+    </div>
+    <!--app download tips end-->
+
+    <!--app download tips end-->
+    <div class="swiper-container" style="margin-top:56px;">
+        <div class="swiper-wrapper">
+		    {foreach from=$banner item=banner}
+            <div class="swiper-slide"><a href="{$banner.ad_link}"><img src="{$banner.ad_code}" width="100%"/></a></div>
+            {/foreach}
+		</div>
+        <div class="swiper-pagination m1"></div>
+    </div>
+    {if $categories}
+    <div class="index-menu">
+	    <div class="swiper-wrapper">
+		    <div class="swiper-slide">
+            {foreach from=$categories item=cat name=cat}
+			{if $smarty.foreach.cat.index mod 10 eq 0 && $smarty.foreach.cat.index>0}
+			</div>
+			<div class="swiper-slide">
+			{/if}
+			<a href="tuan.php?cid={$cat.id}"><img src="{$cat.img}"><p>{$cat.name}</p></a>
+            {/foreach}
+			</div>
+		</div>
+		<div class="swiper-pagination m2"></div>
+    </div>
+    {/if}
+    <div class="blank"></div>
+    <div class="ads5">
+		{foreach from=get_advlist_position_name('首页6图',6) item=ad}
+		<li><a href="{$ad.url}"><img src="{$ad.image}"></a></li>
+        {/foreach}
+    </div>
+
+	{foreach from=get_advlist_position_name('首页抽奖广告',1) item=ad}
+	<div class="ads"><a href="{$ad.url}"><img src="{$ad.image}"></a></div>
+    {/foreach}
+
+    <div class="blank"></div>
+	<!--script>
+       function GetRTime(){
+           var EndTime= new Date('2016/08/20 00:00:00');
+           var NowTime = new Date();
+           var t =EndTime.getTime() - NowTime.getTime();
+           var d=Math.floor(t/1000/60/60/24);
+           var h=Math.floor(t/1000/60/60%24);
+           var m=Math.floor(t/1000/60%60);
+           var s=Math.floor(t/1000%60);
+    
+           document.getElementById("t_d").innerHTML = d + "天";
+           document.getElementById("t_h").innerHTML = h;
+           document.getElementById("t_m").innerHTML = m;
+           document.getElementById("t_s").innerHTML = s;
+       }
+       setInterval(GetRTime,0);
+    </script-->
+	{if $miao_list}
+    <div class="xxms">
+        <h3 class="mod_tit">
+            <i class="iconfont icon-miaosha"></i>限时秒杀<span><a href="spike.php">查看更多></a></span>
+        </h3>
+        <ul>
+            <!--{foreach from=$miao_list key=key item=goods}-->
+            <li>
+			    <font class="timesbg"></font>
+				<font class="times" id="leftTime{$key}">{$lang.please_waiting}</font>
+                <a href="{$goods.url}&uid={$uid}">
+                <img data-original="{$goods.thumb}" src="images/loading.gif" class="lazy">
+                <p>{$goods.name}</p>
+                <p class="price">¥{$goods.promote_price} <span>{$goods.price_discount}折</span></p>
+                </a>
+            </li>
+<script>
+Tday[{$key}] = new Date("{$goods.gmt_end_time}");  
+window.setInterval(function()    
+{clock({$key});}, 1000);    
+</script>
+            <!--{/foreach}-->
+        </ul>
+    </div>
+    <div class="blank"></div>
+	{/if}
+	{if $tuan_list}
+    <div class="good_list">
+        <h3 class="mod_tit">
+        <i class="iconfont icon-pintuan"></i>拼团专区<span><a href="tuan.php">查看更多></a></span>
+        </h3>
+        <div class="tuan_list"> 
+            <!--{foreach from=$tuan_list item=goods}-->
+            <div class="tuan_g">
+                <div class="tuan_g_img">
+				    <a href="{$goods.url}&uid={$uid}"> <img data-original="{$goods.little_img}" src="images/loading640x350.gif" class="lazy"> </a>
+					{if $uid}
+                    {if $goods.collect}
+                    <div class="like_click_button" data-id="{$goods.goods_id}"> <img src="images/is_liked.png" data-isLiked="1"> </div>
+                    {else}
+                    <div class="like_click_button" data-id="{$goods.goods_id}"> <img src="images/no_liked.png" data-isLiked="0"> </div>
+                    {/if}
+                    {/if}
+                    {if $goods.goods_number lt 1} <span class="sell_f"></span> {elseif  $goods.is_miao=1  and $goods.promote_end_date lt $nowtime and $goods.promote_end_date} <span class="sell_o"></span> {/if}
+						{if $goods.ts_a || $goods.ts_b ||$goods.ts_c}
+                        <div class="tuan_g_img_text">
+                            {if $goods.ts_a}
+                            <div class="tuan_g_img_item">
+                                <div class="tuan_g_img_round"></div>
+                                <div class="tuan_img_text_border"><span>{$goods.ts_a}</span></div>
+                            </div>
+                            {/if}
+                            {if $goods.ts_b}
+                            <div class="tuan_g_img_item">
+                                <div class="tuan_g_img_round"></div>
+                                <div class="tuan_img_text_border"><span>{$goods.ts_b}</span></div>
+                            </div>
+                            {/if}
+                            {if $goods.ts_c}
+                            <div class="tuan_g_img_item">
+                                <div class="tuan_g_img_round"></div>
+                                <div class="tuan_img_text_border"><span>{$goods.ts_c}</span></div>
+                            </div>
+                            {/if}
+                        </div>
+                        {/if}
+				</div>
+                <div class="tuan_g_info">
+                    <p class="tuan_g_name">{$goods.goods_name}</p>
+					<p class="tuan_g_cx">{$goods.goods_brief}</p>
+                </div>
+                <div class="tuan_g_core">
+                    <p class="tuan_g_num">{$goods.team_num}人团</p>
+                    <div class="line"></div>
+                    <div class="tuan_g_price"><i>¥</i>{$goods.team_price}</div>
+                    <del class="tuan_g_mprice"><i>￥</i>{$goods.shop_price}</del> <a href="{if $goods.goods_number gt 0}{$goods.url}&uid={$uid}{else}javascript:void(0);{/if}">
+                    <div class="tuan_g_btn">立即开团</div>
+                    </a> </div>
+                <img src="images/shade.png" style="display: block;width: 100%"> </div>
+            
+            <!--{/foreach}--> 
+        </div>
+    </div>
+    
+    <div class="blank"></div>
+	{/if}
+
+    <!--div class="good_list">
+        <h3 class="mod_tit"><i class="iconfont icon-qingling"></i>0元专区<span><a href="zero.php">查看更多></a></span></h2>
+
+        {foreach name=goods_list from=$zero_list item=goods}
+
+        <dl class="list_A">
+
+            <dt><a href="{$goods.url}&uid={$uid}"><img data-original="{$goods.goods_thumb}" src="images/loading.gif" class="lazy"></a></dt>
+
+            <dd>
+
+                <p><i  class="tips">0元专区</i></p>
+
+                <p class="tit"><a href="{$goods.url}&uid={$uid}">{$goods.goods_name}</a></p>
+
+                <p class="brief">{$goods.goods_brief}</p>
+
+                <p><font class="price">¥<b>0</b></font><del>¥{$goods.market_price}</del></p>
+
+            </dd>
+
+        </dl>
+
+        {/foreach}
+
+    </div>
+    
+    <div class="blank"></div-->
+	{if $tejia_list}
+    <div class="good_list">
+        <h3 class="mod_tit">
+        <i class="iconfont icon-jingpin"></i>精品商城<span><a href="mall.php">查看更多></a></span>
+        </h2>
+        <ul class="list_B">
+            
+            <!--{foreach name=goods_list from=$tejia_list item=goods}-->
+            <li> <a href="{$goods.url}&uid={$uid}"><img goods_id="{$goods.goods_id}" data-original="{$goods.goods_thumb}" src="images/loading.gif" class="lazy"></a>
+                <p class="tit"><a href="{$goods.url}&uid={$uid}">{$goods.goods_name}</a></p>
+                <p>
+				    <font class="price">¥<b class="shop_price">{$goods.shop_price}</b></font> 
+                    
+                     {if $goods.attr}
+                     <a class="mai iproduct_{$goods.goods_id}" id="iproduct_{$goods.goods_id}" href="javascript:addToCart({$goods.goods_id},0,1,0,0,1)">买</a>
+                     {else}
+					 {if $goods.goods_number > 0}
+                     <a class="mai" id="iproduct_{$goods.goods_id}" href="javascript:addToCart({$goods.goods_id},0,1,0,0,1)">买</a>
+					 {else}
+                     <a class="mai hui" href="javascript:;">缺货</a>
+                     {/if}
+                     {/if}
+                     
+				</p>
+            </li>
+            <!--{/foreach}-->
+            
+        </ul>
+    </div>
+	{/if}
+</div>
+<div class="blank"></div>
+<!-- #BeginLibraryItem "/library/footer.lbi" --><!-- #EndLibraryItem -->
+<div class="back-top"><span uigs="wap_to_top">顶部</span></div>
+<script>
+	window.onload=function(){
+		
+		send_team_info();
+		
+		send_bouns();
+		
+		document.getElementById('loading').style.display='none';
+
+		document.getElementById('container').style.display='';
+
+		var swiper = new Swiper('.swiper-container', {
+
+	        pagination: '.m1',
+
+	        paginationClickable: true,
+
+	        spaceBetween: 30,
+
+	        centeredSlides: true,
+
+	        autoplay: 2500,
+
+	        autoplayDisableOnInteraction: false
+
+	    });
+		var swiper = new Swiper('.index-menu', {
+
+	        pagination: '.m2',
+
+	        paginationClickable: true,
+
+	        spaceBetween: 30,
+
+	        centeredSlides: true,
+
+	        autoplayDisableOnInteraction: false
+
+	    });
+		$("img.lazy").lazyload({
+                effect: "fadeIn",
+                threshold : 200
+        });
+        $("img.lazy:eq(0)").attr('src',$("img.lazy:eq(0)").attr('data-original'));
+
+      var user_id = {$uid};
+
+    $(".like_click_button").on("click", function(e) {
+
+        e.preventDefault();
+        var goodsId = $(this).attr("data-id");
+        var img = $(this).find("img");
+        if (img.attr("data-isLiked") == "1") {
+            $.get('user.php', {
+                act: "del_collection",
+                collection_id: goodsId,
+                user_id: user_id
+            }).done(function(e) {
+                img.attr("src", "themes/haohainew/images/no_liked.png");
+                img.attr("data-isLiked", 0)
+            })
+        } else {
+            $.get('user.php', {
+                act: "collect",
+                id: goodsId,
+                user_id: user_id
+            }).done(function(e) {
+                img.attr("src", "themes/haohainew/images/is_liked.png");
+                img.attr("data-isLiked", 1)
+            })
+
+        }
+    })
+	}
+	
+var btn_buy = "{$lang.btn_buy}";
+var btn_add_to_cart = "{$lang.btn_add_to_cart}";
+var is_cancel = "{$lang.is_cancel}";
+var select_spe = "{$lang.select_spe}";
+</script> 
+<script type="text/javascript">
+function getElementLeft(element){
+　　　　var actualLeft = element.offsetLeft;
+　　　　var current = element.offsetParent;
+        
+　　　　while ( current !== null ){
+　　　　　　actualLeft += current.offsetLeft;
+　　　　　　current = current.offsetParent;
+
+　　　　}
+
+　　　　return actualLeft;
+　　}
+
+function getElementTop(element){
+　　　　var actualTop = element.offsetTop;
+　　　　var current = element.offsetParent;
+
+　　　　while (current !== null){
+　　　　　　actualTop += current.offsetTop;
+　　　　　　current = current.offsetParent;
+　　　　}
+
+　　　　return actualTop;
+　　}　　
+
+    var Cart = {
+      id: 'cat',
+      addProduct: function(cpid, num, t ) {
+        //添加商品
+        var cat =document.getElementById('cat');  
+        var catLeft=getElementLeft(cat);
+        var catTop=getElementTop(cat);
+        var sTop=document.body.scrollTop+document.documentElement.scrollTop;
+
+
+        var op = $("[id=iproduct_"+cpid+"]").parents("li").find("img");
+        var goods_id = $(op).attr("goods_id");
+
+        if(op.length>0) {
+            var np = op.clone().css({"position":"absolute", "top": op.offset().top, "left": op.offset().left, width: 50, height:50, "z-index": 999999999}).show();
+            np.appendTo("body").animate({top:  catTop + sTop , left: $("#cat").offset().left +30 , width: 20, height:20}, {duration: 1000,
+                    callback:function(){}, complete: function(){np.remove();addToCart(goods_id,0,1 ,0,0,1 );} });
+        }
+       }
+    }
+
+    $(function() {
+        $('[id^=iproduct_]').click(function() {
+            var id = $(this).attr("id");
+            var tmp = id.split('_');
+            var goods_id = tmp[1];
+
+            //var cpid = this.id.replace('iproduct_'+goods_id,goods_id);
+
+             Cart.addProduct(goods_id, 1, 0  );
+
+            return false;
+        });
+     });
+</script>
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script> 
+<script language="javascript" type="text/javascript">
+    wx.config({
+
+        debug: false,//这里是开启测试，如果设置为true，则打开每个步骤，都会有提示，是否成功或者失败
+
+        appId: '{$appid}',
+
+        timestamp: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+
+        nonceStr: '{$timestamp}',//这个一定要与上面的php代码里的一样。
+
+        signature: '{$signature}',
+
+        jsApiList: [
+
+          // 所有要调用的 API 都要加到这个列表中
+
+            'onMenuShareTimeline',
+
+            'onMenuShareAppMessage',
+
+            'onMenuShareQQ',
+
+            'onMenuShareWeibo',
+
+            'checkJsApi',
+
+            'openLocation',
+
+            'getLocation'
+
+        ]
+
+    });
+
+    
+
+    var title="{$title}";
+
+    var link= "{$link}";
+
+    var imgUrl="{$imgUrl}";
+
+    var desc= "{$desc}";
+
+    wx.ready(function () {
+
+        wx.onMenuShareTimeline({//朋友圈
+
+            title: title, // 分享标题
+
+            link: link, // 分享链接
+
+            imgUrl: imgUrl, // 分享图标
+
+            success: function () { 
+
+                // 用户确认分享后执行的回调函数
+
+                statis(2,1);
+
+            },
+
+            cancel: function () { 
+
+                // 用户取消分享后执行的回调函数
+
+                statis(2,2);
+
+            }
+
+        });
+
+        wx.onMenuShareAppMessage({//好友
+
+            title: title, // 分享标题
+
+            desc: desc, // 
+
+            link: link, // 分享链接
+
+            imgUrl: imgUrl, // 分享图标
+
+            type: '', // 分享类型,music、video或link，不填默认为link
+
+            dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+
+            success: function () { 
+
+                // 用户确认分享后执行的回调函数
+
+                statis(1,1);    
+
+            },
+
+            cancel: function () { 
+
+                // 用户取消分享后执行的回调函数
+
+                statis(1,2);
+
+            }
+
+        });
+
+      
+
+        wx.onMenuShareQQ({
+
+            title: title, // 分享标题
+
+            desc: desc, // 分享描述
+
+            link: link, // 分享链接
+
+            imgUrl: imgUrl, // 分享图标
+
+            success: function () { 
+
+               // 用户确认分享后执行的回调函数
+
+                statis(4,1);
+
+            },
+
+            cancel: function () { 
+
+               // 用户取消分享后执行的回调函数
+
+                statis(4,2);
+
+            }
+
+        });
+
+        wx.onMenuShareWeibo({
+
+            title: title, // 分享标题
+
+            desc: desc, // 分享描述
+
+            link: link, // 分享链接
+
+            imgUrl: imgUrl, // 分享图标
+
+            success: function () { 
+
+               // 用户确认分享后执行的回调函数
+
+                statis(3,1);
+
+            },
+
+            cancel: function () { 
+
+                // 用户取消分享后执行的回调函数
+
+                statis(3,2);
+
+            }
+
+        });   
+		{if $site_id eq ''}
+	    wx.checkJsApi({
+	    	
+	        jsApiList: [
+	            'getLocation'
+	        ],
+	        success: function (res) {
+	             //alert(JSON.stringify(res));
+	            // alert(JSON.stringify(res.checkResult.getLocation));
+	            if (res.checkResult.getLocation == false) {
+	                alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
+	                return;
+	            }
+	        }
+	    });
+	    wx.getLocation({
+	        success: function (res) {
+	            var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+	            var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+	            var speed = res.speed; // 速度，以米/每秒计
+	            var accuracy = res.accuracy; // 位置精度
+	            $.ajax({
+	                type:"post",//请求类型
+	                url:"lbs.php",//服务器页面地址
+                    data:"act=save_location_baidu&lat="+latitude+"&lng="+longitude,
+	                dataType:"json",//服务器返回结果类型(可有可无)
+	                error:function(){//错误处理函数(可有可无)
+	                    //alert("ajax出错啦");
+	                },
+	                success:function(data){
+	                    if(data.error==1){
+	                        //alert('错误'+data.message);
+	                    }else{
+							document.getElementById('show_index_cityname').innerHTML = data.city_name;
+	                    	//document.getElementById('loading').style.display='none';
+	                		
+	                    }
+	                }
+	            });
+	        },
+	        cancel: function (res) {
+	            alert('用户拒绝授权获取地理位置');
+	        }
+	    });		
+		
+		{/if}  
+
+    });
+
+    function statis(share_type,share_status){
+
+        $.ajax({
+
+            type:"post",//请求类型
+
+            url:"share.php",//服务器页面地址
+
+            data:"act=link&share_status="+share_status+"&share_type="+share_type+"&link_url={$link2}",
+
+            dataType:"json",//服务器返回结果类型(可有可无)
+
+            error:function(){//错误处理函数(可有可无)
+
+                //alert("ajax出错啦");
+
+            },
+
+            success:function(data){
+
+                
+
+            }
+
+        });
+
+    }
+
+
+//团购提醒
+	function send_team_info()
+	{
+		$.ajax({
+            type:"post",//请求类型
+            url:"index.php",//服务器页面地址
+            data:"act=send_team_info",
+            dataType:"json",//服务器返回结果类型(可有可无)
+            error:function(){//错误处理函数(可有可无)
+                //alert("ajax出错啦");
+            },
+            success:function(data){
+                
+            }
+        });
+		//setTimeout("send_team_info()", 20000);
+	}
+function send_bouns(){
+		$.ajax({
+            type:"post",//请求类型
+            url:"index.php",//服务器页面地址
+            data:"act=send_bouns&share_status= 1",
+            dataType:"json",//服务器返回结果类型(可有可无)
+            error:function(){//错误处理函数(可有可无)
+                //alert("ajax出错啦");
+            },
+            success:function(data){
+                
+            }
+        });
+		//setTimeout("send_bouns()",20000);
+	}
+
+
+</script>
+</body>
+</html>

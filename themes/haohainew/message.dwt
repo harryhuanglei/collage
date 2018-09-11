@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="format-detection" content="telephone=no">
+{if $auto_redirect}
+<meta http-equiv="refresh" content="3;URL={$message.back_url}" />
+{/if}
+<title>{$page_title}</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link href="{$hhs_css_path}/style.css" rel="stylesheet" />
+{* 包含脚本文件 *}
+{insert_scripts files='jquery.js,haohaios.js'}
+</head>
+<body>
+<div class="container">
+    <div class="message">
+        <h3>{$lang.system_info}</h3>
+        <p>{$message.content}</p>
+        <!-- {if $message.url_info} -->
+          <!--{foreach from=$message.url_info key=info item=url}-->
+          <p><a href="{$url}">{$info}</a></p>
+          <!--{/foreach}-->
+        <!--{/if}-->
+    </div> 
+</div>
+</body>
+</html>
